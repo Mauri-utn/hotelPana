@@ -34,7 +34,9 @@ int ingresar();
 
     const char *FILE_EMPLEADOS    = "empleados.dat";
     const char *FILE_CONSUMOS     = "consumos.dat";
-    const char *FILE_RESERVAS     = "reservas.dat";
+    const char *FILE_HABITACIONES = "habitaciones.dat";
+    const char *FILE_GASTOS       = "gastos.dat";
+
     const char Usuario[6] = "admin";
     const char contrasenia[5] = "7705";
 
@@ -130,9 +132,9 @@ char cerrar[2];
     char opc;
     cout << "\t\t1)INGRESAR                     --->"<<endl;
     cout << "\t\t2)SALIR                        --->"<<endl;
-    cout << "\t\t3)RECUPERAR CONTRASEÑA         --->"<<endl;
-    cout << "\t\t4)CAMBIAR CONTRASEÑA           --->"<<endl;
-    cout << "\t\tOPCIÓN: ";
+    cout << "\t\t3)RECUPERAR CONTRASEÃ‘A         --->"<<endl;
+    cout << "\t\t4)CAMBIAR CONTRASEÃ‘A           --->"<<endl;
+    cout << "\t\tOPCIÃ“N: ";
     cin  >> opc;
     switch(opc){
       case '1':
@@ -147,7 +149,7 @@ char cerrar[2];
       case '2':
       case 'b':
       case 'B':
-            cout << "\t\t¿Seguro que quiere cerrar el programa?"<< endl;
+            cout << "\t\tÂ¿Seguro que quiere cerrar el programa?"<< endl;
             cout << "\t\tsi-no: ";
             cin  >>  cerrar;
             if (strcmp(cerrar,"si")==0){
@@ -190,7 +192,7 @@ cout << "\t\t\tLOGIN DE USUARIO"<<endl;
 cout << "\t\t\t-----------------"<<endl;
 cout << "\n\tUsuario: ";
 getline(cin,user);
-cout << "\tContraseña: ";
+cout << "\tContraseÃ±a: ";
 //getline(cin,pass);
 char caracter;
 caracter = getch();
@@ -271,6 +273,5 @@ while(fread(&aux,sizeof(Empleado),1,P)==1){
 fclose(P);*/
 return true;
 
-
-
 }
+
