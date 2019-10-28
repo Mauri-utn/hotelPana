@@ -2,6 +2,10 @@
 #define MENUCLIENTES_H_INCLUDED
 
 
+#ifndef MENUCLIENTES_H_INCLUDED
+#define MENUCLIENTES_H_INCLUDED
+
+
 #include "misFunciones.h"
 const char* traerMes(int);
 const char* traerGenero(char);
@@ -41,7 +45,7 @@ public:
     void setPiso(short);
 };
 
-Direccion::Direccion(char street[30]="CASA S/NÚMERO",int num=0000,int codP=0000, char local[30]="aaaa",short p=0){
+Direccion::Direccion(char street[30]="CASA S/NÃšMERO",int num=0000,int codP=0000, char local[30]="aaaa",short p=0){
     strcpy(calle,street);
     numero=num;
     cp=codP;
@@ -71,7 +75,7 @@ void Direccion::cargar(){
     cout << "CALLE: ";
     cin.ignore();
     cin.getline(calle,30);
-    cout << "NÚMERO: ";
+    cout << "NÃšMERO: ";
     cin  >> numero;
     cout << "CODIGO POSTAL: ";
     cin  >> cp;
@@ -84,7 +88,7 @@ void Direccion::cargar(){
 void Direccion::mostrar(){
 
 cout << "CALLE        --->"<< calle << endl;
-cout << "NÚMERO       --->"<< numero << endl;
+cout << "NÃšMERO       --->"<< numero << endl;
 cout << "CODIGO POSTAL--->"<< cp << endl;
 cout << "LOCALIDAD    --->"<< localidad << endl;
 cout << "PISO         --->"<< piso << endl;
@@ -129,14 +133,14 @@ void Fecha::cargar(){
     cin  >> dia;
     cout << "MES: ";
     cin  >> mes;
-    cout << "AÑO: ";
+    cout << "AÃ‘O: ";
     cin >> anio;
 
 }
 void Fecha::cargarVenc(){
     cout << "Mes: ";
     cin  >> mes;
-    cout << "Año: ";
+    cout << "AÃ±o: ";
     cin  >> anio ;
 }
 void Fecha::mostrarVenc(){
@@ -204,6 +208,7 @@ protected:
     char nacionalidad[50];
     Fecha fechaNac;
 public:
+
     void cargar();
     void mostrar();
     ///GETS()
@@ -229,9 +234,6 @@ public:
     bool escribirDisco(int);
     bool leerDisco(int);
     bool grabarRegistro();
-
-
-
 
 };
 
@@ -291,22 +293,22 @@ void Persona::cargar(){
         cout << "NOMBRE: ";
         cin.getline(nombres,50);
     }
-    cout << "GÉNERO---> "<<endl;
+    cout << "GÃ‰NERO---> "<<endl;
     cout << "M)Mujer    "<<endl;
     cout << "H)Hombre   "<<endl;
     cout << "O)Otro     "<<endl;
-    cout << "OPCIÓN---> ";
+    cout << "OPCIÃ“N---> ";
     cin  >> genero;
    /* while(genero==""){
         borrarPantalla();
         mensajes(3);
         pausa();
         borrarPantalla();
-        cout << "GÉNERO---> "<<endl;
+        cout << "GÃ‰NERO---> "<<endl;
     cout << "M)Mujer    "<<endl;
     cout << "H)Hombre   "<<endl;
     cout << "O)Otro     "<<endl;
-    cout << "OPCIÓN---> ";
+    cout << "OPCIÃ“N---> ";
     cin  >> genero;
 
     }*/
@@ -367,7 +369,7 @@ void Persona::mostrar(){
 
     cout << "APELLIDO            ---> "<< apellidos << endl;
     cout << "NOMBRE              ---> "<< nombres   << endl;
-    cout << "GÉNERO              ---> "<< traerGenero(genero) << endl;
+    cout << "GÃ‰NERO              ---> "<< traerGenero(genero) << endl;
     cout << "DNI                 ---> "<< dni          << endl;
     cout << "NACIONALIDAD        ---> "<< nacionalidad << endl;
     cout << "FECHA DE NACIMIENTO ---> " ; fechaNac.mostrarConBarra();
@@ -412,9 +414,6 @@ class Cliente: public Persona  {
     const char* getCodSeguridad(){return codSeguridad;}
     int getMesVenc(){return vencimientoTarjeta.getMes();}
     int getAnioVenc(){return vencimientoTarjeta.getAnio();}
-
-
-
     /// SETS()
     void setMail(char*);
     void setTelefono(char*);
@@ -422,13 +421,27 @@ class Cliente: public Persona  {
     void setCodigoSeguridad(char*);
     void setMesVenc(int nMes){vencimientoTarjeta.setMes(nMes);}
     void setAnioVenc(int nAnio){vencimientoTarjeta.setAnio(nAnio);}
+    void setCalle(char*nCalle){domicilio.setCalle(nCalle);}
+    void setNum(int num){domicilio.setNumero(num);}
+    void setCp(int nCp){domicilio.setCP(nCp);}
+    void setLocalidad(char*nLoc){domicilio.setLocalidad(nLoc);}
+    void setP(short nPiso){domicilio.setPiso(nPiso);}
+
     /// FUNCIONES CON ARCHIVOS
-    bool escribirDisco(int);
+    bool escribirDisco();
     bool leerDisco(int);
     bool grabarRegistro();
 
 
 };
+
+bool Cliente::escribirDisco(){
+FILE*P;
+P=fopen(FILE_CLIENTES,"ab");
+if(P==NULL)return false;
+fwrite(this,sizeof(*this),1,P);
+fclose(P);
+}
 
 
 
@@ -555,7 +568,7 @@ void Cliente::mostrar(){
     cout << "DOMICILIO           --->"<<endl;
     domicilio.mostrar();
     cout << "NRO.TARJETA         --->"<< NroTarjeta << endl;
-    cout << "CÓDIGO DE SEGURIDAD --->"<< codSeguridad << endl;
+    cout << "CÃ“DIGO DE SEGURIDAD --->"<< codSeguridad << endl;
     cout << "VENCIMIENTO TARJETA --->"; vencimientoTarjeta.mostrarVenc();
     cout << "#############################"<< endl;
 
@@ -611,7 +624,7 @@ registro.cargar();
 if (selec=='1'||selec=='a'||selec=='A'){
 
 if(reg.grabarRegistro()){
-        cout << "CLIENTE GRABADO CON ÉXITO"<< endl;
+        cout << "CLIENTE GRABADO CON Ã‰XITO"<< endl;
         pausa();
         return;
      }
@@ -620,7 +633,7 @@ if(reg.grabarRegistro()){
 }
 if(selec=='2'||selec=='b'||selec=='B'){
 if(registro.grabarRegistro()){
-        cout << "MENOR GRABADO CON ÉXITO"<< endl;
+        cout << "MENOR GRABADO CON Ã‰XITO"<< endl;
         pausa();
         return;
      }
@@ -958,8 +971,8 @@ while(true){
     cout << "3) Listado Heapsort." << endl;
     ///cout << "4) PUNTO C." << endl;
     ///cout << "5) PUNTO D." << endl;
-    cout << "0) volver al menú clientes"<< endl;
-    cout << endl << "Opción: ";
+    cout << "0) volver al menÃº clientes"<< endl;
+    cout << endl << "OpciÃ³n: ";
     cin >> opcion;
     borrarPantalla();
     switch(opcion){
@@ -1126,7 +1139,7 @@ while(true){
     cout << "3) BUSCAR CLIENTE            " << endl; /// busca y muestra un cliente segun lo que se ingrese por teclado
     cout << "4) MOSTRAR TODOS LOS CLIENTES" << endl; /// muestra todos ordenados alfabeticamente o segun se indique por teclado
     cout << "0) Salir "<< endl;
-    cout << endl << "Opción: ";
+    cout << endl << "OpciÃ³n: ";
     cin >> op;
     borrarPantalla();
     switch(op){
@@ -1159,6 +1172,7 @@ while(true){
 
 
 }
+
 
 
 
