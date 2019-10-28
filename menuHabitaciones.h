@@ -145,31 +145,20 @@ public:
     void consulta_total();///Muestra todos los gastos
     void consulta_habitacion_fecha(); ///Muestra los gastos dentro de 2 fechas
     void consulta_habitacion_tipo(); ///Muestra todos los gastos de la habitacion y tipo seleccionado
+    void consulta_tipo(); ///Muestra todos los gastos correspondientes al tipo seleccionado
     float get_importe();///Devuelve el importe del gasto
     float get_total(); ///Devuelve el total del ultimo cambio de estado
     void cargar();///carga nuevo gasto
     void anular(); ///anula ultimo gasto
     void modificar(); ///modifica ultimo gasto
 };
-class Tipo_habitacion
-{
-private:
-    int cod_tipo;
-    char nombre[30];
-    float costo;
-public:
-    void cargar();
-    float get_costo(int c);
-    void get_nombre(int c,char v[30]);
-    void mostrar_todo();
-};
 class Habitacion
 {
 protected:
-    char habitacion[4],estado,tipo;
+    char habitacion[4],estado;
     int id;
-public:
-    void cargar_habitacion();
+    float precio;
+    char descripcion[100];
 };
 class Habitacion_ocupada:public Habitacion
 {
@@ -211,6 +200,17 @@ public:
     void cargar  (); ///Carga una nueva reserva
 };
 
+/*
+void cargaHabitaciones(){
+Habitacion vecHab[70]; /// habitacion estandar
+int i;
+for (i=0;i<70;i++)
+    {
+
+
+    }
+
+}*/
 void Gasto::cargar()
 {
     FILE *g;
@@ -401,32 +401,7 @@ void Gasto::anular()
     fclose(aux);
 
 }
-void Gasto::modificar()
-{
-    FILE *g;
-    g=fopen("gastos.dat","rb+");
-    if(g==NULL)
-    {
-        cout<<"Fallo al abrir el archivo";
-        return;
-    }
-    fseek(g,0,2);
-    id=(ftell(g)/sizeof(*this));
-    cout<<"Ingrese la habitacion que realizo el gasto: ";
-    cin>>habitacion;
-    cout<<"Ingrese el tipo de gasto: ";
-    cin>>tipo;
-    cout<<"Ingrese el importe del gasto: $";
-    cin>>importe;
-    cout<<"Ingrese la descripcion del importe: ";
-    cin.ignore();
-    cin.getline(descripcion,240);
-    fseek(g,(ftell(g)-sizeof(*this)),0);
-    fwrite(this,sizeof(*this),1,g);
-
-    fclose(g);
-}
-/*void Habitacion_reserva::cargar()
+void Habitacion_reserva::cargar()
 {
     char fi[11],fs[11];
     int aux[3];
@@ -490,96 +465,10 @@ int menuHabitaciones()
     cout << "En proceso ..."<< endl;
     //pausa();
     return 0;
-}*/
+}
 
-void Habitacion::cargar_habitacion()
-{
-  FILE *h;
-    h=fopen("habitaciones.dat","ab");
-    if(h==NULL)
-    {
-        cout<<"Fallo al abrir el archivo";
-        return;
-    }
-    fseek(h,0,2);
-    id=((ftell(h)/sizeof(*this))+1);
-    cout<<"Ingrese el numero de la habitacion: ";
-    cin>>habitacion;
-    cout<<"Ingrese tipo de habitacion: ";
-    cin>>tipo;
-    estado='0';
-    fwrite(this,sizeof(*this),1,h);
-    fclose(h);
-}
-void Tipo_habitacion::cargar()
-{
-  FILE *t;
-    t=fopen("tipo_habitacion.dat","ab");
-    if(t==NULL)
-    {
-        cout<<"Fallo al abrir el archivo";
-        return;
-    }
-    fseek(t,0,2);
-    cod_tipo=((ftell(t)/sizeof(*this))+1);
-    cout<<"Ingrese el nombre del tipo: ";
-    cin.ignore();
-    cin.getline(nombre,30);
-    cout<<"Ingrese el precio del tipo: $";
-    cin>>costo;
-    fwrite(this,sizeof(*this),1,t);
-    fclose(t);
 
-}
-void Tipo_habitacion::mostrar_todo()
-{
-   FILE *t;
-    t=fopen("tipo_habitacion.dat","rb");
-    if(t==NULL)
-    {
-        cout<<"Fallo al abrir el archivo";
-        return;
-    }
-    while(fread(this,sizeof(*this),1,t)==1)
-    {
 
-        cout<<"Codigo de tipo: "<<cod_tipo<<endl;
-        cout<<"Nombre: "<<nombre<<endl;
-        cout<<"costo: "<<costo<<endl;
-        cout<<"-------------------------------"<<endl;
-
-    }
-    fclose(t);
-}
-float Tipo_habitacion::get_costo(int c)
-{
-    FILE *t;
-    float cost;
-    t=fopen("tipo_habitacion.dat","rb");
-    if(t==NULL)
-    {
-        cout<<"Fallo al abrir el archivo";
-        exit;
-    }
-    fseek(t,(c-1)*sizeof(*this),0);
-    cost=costo;
-    fclose(t);
-    return cost;
-}
-void Tipo_habitacion::get_nombre(int c,char v[30])
-{
-    FILE *t;
-    float cost;
-    t=fopen("tipo_habitacion.dat","rb");
-    if(t==NULL)
-    {
-        cout<<"Fallo al abrir el archivo";
-        return;
-    }
-    fseek(t,(c-1)*sizeof(*this),0);
-    strcpy(v,nombre);
-    fclose(t);
-}
 
 
 #endif // MENUHABITACIONES_H_INCLUDED
