@@ -483,14 +483,15 @@ void Habitacion_reserva::consulta_total()
             cout<<"-------------------------------"<<endl;
     }
     fclose(r);
-}
+}*/
+
 int menuHabitaciones()
 {
 
     cout << "En proceso ..."<< endl;
     //pausa();
     return 0;
-}*/
+}
 
 void Habitacion::cargar_habitacion()
 {
