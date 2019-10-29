@@ -2,18 +2,17 @@
 #define MENUCLIENTES_H_INCLUDED
 
 
-#ifndef MENUCLIENTES_H_INCLUDED
-#define MENUCLIENTES_H_INCLUDED
-
-
 #include "misFunciones.h"
+
 const char* traerMes(int);
 const char* traerGenero(char);
 bool validarDni(const char *);
 bool validarFechadeNac(int,int,int);
 bool validarTarjeta(char*);
+int modificarCliente();
+int listarUnCliente();
 const char *FILE_CLIENTES     = "clientes.dat";
-const char *FILE_MENORES      = "menores.dat";
+//const char *FILE_MENORES      = "menores.dat";
 
     /// ////// ///
     /// CLASES ///
@@ -253,7 +252,7 @@ void Persona::setNacionalidad(char *nuevaNacionalidad){
 strcpy(nacionalidad,nuevaNacionalidad);
 }
 
-bool Persona::grabarRegistro(){
+/*bool Persona::grabarRegistro(){
 FILE*P;
 P=fopen(FILE_MENORES,"ab");
 if(P==NULL){
@@ -265,7 +264,7 @@ fwrite(this,sizeof(Persona),1,P);
 fclose(P);
 return true;
 
-}
+} */ /// graba una persona
 
 
 void Persona::cargar(){
@@ -311,7 +310,7 @@ void Persona::cargar(){
     cout << "OPCIÓN---> ";
     cin  >> genero;
 
-    }*/
+    }*/ /// FALTA VALIDAR BIEN GENERO PARA QUE NO SEA UN CAMPO VACIO
 
     cout << "DNI: ";
     cin.ignore();
@@ -401,7 +400,7 @@ class Cliente: public Persona  {
     char mail[50];
     char telefono[30];
     Direccion domicilio;
-    char NroTarjeta[17],codSeguridad[5];
+    char NroTarjeta[21],codSeguridad[5];
     Fecha vencimientoTarjeta;
 
     public:
@@ -428,24 +427,57 @@ class Cliente: public Persona  {
     void setP(short nPiso){domicilio.setPiso(nPiso);}
 
     /// FUNCIONES CON ARCHIVOS
-    bool escribirDisco();
-    bool leerDisco(int);
-    bool grabarRegistro();
+        bool escribirEnDisco();
+		int leerDeDisco(int);
+		bool modificarEnDisco(int);
+
 
 
 };
 
-bool Cliente::escribirDisco(){
+/// FUNCIONES DE GRABADO, LECTURA Y MODIFICACION EN DISCO ///
+bool Cliente::escribirEnDisco(){
 FILE*P;
 P=fopen(FILE_CLIENTES,"ab");
 if(P==NULL)return false;
 fwrite(this,sizeof(*this),1,P);
 fclose(P);
+return true;
 }
 
+int Cliente::leerDeDisco(int pos){/// lee el disco hasta encontrar el registro
+	int x;
+	FILE *p;
+	p=fopen(FILE_CLIENTES,"rb");
+	if(p==NULL){
+		mensajes(1);
+		cout<<"Presione una tecla para continuar";
+    system("pause<null");
+		return 0;
+		}
+	fseek(p,pos*sizeof *this,0);
+	x=fread(this,sizeof *this,1,p);
+	fclose(p);
+	return x;
+	}
 
 
 
+bool Cliente::modificarEnDisco(int pos){ /// graba una modificacion
+	FILE *p;
+	p=fopen(FILE_CLIENTES,"rb+");
+	if(p==NULL){
+        mensajes(1);
+        pausa();
+        return false;
+	}
+	fseek(p,pos*sizeof *this,0);
+	fwrite(this,sizeof *this,1,p);
+	fclose(p);
+	return true;
+}
+
+/// FIN FUNCIONES DE GRABADO , MODIFICACION Y LECTURA EN DISCO ///
 
 void  Cliente::setMail(char *nuevoMail){
 strcpy(mail,nuevoMail);
@@ -460,44 +492,31 @@ void  Cliente::setCodigoSeguridad(char *nuevoCS){
 strcpy(codSeguridad,nuevoCS);
 }
 
-bool Cliente::grabarRegistro(){
-FILE*P;
-P=fopen(FILE_CLIENTES,"ab");
-if(P==NULL){
-    mensajes(1);
-    pausa();
-    return false;
-}
-fwrite(this,sizeof(Cliente),1,P);
-fclose(P);
-return true;
-
-}
 
 void Cliente::cargar(){
-    if(!cadenaVacia(nacionalidad))return;
     Persona::cargar();
     cout << "MAIL: "; /// FALTA HACERLE VALIDACION
-    cin.ignore();
+    fflush(stdin);
     cin.getline(mail,50);
-    while(!cadenaVacia(mail)){
+    while(cadenaVacia(mail)){
     borrarPantalla();
     mensajes(3);
     pausa();
     borrarPantalla();
     cout << "MAIL: "; /// FALTA HACERLE VALIDACION
-    cin.ignore();
+    fflush(stdin);
     cin.getline(mail,50);
 }
 
     cout << "TELEFONO: ";/// FALTA HACERLE VALIDACION
     cin.ignore();
     cin.getline(telefono,30);
-    while(!cadenaVacia(telefono)){
-            borrarPantalla();
-    cout << "TELEFONO: ";/// FALTA HACERLE VALIDACION
+    while(cadenaVacia(telefono)){
+    borrarPantalla();
+    mensajes(3);
     pausa();
     borrarPantalla();
+    cout << "TELEFONO: ";/// FALTA HACERLE VALIDACION
     cin.ignore();
     cin.getline(telefono,30);
     }
@@ -505,13 +524,13 @@ void Cliente::cargar(){
     domicilio.cargar();
     cout << "NRO.TARJETA: ";
     cin.ignore();
-    cin.getline(NroTarjeta,30);
-    while(!cadenaVacia(NroTarjeta)){
+    cin.getline(NroTarjeta,21);
+    while(cadenaVacia(NroTarjeta)){
         borrarPantalla();
         mensajes(3);
         cout << "NRO.TARJETA: ";
         cin.ignore();
-        cin.getline(NroTarjeta,30);
+        cin.getline(NroTarjeta,21);
 
     }
     while(!validarTarjeta(NroTarjeta)){
@@ -530,14 +549,14 @@ void Cliente::cargar(){
     cout << "NRO.TARJETA: ";
     cin.ignore();
     cin.getline(NroTarjeta,30);
-    while(!cadenaVacia(NroTarjeta)){
+    while(cadenaVacia(NroTarjeta)){
         borrarPantalla();
         mensajes(3);
         cout << "NRO.TARJETA: ";
         cin.ignore();
         cin.getline(NroTarjeta,30);
 
-    }
+    } /// falta validar tarjeta de credito para que no sea igual a otra en el sistema
     break;
 default:
     mensajes(2);
@@ -547,14 +566,14 @@ default:
 }
     cout << "CODIGO DE SEGURIDAD: ";
     cin.getline(codSeguridad,5);
-    while(!cadenaVacia(codSeguridad)){
+    while(cadenaVacia(codSeguridad)){
         borrarPantalla();
         mensajes(3);
         pausa();
     cout << "CODIGO DE SEGURIDAD: ";
     cin.getline(codSeguridad,5);
     }
-    cout << "VENCIMIENTO TARJETA: ";
+    cout << "VENCIMIENTO TARJETA: "<<endl;
     vencimientoTarjeta.cargarVenc();
 
 }
@@ -570,7 +589,7 @@ void Cliente::mostrar(){
     cout << "NRO.TARJETA         --->"<< NroTarjeta << endl;
     cout << "CÓDIGO DE SEGURIDAD --->"<< codSeguridad << endl;
     cout << "VENCIMIENTO TARJETA --->"; vencimientoTarjeta.mostrarVenc();
-    cout << "#############################"<< endl;
+    cout << "###################################"<< endl;
 
 
 }
@@ -578,68 +597,46 @@ void Cliente::mostrar(){
 ///PROTOTIPO FUNCIONES GLOBALES
 
 bool existeCliente(const char*);
-bool existeMenor(const char*);
 void buscarCliente (const char*);
 int menuClientes();
 void nuevoCliente(); /// crea un nuevo cliente y lo graba
 int listarTodos(); /// menu para listar clientes segun opcion ingresada
 /// TODOS LOS MENUS VAN CON INT PARA DIFERENCIARLOS DE OTRAS FUNCIONES ///
-void listadoAlfabeticoMenores(); /// listado albafetico de menores
+
 void listadoAlfabeticoCliente(); /// listado de A-Z
 void listarClientes(); /// lista primero el mas viejo en el sistema
 void copiarArchivoMemoriaCliente(Cliente *,long);
 void ordenarVectorCliente(Cliente *,long);
 void mostrarVectorCliente(Cliente *,long);
 void heapsortClientes(Cliente *, long); /// prueba de ordenamiento por heapsort
-
-
 bool validarDni(const char*);
-int contarRegistrosMenores();/// cuenta la cantidad de registros que hay en el archivo menores
 int contarRegistrosClientes();/// cuenta la cantidad de registros que hay en el archivo clientes
-
-bool grabarPersona(Persona);
 bool grabarCliente(Cliente);
-void copiarArchivoMemoria(Persona*,long);
-void mostrarVectorPersona(Persona *, long );
-void ordenarVectorPersona(Persona*, long );
 int biciesto(int);
-
 void cargarDias(int *, int );
+//int contarRegistrosMenores();/// cuenta la cantidad de registros que hay en el archivo menores
+//bool grabarPersona(Persona);
+//void listadoAlfabeticoMenores(); /// listado albafetico de menores
+//void copiarArchivoMemoria(Persona*,long);
+//void mostrarVectorPersona(Persona *, long );
+//void ordenarVectorPersona(Persona*, long );
+//bool existeMenor(const char*);
+
 /// FUNCIONES GLOBALES CLIENTES
+
 void nuevoCliente(){
-char selec;
-cout << "1)CARGAR NUEVO CLIENTE "<< endl;
-cout << "2)CARGAR MENOR DE EDAD "<< endl;
-cin  >> selec;
+ cout << "CARGAR NUEVO CLIENTE "<< endl;
+ cout << "-------------------- "<< endl;
 Cliente reg;
-Persona registro;
-if (selec=='1'||selec=='a'||selec=='A'){
-
 reg.cargar();
-}
-else if(selec=='2'||selec=='b'||selec=='B'){
-
-registro.cargar();
-}
-if (selec=='1'||selec=='a'||selec=='A'){
-
-if(reg.grabarRegistro()){
+if(reg.escribirEnDisco()){
         cout << "CLIENTE GRABADO CON ÉXITO"<< endl;
         pausa();
         return;
      }
-
-
 }
-if(selec=='2'||selec=='b'||selec=='B'){
-if(registro.grabarRegistro()){
-        cout << "MENOR GRABADO CON ÉXITO"<< endl;
-        pausa();
-        return;
-     }
-  }
 
-}
+
 
 int contarRegistrosClientes(){
     FILE *F;
@@ -678,10 +675,16 @@ void listadoAlfabeticoCliente(){
   long cant;
   cant=contarRegistrosClientes();
   if(cant==0){
+    char letra;
+    cout << "Para visualizar clientes debe cargar uno primero"<<endl;
+    cout << "Desea cargar un cliente ahora?(s/n)";
+    cin  >> letra;
+    if (letra=='s'||letra=='S'){
+            nuevoCliente();
+            return;
+    }
+    else return;
 
-        mensajes(2);
-        pausa();
-        return ;
     }
   Cliente *vec;
   vec=(Cliente*) malloc(cant*sizeof(Cliente));
@@ -739,10 +742,16 @@ void listarClientes(){
   long cant;
   cant=contarRegistrosClientes();
   if(cant==0){
+    char letra;
+    cout << "Para visualizar clientes debe cargar uno primero"<<endl;
+    cout << "Desea cargar un cliente ahora?(s/n)";
+    cin  >> letra;
+    if (letra=='s'||letra=='S'){
+            nuevoCliente();
+            return;
+    }
+    else return;
 
-        mensajes(2);
-        pausa();
-        return ;
     }
   Cliente *vec;
   ///vec=(Cliente*) malloc(cant*sizeof(Cliente));
@@ -754,10 +763,8 @@ void listarClientes(){
   mostrarVectorCliente(vec,cant);/// se muestra el vector sin ordenar
   borrarPantalla();
   delete vec;
-
-
-
 }
+
 
 /*void heapsortClientes(Cliente *v, long cant){
 
@@ -836,7 +843,7 @@ return;
 /// FIN FUNCIONES PARA COMBINAR CON HABITACIONES
 
 
-/// FUNCIONES GLOBALES MENORES ///
+/*/// FUNCIONES GLOBALES MENORES ///
 
 bool grabarPersona(Persona aux){
 
@@ -958,7 +965,8 @@ bool existeMenor(const char*docu){
     fclose(P);
     return false;
 
-}
+}*/ /// FIN FUNCIONES GLOBALES MENORES ///
+
 int listarTodos(){
 
 char opcion;
@@ -966,11 +974,12 @@ while(true){
     borrarPantalla();
     cout << "LISTADO DE CLIENTES" << endl;
     cout << "-------------------" << endl;
-    cout << "1) Listado alfabetico clientes" << endl;
-    cout << "2) Listado por antiguedad clientes    " << endl;
-    cout << "3) Listado Heapsort." << endl;
-    ///cout << "4) PUNTO C." << endl;
-    ///cout << "5) PUNTO D." << endl;
+    cout << "1) Listado alfabetico clientes(por nombre)" << endl;
+    cout << "2) Listado alfabetico clientes(por apellido)" << endl;
+    cout << "3) Listado por antiguedad clientes    " << endl;
+    ///cout << "4) Listado Heapsort." << endl;
+    ///cout << "5) Listado por nacionalidad ." << endl;
+    ///cout << "6) PUNTO D." << endl;
     cout << "0) volver al menú clientes"<< endl;
     cout << endl << "Opción: ";
     cin >> opcion;
@@ -984,12 +993,13 @@ while(true){
       case '2':
       case 'b':
       case 'B':
-        listarClientes();
+
       break;
       case '3':
       case 'c':
       case 'C':
-       /// heapsortClientes();
+          listarClientes();
+
       break;
       case '0':
         return 0;
@@ -1093,9 +1103,7 @@ if(existeCliente(doc)){
 
     return false;
 }
-if(existeMenor(doc)){
-    return false;
-}
+
 
 return true;
 }
@@ -1128,6 +1136,101 @@ return true;
 
 }
 
+int modificarCliente(){
+cout << "menu en contruccion..."<< endl;
+pausa();
+return 0;
+short opcion;
+while(true){
+    borrarPantalla();
+    cout << "Indique campo a modificar" << endl;
+    cout << "-------------------------" << endl;
+    cout << "1) nombre" << endl;
+    cout << "2) apellido" << endl;
+    cout << "3) genero" << endl;
+    cout << "4) dni" << endl;
+    cout << "5) nacionalidad" << endl;
+    cout << "6) fecha de nacimiento "<< endl; /// incluye dia mes año
+    cout << "7) mail" << endl;
+    cout << "8) telefono" << endl;
+    cout << "9) domicilio" << endl;/// incluye todos los campos de domicilio
+    cout << "10) tarjeta de credito" << endl; /// incluye todos los campos de tarjeta
+    cout << "0) Salir  "<< endl;
+    cout << endl << "Opción: ";
+    cin >> opcion;
+    system("cls");
+    switch(opcion){
+      case 1:
+
+      break;
+      case 2:
+        ;
+      break;
+      case 3:
+        ;
+        ;
+      break;
+      case 4:
+        ;
+      break;
+      case 5:
+        ;
+      break;
+      case 0:
+        return 0;
+      break;
+    }
+    cout << endl;
+
+  }
+
+}
+
+int listarUnCliente(){
+cout << "menu en contrucnción..."<< endl;
+pausa();
+return 0;
+short opcion;
+while(true){
+    borrarPantalla();
+    cout << "BUSCAR POR ---> " << endl;
+    cout << "---------------" << endl;
+    cout << "1) Dni" << endl;
+    cout << "2) nombre" << endl;
+    cout << "3) apellido" << endl;
+    cout << "4) nacionalidad" << endl;
+    cout << "5) nro de tarjeta." << endl;
+    cout << "0) Salir "<< endl;
+    cout << endl << "Opción: ";
+    cin >> opcion;
+    system("cls");
+    switch(opcion){
+      case 1:
+
+      break;
+      case 2:
+        ;
+      break;
+      case 3:
+        ;
+        ;
+      break;
+      case 4:
+        ;
+      break;
+      case 5:
+        ;
+      break;
+      case 0:
+        return 0;
+      break;
+    }
+    cout << endl;
+
+  }
+
+}
+
 int menuClientes(){
 char op;
 while(true){
@@ -1151,11 +1254,12 @@ while(true){
       case '2':
       case 'b':
       case 'B':
-
+    modificarCliente();
         break;
       case '3':
       case 'c':
       case 'C':
+          listarUnCliente();
         break;
       case '4':
       case 'd':
@@ -1172,7 +1276,6 @@ while(true){
 
 
 }
-
 
 
 
