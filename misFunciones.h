@@ -67,10 +67,10 @@ case 1:
     cout << "ERROR AL ABRIR ARCHIVO"<< endl;
     break;
 case 2:
-    cout << "OPCIÓN INVALIDA"<< endl;
+    cout << "OPCIÃ“N INVALIDA"<< endl;
     break;
 case 3:
-    cout << "EL CAMPO NO PUEDE ESTAR VACÍO"<< endl;
+    cout << "EL CAMPO NO PUEDE ESTAR VACÃO"<< endl;
 
 }
 
@@ -78,7 +78,8 @@ case 3:
 
 bool cadenaVacia(char * cadena){
 
-if (strlen(cadena)==0)return false;
+if (strlen(cadena)==0){return true;}
+else return false;
 
 }
 
