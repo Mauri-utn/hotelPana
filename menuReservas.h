@@ -5,6 +5,11 @@ int menuReservas();
 int asignarCodigo();
 void nuevaReserva();
 void mostrarReservas();
+void cancelarReservaId();
+void cancelarReservaDni();
+int buscarReserva(char*);
+int buscarReservaId(int);
+
 
 #include "misFunciones.h"
 const char *FILE_RESERVAS     = "reservas.dat";
@@ -33,6 +38,15 @@ class Reserva{
     char getTipo(){return tipoHabitacion;}
     float getPagado(){return pagado;}
     bool getEstado(){return estado;}
+    ///  gets entrada
+    int getDiaEntrada(){return entrada.getDia();}
+    int getMesEntrada(){return entrada.getMes();}
+    int getAnioEntrada(){return entrada.getAnio();}
+    /// gets salida
+    int getDiaSalida(){return salida.getDia();}
+    int getMesSalida(){return salida.getMes();}
+    int getAnioSalida(){return salida.getAnio();}
+
     ///SETS
     void setIdentidad(char*);
     void setTipo(char*);
@@ -42,30 +56,84 @@ class Reserva{
     void setHabitacion(char);
     void setPagado(float);
     void setEstado(bool);
-    ///
-    bool escribirEnDisco();
+    ///  sets entrada
+    void setDiaEntrada(int nDia){entrada.setDia(nDia);}
+    void setMesEntrada(int nMes){entrada.setMes(nMes);}
+    void ssetAnioEntrada(int nAnio){entrada.setAnio(nAnio);}
+    /// sets salida
+    void setDiaSalida(int nDia){salida.setDia(nDia);}
+    void setMesSalida(int nMes){salida.setMes(nMes);}
+    void ssetAnioSalida(int nAnio){salida.setAnio(nAnio);}
+    /// FUNCIONES CON ARCHIVOS
+        bool escribirEnDisco();
+		int leerDeDisco(int);
+		bool modificarEnDisco(int);
+
 
 };
 
+int Reserva::leerDeDisco(int pos) /// lee el disco hasta encontrar el registro
+	{
+	int x;
+	FILE *p;
+	p=fopen(FILE_RESERVAS,"rb");
+	if(p==NULL)
+		{
+		mensajes(1);
+		cout<<"Presione una tecla para continuar";
+    system("pause<null");
+		return 0;
+		}
+	fseek(p,pos*sizeof *this,0);
+	x=fread(this,sizeof *this,1,p);
+	fclose(p);
+	return x;
+	}
 
-void Reserva::setEstado(bool variable){
-estado=variable;
-}
-bool Reserva::escribirEnDisco(){
+
+
+bool Reserva::modificarEnDisco(int pos){ /// graba una modificacion
+	FILE *p;
+	p=fopen(FILE_RESERVAS,"rb+");
+	if(p==NULL){
+        mensajes(1);
+        pausa();
+        return false;
+	}
+	fseek(p,pos*sizeof *this,0);
+	fwrite(this,sizeof *this,1,p);
+	fclose(p);
+	return true;
+	}
+
+
+
+
+
+
+bool Reserva::escribirEnDisco(){ /// graba un registro de reservas
 FILE*P;
 P=fopen(FILE_RESERVAS,"ab");
-if(P==NULL)return false;
+if(P==NULL){
+        fclose(P);
+        return false;
+}
 fwrite(this,sizeof(*this),1,P);
-return true;
 fclose(P);
+return true;
 }
 
-int contarRegistrosReservas(){
+void Reserva::setEstado(bool variable){ /// modifica el estado de una reserva
+estado=variable;
+}
+
+int contarRegistrosReservas(){ /// cuenta los registro que hay en las reservas
     FILE *F;
     F=fopen(FILE_RESERVAS,"rb");
     if(F==NULL){
         mensajes(1);
         pausa();
+        fclose(F);
         return -1;
     }
     int tam,tamanioreg,cantidad;
@@ -78,18 +146,48 @@ int contarRegistrosReservas(){
 
 }
 
-int asignarCodigo(){
+int asignarCodigo(){ /// asigna un codigo para cada nueva reserva
 FILE*P;
 P=fopen(FILE_RESERVAS,"rb");
 if(P==NULL){
     mensajes(1);
     pausa();
+    fclose(P);
     return -1;
 }
-if(contarRegistrosReservas()==0)return 1;
+if(contarRegistrosReservas()==0){
+    fclose(P);
+    return 1;
+}
 int siguiente=contarRegistrosReservas();
+fclose(P);
 return siguiente+1;
 }
+
+int buscarReserva(char *doc){ ///devuelve la posicion de la reserva en el archivo
+	int pos=0;
+	Reserva reg;
+	while(reg.leerDeDisco(pos)==1)
+		{
+		if(strcmp(doc,reg.getIdentidad())==0 && reg.getEstado()==true)
+			return pos;
+		pos++;
+		}
+	return -1;
+}
+
+int buscarReservaId(int iden){ ///devuelve la posicion de la reserva en el archivo
+	int pos=0;
+	Reserva reg;
+	while(reg.leerDeDisco(pos)==1)
+		{
+		if(iden==reg.getIdReserva()&& reg.getEstado()==true)
+			return pos;
+		pos++;
+		}
+	return -1;
+}
+
 
 void Reserva::cargar(){
 
@@ -113,7 +211,7 @@ cin.getline(identidad,10);
     cout << "Apellido/s: ";
     cin.getline(apellidos,50);
 
-cout << "---Habitación---   "<< endl;
+cout << "---Habitación---    "<< endl;
 cout << "1-estandar          "<< endl;
 cout << "2-suite             "<< endl;
 cout << "3-master suite      "<< endl;
@@ -158,7 +256,7 @@ cout << "Fecha de salida:  "; salida.mostrarConBarra();
 /// falta validar ambas fechas
 cout << "Pago: "<< pagado <<endl;
 /// falta agregar el pago a gastos de la estadia ---> restar del total
-pausa();
+
 
 
 }
@@ -172,6 +270,15 @@ if(reg.escribirEnDisco()){
     cout << "Reserva cargada con éxito"<<endl;
     pausa();
 }
+/// LA RESERVA FUE HECHA
+/// ACA SE DEBERIA RESERVAR LA HABITACION TIPO X ---> reg.getTipo()
+/// EN EL INTERVALO FECHA ENTRADA / FECHA SALIDA --->
+/// gets entrada salida, linea 41 a 48
+
+
+
+}
+
 /*Cliente aux;
 aux.setDni(reg.getIdentidad());
 aux.setNombre(reg.getNombre());
@@ -194,7 +301,6 @@ aux.setMesVenc(1);
 aux.setAnioVenc(2000);
 aux.escribirDisco();
 */
-}
 
 void mostrarReservas(){
 FILE*P;
@@ -202,7 +308,21 @@ P=fopen(FILE_RESERVAS,"rb");
 if(P==NULL){
     mensajes(1);
     pausa;
+    fclose(P);
     return;
+}
+if(contarRegistrosReservas()==0){
+
+    char letra;
+    cout << "Para visualizar reservas debe cargar una primero"<<endl;
+    cout << "Desea cargar una reserva ahora?(s/n)";
+    cin  >> letra;
+    if (letra=='s'||letra=='S'){
+            nuevaReserva();
+            return;
+    }
+    else return;
+
 }
 Reserva aux;
 while(fread(&aux,sizeof(Reserva),1,P)==1){
@@ -216,6 +336,63 @@ while(fread(&aux,sizeof(Reserva),1,P)==1){
 fclose(P);
 return;
 }
+void cancelarReservaDni(){
+	char cod[10];
+	int pos;
+	Reserva reg;
+	borrarPantalla();
+	cout<<"Ingrese el dni del cliente para cancelar reserva: ";
+	fflush(stdin);
+	cin.getline(cod,10);
+	pos=buscarReserva(cod);
+	if(pos!=-1)
+		{
+		reg.leerDeDisco(pos);
+		reg.setEstado(false);
+		if(reg.modificarEnDisco(pos)){
+            cout << "Reserva cancelada"<< endl;
+            pausa();
+		}
+
+		}
+	else
+		{
+		cout<<"No existe la reserva"<<endl;
+		cout<<"Presione una tecla para continuar";
+		system("pause>nul");
+		}
+}
+
+
+
+void cancelarReservaId(){
+    int ide;
+	int pos;
+	Reserva reg;
+	borrarPantalla();
+	cout <<"Ingrese id de reserva: ";
+	cin  >> ide;
+	pos=buscarReservaId(ide);
+	if(pos!=-1)
+		{
+		reg.leerDeDisco(pos);
+		reg.setEstado(false);
+		if(reg.modificarEnDisco(pos)){
+            cout << "Reserva cancelada"<< endl;
+            pausa();
+		}
+
+		}
+	else
+		{
+		cout<<"No existe la reserva"<<endl;
+		cout<<"Presione una tecla para continuar";
+		system("pause>nul");
+		}
+}
+
+
+/// fseek(P,ftell(P)-sizeof (Reserva),0);/// uno para atras
 
 int menuReservas(){
 char op;
@@ -246,7 +423,12 @@ while(true){
       case '3':
       case 'c':
       case 'C':
-
+          int sel;
+          cout << "Cancelar por dni--->presione 1"<< endl;
+          cout << "cancelar por id --->presione 2"<< endl;
+          cin  >> sel;
+        if(sel==1)cancelarReservaDni();
+        if(sel==2)cancelarReservaId();
         break;
       case '0':
                     return 0;
@@ -268,12 +450,5 @@ while(true){
 }
 
 }
-
-
-
-
-
-}
-
 
 #endif // MENURESERVAS_H_INCLUDED
