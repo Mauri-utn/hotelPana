@@ -9,6 +9,7 @@ int menuPrincipal(int);
 #include "menuClientes.h"
 #include "menuHabitaciones.h"
 #include "menuReservas.h"
+#include "recepcion.h"
 
 
 int menuPrincipal(int permisos){
@@ -20,17 +21,21 @@ int menuPrincipal(int permisos){
     while(true){
         borrarPantalla();
         fechaHora();
+        system("color 1F");
         cout << "\t\t---------PRINCIPAL---------" << endl;
         cout << "\t\t---------------------------" << endl;
-        cout << "\t\t1) NUEVA RESERVA   " << endl;
-        cout << "\t\t2) HABITACIONES    " << endl;
-        cout << "\t\t3) CLIENTES        " << endl;
-        cout << "\t\t4) EMPLEADOS       " << endl;
-        cout << "\t\t5) MANTENIMIENTO   " << endl;
-        cout << "\t\t6) LIMPIEZA        " << endl;
-        cout << "\t\t7) CONFIGURACION   " << endl;
-        cout << "\t\t0) Salir "<< endl;
-        cout << endl << "Opci�n: ";
+        cout << "\t\t1) RESERVAS    --->" << endl;
+        cout << "\t\t2) RECEPCIÓN   --->" << endl;
+        cout << "\t\t3) CHECK OUT       " << endl;
+        cout << "\t\t4) HABITACIONES    " << endl;
+        cout << "\t\t5) CLIENTES    --->" << endl;
+        cout << "\t\t6) EMPLEADOS       " << endl;
+        cout << "\t\t7) MANTENIMIENTO   " << endl;
+        cout << "\t\t8) LIMPIEZA        " << endl;
+        cout << "\t\t9) CONFIGURACION   " << endl;
+        cout << "\t\t10)REPORTES        " << endl;
+        cout << "\t\t0) SALIR/ATRÁS --->" << endl;
+        cout << endl << "Opción: ";
         cin >> opcion;
         borrarPantalla();
         switch(opcion){
@@ -42,21 +47,23 @@ int menuPrincipal(int permisos){
       case '2':
       case 'b':
       case 'B':
-          menuHabitaciones();
+    menuRecepcion();
 
         break;
       case '3':
       case 'c':
       case 'C':
-          menuClientes();
+
         break;
       case '4':
       case 'd':
       case 'D':
+          menuHabitaciones();
         break;
       case '5':
       case 'e':
       case 'E':
+          menuClientes();
         break;
       case '6':
       case 'f':
@@ -84,3 +91,4 @@ int menuPrincipal(int permisos){
 
 
 #endif // MENUPRINCIPAL_H_INCLUDED
+
