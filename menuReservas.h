@@ -275,8 +275,6 @@ if(reg.escribirEnDisco()){
 /// EN EL INTERVALO FECHA ENTRADA / FECHA SALIDA --->
 /// gets entrada salida, linea 41 a 48
 
-
-
 }
 
 /*Cliente aux;
