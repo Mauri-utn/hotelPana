@@ -11,6 +11,10 @@ bool validarFechadeNac(int,int,int);
 bool validarTarjeta(char*);
 int modificarCliente();
 int listarUnCliente();
+int buscarCliente (char*);
+int buscarClienteTarjeta(char *);
+int buscarClienteTelefono(char *);
+
 const char *FILE_CLIENTES     = "clientes.dat";
 //const char *FILE_MENORES      = "menores.dat";
 
@@ -479,6 +483,43 @@ bool Cliente::modificarEnDisco(int pos){ /// graba una modificacion
 
 /// FIN FUNCIONES DE GRABADO , MODIFICACION Y LECTURA EN DISCO ///
 
+int buscarCliente(char *doc){ ///devuelve la posicion del cliente en el archivo
+	int pos=0;
+	Cliente reg;
+	while(reg.leerDeDisco(pos)==1)
+		{
+		if(strcmp(doc,reg.getDni())==0)
+			return pos;
+		pos++;
+		}
+	return -1;
+}
+
+int buscarClienteTarjeta(char *tarjeta){ ///devuelve la posicion del cliente en el archivo
+	int pos=0;
+	Cliente reg;
+	while(reg.leerDeDisco(pos)==1)
+		{
+		if(strcmp(tarjeta,reg.getTarjeta())==0)
+			return pos;
+		pos++;
+		}
+	return -1;
+}
+
+int buscarClienteTelefono(char *numTelefono){ ///devuelve la posicion del cliente en el archivo
+	int pos=0;
+	Cliente reg;
+	while(reg.leerDeDisco(pos)==1)
+		{
+		if(strcmp(numTelefono,reg.getTelefono())==0)
+			return pos;
+		pos++;
+		}
+	return -1;
+}
+
+
 void  Cliente::setMail(char *nuevoMail){
 strcpy(mail,nuevoMail);
 }
@@ -590,6 +631,7 @@ void Cliente::mostrar(){
     cout << "CÓDIGO DE SEGURIDAD --->"<< codSeguridad << endl;
     cout << "VENCIMIENTO TARJETA --->"; vencimientoTarjeta.mostrarVenc();
     cout << "###################################"<< endl;
+    pausa();
 
 
 }
@@ -597,7 +639,7 @@ void Cliente::mostrar(){
 ///PROTOTIPO FUNCIONES GLOBALES
 
 bool existeCliente(const char*);
-void buscarCliente (const char*);
+
 int menuClientes();
 void nuevoCliente(); /// crea un nuevo cliente y lo graba
 int listarTodos(); /// menu para listar clientes segun opcion ingresada
@@ -817,7 +859,7 @@ return false;
 
 }
 
-void buscarCliente(const char*doc){
+/*void buscacliente(const char*doc){ /// buscar otra funcion alternativa
 FILE*P;
 P=fopen(FILE_CLIENTES,"rb");
 if(P==NULL){
@@ -839,7 +881,7 @@ while(fread(&aux,sizeof(Cliente),1,P)==1){
 fclose(P);
 return;
 
-}
+}*/
 /// FIN FUNCIONES PARA COMBINAR CON HABITACIONES
 
 
@@ -976,7 +1018,7 @@ while(true){
     cout << "-------------------" << endl;
     cout << "1) Listado alfabetico clientes(por nombre)" << endl;
     cout << "2) Listado alfabetico clientes(por apellido)" << endl;
-    cout << "3) Listado por antiguedad clientes    " << endl;
+    cout << "3) Listado por antiguedad clientes " << endl;
     ///cout << "4) Listado Heapsort." << endl;
     ///cout << "5) Listado por nacionalidad ." << endl;
     ///cout << "6) PUNTO D." << endl;
@@ -993,7 +1035,8 @@ while(true){
       case '2':
       case 'b':
       case 'B':
-
+        cout << "en contruccion..."<< endl;
+        pausa();
       break;
       case '3':
       case 'c':
@@ -1135,6 +1178,17 @@ return true;
 
 
 }
+void modificarNombre();
+void modificarApellido();
+void modificarGenero();
+void modificarDni();
+void modificarNacionalidad();
+void modificarFechaDeNac();
+void modificarMail();
+void modificarTelefono();
+void modificarDomicilio();
+void modificarTarjetaCredito();
+
 
 int modificarCliente(){
 cout << "menu en contruccion..."<< endl;
@@ -1145,37 +1199,45 @@ while(true){
     borrarPantalla();
     cout << "Indique campo a modificar" << endl;
     cout << "-------------------------" << endl;
-    cout << "1) nombre" << endl;
-    cout << "2) apellido" << endl;
-    cout << "3) genero" << endl;
-    cout << "4) dni" << endl;
-    cout << "5) nacionalidad" << endl;
-    cout << "6) fecha de nacimiento "<< endl; /// incluye dia mes año
-    cout << "7) mail" << endl;
-    cout << "8) telefono" << endl;
-    cout << "9) domicilio" << endl;/// incluye todos los campos de domicilio
-    cout << "10) tarjeta de credito" << endl; /// incluye todos los campos de tarjeta
+    cout << "1) Nombre" << endl;
+    cout << "2) Apellido" << endl;
+    cout << "3) Genero" << endl;
+    cout << "4) Dni" << endl;
+    cout << "5) Nacionalidad" << endl;
+    cout << "6) Fecha de nacimiento "<< endl; /// incluye dia mes año
+    cout << "7) Mail" << endl;
+    cout << "8) Telefono" << endl;
+    cout << "9) Domicilio" << endl;/// incluye todos los campos de domicilio
+    cout << "10)Tarjeta de credito" << endl; /// incluye todos los campos de tarjeta
     cout << "0) Salir  "<< endl;
     cout << endl << "Opción: ";
     cin >> opcion;
     system("cls");
     switch(opcion){
       case 1:
+          break;
+      case 2:
 
       break;
-      case 2:
-        ;
-      break;
       case 3:
-        ;
-        ;
+
       break;
       case 4:
-        ;
+
       break;
       case 5:
-        ;
+
       break;
+      case 6:
+        break;
+      case 7:
+        break;
+      case 8:
+        break;
+      case 9:
+        break;
+      case 10:
+        break;
       case 0:
         return 0;
       break;
@@ -1186,40 +1248,34 @@ while(true){
 
 }
 
+void busquedaPorDni();
+void busquedaPorTarjeta();
+void busquedaPorTelefono();
+
+
 int listarUnCliente(){
-cout << "menu en contrucnción..."<< endl;
-pausa();
-return 0;
 short opcion;
 while(true){
     borrarPantalla();
     cout << "BUSCAR POR ---> " << endl;
     cout << "---------------" << endl;
     cout << "1) Dni" << endl;
-    cout << "2) nombre" << endl;
-    cout << "3) apellido" << endl;
-    cout << "4) nacionalidad" << endl;
-    cout << "5) nro de tarjeta." << endl;
-    cout << "0) Salir "<< endl;
+    cout << "2) Nro de Tarjeta." << endl;
+    cout << "3) Telefono" << endl;
+    cout << "0) volver "<< endl;
     cout << endl << "Opción: ";
     cin >> opcion;
-    system("cls");
+    borrarPantalla();
     switch(opcion){
       case 1:
-
+    busquedaPorDni();
       break;
       case 2:
-        ;
+    busquedaPorTarjeta();
       break;
       case 3:
-        ;
-        ;
-      break;
-      case 4:
-        ;
-      break;
-      case 5:
-        ;
+    busquedaPorTelefono();
+
       break;
       case 0:
         return 0;
@@ -1228,6 +1284,64 @@ while(true){
     cout << endl;
 
   }
+
+}
+void busquedaPorDni(){
+Cliente reg;
+char dni[10];
+cout << "Ingrese Dni de cliente: ";
+fflush(stdin);
+cin.getline(dni,10);
+int pos=buscarCliente(dni);
+if(pos==-1){
+    cout << "El cliente no encuentra registrado"<< endl;
+    pausa();
+    return;
+}
+else{
+
+    reg.leerDeDisco(pos);
+    reg.mostrar();
+}
+
+}
+void busquedaPorTarjeta(){
+Cliente reg;
+char nroTarjeta[21];
+fflush(stdin);
+cout << "Ingrese Nro de Tarjeta del cliente: "<< endl;
+cin.getline(nroTarjeta,21);
+int pos=buscarClienteTarjeta(nroTarjeta);
+if(pos==-1){
+    cout << "El cliente no encuentra registrado"<< endl;
+    pausa();
+    return;
+}
+else{
+
+    reg.leerDeDisco(pos);
+    reg.mostrar();
+}
+
+}
+
+void busquedaPorTelefono(){
+Cliente reg;
+char tel[30];
+cout << "Ingrese Telefono del cliente: "<< endl;
+fflush(stdin);
+cin.getline(tel,30);
+int pos=buscarClienteTelefono(tel);
+if(pos==-1){
+    cout << "El cliente no encuentra registrado"<< endl;
+    pausa();
+    return;
+}
+else{
+
+    reg.leerDeDisco(pos);
+    reg.mostrar();
+}
 
 }
 
@@ -1237,10 +1351,10 @@ while(true){
     borrarPantalla();
     cout << "-----------CLIENTES----------" << endl;
     cout << "-----------------------------" << endl;
-    cout << "1) NUEVO CLIENTE             " << endl; /// se carga nuevo cliente y menores de edad
+    cout << "1) NUEVO CLIENTE             --->" << endl; /// se carga nuevo cliente y menores de edad
     cout << "2) MODIFICAR CLIENTE.        " << endl;/// modifica el campo que le indiquemos
-    cout << "3) BUSCAR CLIENTE            " << endl; /// busca y muestra un cliente segun lo que se ingrese por teclado
-    cout << "4) MOSTRAR TODOS LOS CLIENTES" << endl; /// muestra todos ordenados alfabeticamente o segun se indique por teclado
+    cout << "3) BUSCAR CLIENTE            --->" << endl; /// busca y muestra un cliente segun lo que se ingrese por teclado
+    cout << "4) MOSTRAR TODOS LOS CLIENTES--->" << endl; /// muestra todos ordenados alfabeticamente o segun se indique por teclado
     cout << "0) Salir "<< endl;
     cout << endl << "Opción: ";
     cin >> op;
@@ -1289,3 +1403,4 @@ while(true){
 
 
 #endif // MENUCLIENTES_H_INCLUDED
+
