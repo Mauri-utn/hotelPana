@@ -65,12 +65,16 @@ void mensajes(int opcion){
 switch(opcion){
 case 1:
     cout << "ERROR AL ABRIR ARCHIVO"<< endl;
+    pausa();
     break;
 case 2:
     cout << "OPCIÓN INVALIDA"<< endl;
+    pausa();
     break;
 case 3:
     cout << "EL CAMPO NO PUEDE ESTAR VACÍO"<< endl;
+    pausa();
+    break;
 
 }
 
@@ -83,5 +87,11 @@ else return false;
 
 }
 
+void limpiarBuffer(){
+
+    fflush(stdin);
+}
+
 
 #endif // MISFUNCIONES_H_INCLUDED
+
