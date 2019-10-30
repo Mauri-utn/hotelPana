@@ -10,7 +10,8 @@ int menuRecepcion(){
     int ide;
     Reserva aux;
     Cliente reg;
-cout << "Recepcionar cliente"<< endl;
+cout << "RECEPCIONAR CLIENTE"<< endl;
+cout << "-------------------"<< endl;
 cout << "Ingrese id de reserva: ";
 cin  >> ide;
 int pos=buscarReservaId(ide);
