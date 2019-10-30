@@ -13,6 +13,8 @@ using namespace std;
 #include "menuHabitaciones.h"
 #include "login_pass.h"
 #include "menuReservas.h"
+#include "recepcion.h"
+#include "productos.h"
 
 
 
@@ -25,6 +27,7 @@ void cMenores();
 void cConsumos();
 void cGastos();
 void cReservas();
+void cProductos();
 bool validarLogin(string);
 bool validarContrasenia(string);
 int ingresar();
@@ -37,6 +40,7 @@ int ingresar();
     const char *FILE_HABITACIONES = "habitaciones.dat";
     const char *FILE_GASTOS       = "gastos.dat";
 
+
     const char Usuario[6] = "admin";
     const char contrasenia[5] = "7705";
 
@@ -46,43 +50,45 @@ void abrirArchivos(){
  cClientes();
  cHabitaciones();
  cEmpleados();
- cMenores();
+// cMenores();
  cConsumos();
  cGastos();
  cReservas();
+ cProductos();
+
 }
 void cClientes(){
     FILE*C;
     C=fopen(FILE_CLIENTES,"ab");
-    if(C==NULL)return;
+    if(C==NULL){fclose(C);return;}
     fclose(C);
     return;
 }
 void cHabitaciones(){
     FILE*H;
     H=fopen(FILE_HABITACIONES,"ab");
-    if(H==NULL)return;
+    if(H==NULL){fclose(H);return;}
     fclose(H);
     return;
 }
 void cEmpleados(){
     FILE*E;
     E=fopen(FILE_EMPLEADOS,"ab");
-    if(E==NULL)return;
+    if(E==NULL){fclose(E);return;}
     fclose(E);
     return;
 }
-void cMenores(){
+/*void cMenores(){
     FILE*M;
     M=fopen(FILE_MENORES,"ab");
     if(M==NULL)return;
     fclose(M);
     return;
-}
+}*/
 void cConsumos(){
     FILE*C;
     C=fopen(FILE_CONSUMOS,"ab");
-    if(C==NULL)return;
+    if(C==NULL){fclose(C);return;}
     fclose(C);
     return;
 }
@@ -90,7 +96,7 @@ void cGastos(){
 
     FILE*G;
     G=fopen(FILE_GASTOS,"ab");
-    if(G==NULL)return;
+    if(G==NULL){fclose(G);return;}
     fclose(G);
     return;
 }
@@ -98,28 +104,24 @@ void cReservas(){
 
     FILE*R;
     R=fopen(FILE_RESERVAS,"ab");
-    if(R==NULL)return;
+    if(R==NULL){fclose(R);return;}
     fclose(R);
     return;
 
 }
+void cProductos(){
+    FILE*P;
+    P=fopen(FILE_PRODUCTOS,"ab");
+    if(P==NULL){fclose(P);return;}
+    fclose(P);
+    return;
 
 
-/*class Login{
-private:
-    char login[20];
-    char contrasenia[20];
-public:
-    void cargar();
-    void mostrar();
-    ///GETS()
-    const char* getLogin(){return login;}
-    const char* getContrasenia (){return contrasenia;}
-    ///SETS
-    void setLogin(char*);
-    void setContrasenia(char*);
 
-};*/
+
+}
+
+
 
 
 int main(){
@@ -130,10 +132,11 @@ char cerrar[2];
  while(true){
     borrarPantalla();
     char opc;
+    system("color 8F");
     cout << "\t\t1)INGRESAR                     --->"<<endl;
-    cout << "\t\t2)SALIR                        --->"<<endl;
-    cout << "\t\t3)RECUPERAR CONTRASEÑA         --->"<<endl;
-    cout << "\t\t4)CAMBIAR CONTRASEÑA           --->"<<endl;
+    cout << "\t\t2)RECUPERAR CONTRASEÑA         --->"<<endl;
+    cout << "\t\t3)CAMBIAR CONTRASEÑA           --->"<<endl;
+    cout << "\t\t0)SALIR                        --->"<<endl;
     cout << "\t\tOPCIÓN: ";
     cin  >> opc;
     switch(opc){
@@ -149,12 +152,7 @@ char cerrar[2];
       case '2':
       case 'b':
       case 'B':
-            cout << "\t\t¿Seguro que quiere cerrar el programa?"<< endl;
-            cout << "\t\tsi-no: ";
-            cin  >>  cerrar;
-            if (strcmp(cerrar,"si")==0){
-                return 0;
-            }
+            menuLogins(opc);
         break;
 
       case '3':
@@ -162,10 +160,13 @@ char cerrar[2];
       case 'C':
           menuLogins(opc);
         break;
-      case '4':
-      case 'd':
-      case 'D':
-          menuLogins(opc);
+      case '0':
+          cout << "\t\t¿Seguro que quiere cerrar el programa?"<< endl;
+            cout << "\t\tsi-no: ";
+            cin  >>  cerrar;
+            if (strcmp(cerrar,"si")==0){
+                return 0;
+            }
         break;
       default:
         break;
@@ -274,4 +275,3 @@ fclose(P);*/
 return true;
 
 }
-
