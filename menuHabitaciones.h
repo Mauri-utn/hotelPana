@@ -6,6 +6,8 @@
 #include<stdio.h>
 #include<time.h>
 #include"string.h"
+//#include"menuClientes.h"
+//#include"misFunciones.h"
 #define MENUHABITACIONES_H_INCLUDED
 
 
@@ -160,16 +162,19 @@ private:
 public:
     void cargar();
     float get_costo(int c);
-    char get_nombre(int c);
+    void get_nombre(int c, char v[30]);
     void mostrar_todo();
 };
 class Habitacion
 {
 protected:
-    char habitacion[4],estado,tipo;
-    int id;
+    char habitacion[4],estado;
+    int id,tipo;
 public:
     void cargar_habitacion();
+    void mostrar_habitacion();
+    void mostrar_habitacion_tipo(int t);
+    void mostrar_habitacion_estado(char e);
 };
 class Habitacion_ocupada:public Habitacion
 {
@@ -483,15 +488,14 @@ void Habitacion_reserva::consulta_total()
             cout<<"-------------------------------"<<endl;
     }
     fclose(r);
-}*/
-
+}
 int menuHabitaciones()
 {
 
     cout << "En proceso ..."<< endl;
     //pausa();
     return 0;
-}
+}*/
 
 void Habitacion::cargar_habitacion()
 {
@@ -515,7 +519,11 @@ void Habitacion::cargar_habitacion()
 void Tipo_habitacion::cargar()
 {
   FILE *t;
-    t=fopen("tipo_habitacion.dat","ab");
+  int c;
+  bool nome;
+  char nom[30];
+  Tipo_habitacion p;
+    t=fopen("tipo_habitacion.dat","ab+");
     if(t==NULL)
     {
         cout<<"Fallo al abrir el archivo";
@@ -523,9 +531,33 @@ void Tipo_habitacion::cargar()
     }
     fseek(t,0,2);
     cod_tipo=((ftell(t)/sizeof(*this))+1);
+    while(true)
+    {
     cout<<"Ingrese el nombre del tipo: ";
-    cin.ignore();
     cin.getline(nombre,30);
+    strcpy(nom,nombre);
+    nome=false;
+    fseek(t,0,0);
+    c=1;
+    while(fread(this,sizeof(*this),1,t)==1)
+    {
+        c++;
+
+        if(nombre==nom)
+        {
+            cout<<"Tipo de habitacion ya ingresada"<<endl;
+            nome=true;
+            cout<<nombre<<endl;
+            cout<<nom<<endl;
+            break;
+        }
+        cout<<nome;
+    }
+    if(nome==false)
+    {
+        break;
+    }
+    }
     cout<<"Ingrese el precio del tipo: $";
     cin>>costo;
     fwrite(this,sizeof(*this),1,t);
@@ -562,15 +594,15 @@ float Tipo_habitacion::get_costo(int c)
         cout<<"Fallo al abrir el archivo";
         exit;
     }
-    fseek(t,(c-1)*sizeof(*this),0);
+    fseek(t,((c-1)*sizeof(*this)),0);
+    fread(this,sizeof(*this),1,t);
     cost=costo;
     fclose(t);
     return cost;
 }
-char Tipo_habitacion::get_nombre(int c)
+void Tipo_habitacion::get_nombre(int c,char v[30])
 {
     FILE *t;
-    char v[30];
     t=fopen("tipo_habitacion.dat","rb");
     if(t==NULL)
     {
@@ -578,9 +610,87 @@ char Tipo_habitacion::get_nombre(int c)
         exit;
     }
     fseek(t,(c-1)*sizeof(*this),0);
+    fread(this,sizeof(*this),1,t);
     strcpy(v,nombre);
     fclose(t);
-    return v;
+}
+
+void Habitacion::mostrar_habitacion()
+{
+    FILE *h;
+    char nom[30];
+    Tipo_habitacion t;
+    h=fopen("habitaciones.dat","rb");
+    if(h==NULL)
+    {
+        cout<<"Fallo al abrir el archivo";
+        return;
+    }
+    while(fread(this,sizeof(*this),1,h)==1)
+    {
+        t.get_nombre(tipo,nom);
+        cout<<"ID: "<<id<<endl;
+        cout<<"Habitacion: "<<habitacion<<endl;
+        cout<<"Tipo: "<<nom<<endl;
+        cout<<"Costo: $"<<t.get_costo(tipo)<<endl;
+        cout<<"Estado: "<<estado<<endl;
+        cout<<"-------------------------------"<<endl;
+
+    }
+    fclose(h);
+}
+
+void Habitacion::mostrar_habitacion_tipo(int ti)
+{
+  FILE *h;
+    char nom[30];
+    Tipo_habitacion t;
+    h=fopen("habitaciones.dat","rb");
+    if(h==NULL)
+    {
+        cout<<"Fallo al abrir el archivo";
+        return;
+    }
+    while(fread(this,sizeof(*this),1,h)==1)
+    {
+        if(tipo==ti)
+        {
+        t.get_nombre(tipo,nom);
+        cout<<"ID: "<<id<<endl;
+        cout<<"Habitacion: "<<habitacion<<endl;
+        cout<<"Tipo: "<<nom<<endl;
+        cout<<"Costo: $"<<t.get_costo(tipo)<<endl;
+        cout<<"Estado: "<<estado<<endl;
+        cout<<"-------------------------------"<<endl;
+        }
+    }
+    fclose(h);
+}
+void Habitacion::mostrar_habitacion_estado(char e)
+{
+    FILE *h;
+    char nom[30];
+    Tipo_habitacion t;
+    h=fopen("habitaciones.dat","rb");
+    if(h==NULL)
+    {
+        cout<<"Fallo al abrir el archivo";
+        return;
+    }
+    while(fread(this,sizeof(*this),1,h)==1)
+    {
+        if(estado==e)
+        {
+        t.get_nombre(tipo,nom);
+        cout<<"ID: "<<id<<endl;
+        cout<<"Habitacion: "<<habitacion<<endl;
+        cout<<"Tipo: "<<nom<<endl;
+        cout<<"Costo: $"<<t.get_costo(tipo)<<endl;
+        cout<<"Estado: "<<estado<<endl;
+        cout<<"-------------------------------"<<endl;
+        }
+    }
+    fclose(h);
 }
 
 
