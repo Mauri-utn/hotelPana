@@ -277,28 +277,7 @@ if(reg.escribirEnDisco()){
 
 }
 
-/*Cliente aux;
-aux.setDni(reg.getIdentidad());
-aux.setNombre(reg.getNombre());
-aux.setApellido(reg.getApellido());
-aux.setGenero('-');
-aux.setNacionalidad("-");
-aux.setDiaNac(1);
-aux.setMesNac(1);
-aux.setAnioNac(2000);
-aux.setMail("-");
-aux.setTelefono("-");
-aux.setCalle("-");
-aux.setNum(0);
-aux.setCp(0);
-aux.setLocalidad("-");
-aux.setP(0);
-aux.setNroTarjeta("-");
-aux.setCodigoSeguridad("-");
-aux.setMesVenc(1);
-aux.setAnioVenc(2000);
-aux.escribirDisco();
-*/
+
 
 void mostrarReservas(){
 FILE*P;
