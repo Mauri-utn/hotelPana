@@ -30,7 +30,7 @@ int menuPrincipal(int permisos){
         cout << "\t\t3) CHECK OUT       " << endl;
         cout << "\t\t4) HABITACIONES    " << endl;
         cout << "\t\t5) CLIENTES    --->" << endl;
-        cout << "\t\t6) PRODUCTOS   --->(tira error)" << endl;
+        cout << "\t\t6) PRODUCTOS   --->" << endl;
         cout << "\t\t7) EMPLEADOS       " << endl;
         cout << "\t\t8) MANTENIMIENTO   " << endl;
         cout << "\t\t9) LIMPIEZA        " << endl;
@@ -71,6 +71,7 @@ int menuPrincipal(int permisos){
       case 'f':
       case 'F':
           menuProductos();
+
         break;
       case '7':
       case 'g':
@@ -96,3 +97,4 @@ int menuPrincipal(int permisos){
 
 
 #endif // MENUPRINCIPAL_H_INCLUDED
+
