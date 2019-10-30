@@ -223,7 +223,7 @@ cout << "Desde: "<<endl;
 entrada.cargar();
 cout << "Hasta: "<<endl;
 salida.cargar();
-cout << "Pago parcial/Adelanto: ";
+cout << "Pago parcial/Adelanto:$ ";
 cin  >> pagado;
 estado=true;
 
@@ -254,7 +254,7 @@ cout << "Habitación:   "<< tipo << endl;
 cout << "Fecha de entrada: "; entrada.mostrarConBarra();
 cout << "Fecha de salida:  "; salida.mostrarConBarra();
 /// falta validar ambas fechas
-cout << "Pago: "<< pagado <<endl;
+cout << "Pago: $"<< pagado <<endl;
 /// falta agregar el pago a gastos de la estadia ---> restar del total
 
 
@@ -276,7 +276,6 @@ if(reg.escribirEnDisco()){
 /// gets entrada salida, linea 41 a 48
 
 }
-
 
 
 void mostrarReservas(){
