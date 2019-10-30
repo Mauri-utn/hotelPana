@@ -3,6 +3,7 @@
 
 
 #include "misfunciones.h"
+#include "menuPrincipal.h"
 const char *FILE_PRODUCTOS = "productos.dat";
 
 int menuProductos();
@@ -148,8 +149,8 @@ void Producto::mostrar(){
 
 cout << "Codigo de producto:  "<< id << endl;
 cout << "Nombre del producto: "<< nombre << endl;
-cout << "Descripción:         "<< descripcion <<endl;
-cout << "Precio unitario:     "<< precioUnidad<<endl;
+cout << "DescripciÃ³n:         "<< descripcion <<endl;
+cout << "Precio unitario:    $"<< precioUnidad<<endl;
 cout << "Stock actual:        "<< stock << endl;
 cout << "----------------------"<< endl;
 pausa();
@@ -160,7 +161,7 @@ void nuevoProducto(){
 Producto reg;
 reg.cargar();
 if(reg.escribirEnDisco()){
-        cout << "PRODUCTO CARGADO CON ÉXITO!"<< endl;
+        cout << "PRODUCTO CARGADO CON Ã‰XITO!"<< endl;
         pausa();
 }
 
@@ -185,7 +186,7 @@ else{
     reg.setEstado(false);
     if(reg.modificarEnDisco(pos)){
 
-        cout << "Producto dado de baja con éxito"<< endl;
+        cout << "Producto dado de baja con Ã©xito"<< endl;
         pausa();
         return;
     }
@@ -232,12 +233,13 @@ if(pos==-1){
 }
 else{
 
-    int stockNuevo=aux.getStock()+cant;
+
     aux.leerDeDisco(pos);
+    int stockNuevo=aux.getStock()+cant;
     aux.setStock(stockNuevo);
     if(aux.modificarEnDisco(pos)){
 
-        cout << "Se agrego stock a producto con éxito"<< endl;
+        cout << "Se agrego stock a producto con Ã©xito"<< endl;
         pausa();
         return;
     }
@@ -250,15 +252,14 @@ int menuProductos(){
 short opcion;
 while(true){
     borrarPantalla();
-    cout << "\t\t-------MENÚ PRODUCTOS-------- " << endl;
+    cout << "\t\t-------MENÃš PRODUCTOS-------- " << endl;
     cout << "\t\t----------------------------- " << endl;
-    cout << "\t\t1) AÑADIR PRODUCTOS           " << endl;
+    cout << "\t\t1) AÃ‘ADIR PRODUCTOS           " << endl;
     cout << "\t\t2) DAR DE BAJA PRODUCTOS      " << endl;
-    cout << "\t\t3) AÑADIR STOCK A PRODUCTOS   " << endl;
+    cout << "\t\t3) AÃ‘ADIR STOCK A PRODUCTOS   " << endl;
     cout << "\t\t4) MOSTRAR TODOS LOS PRODUCTOS" << endl;
     cout << "\t\t5) PUNTO DE VENTA." << endl;
     cout << "\t\t0) Salir "<< endl;
-    borrarPantalla();
     cin >> opcion;
     borrarPantalla();
     switch(opcion){
@@ -272,7 +273,7 @@ while(true){
     sumarStock();
       break;
       case 4:
-          mostrarProductos();
+    mostrarProductos();
         break;
 
       case 0:
