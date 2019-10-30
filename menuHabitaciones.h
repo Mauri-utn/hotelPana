@@ -694,4 +694,55 @@ void Habitacion::mostrar_habitacion_estado(char e)
 }
 
 
+int menuHabitaciones()
+{
+
+    short opcion;
+    while(true){
+        borrarPantalla();
+        cout << "\t\tMENÚ HABITACIONES    " << endl;
+        cout << "\t\t-------------------- " << endl;
+        cout << "\t\t1) NUEVA HABITACIÓN  " << endl; /// crea una nueva habitacion
+        cout << "\t\t2) CONSULTAR         " << endl; /// consulta habitaciones disponibles
+        /// si hay habitacion disponible cargar el cliente y le asigna la habitacion seleccionada
+        /// sin necesidad de que haya reservado
+        cout << "\t\t3) GASTOS            " << endl;///Cargar modificar y eliminar gastos,
+        cout << "\t\t4) CARGAR HABITACION PARA MANTENIMIENTO" << endl;
+        cout << "\t\t5) RECEPCIÓN          "<< endl;
+        cout << "\t\t6) CHECK OUT          "<< endl;
+        cout << "\t\t0) Salir "<< endl;
+        cout << endl << "\t\tOpción: ";
+        cin >> opcion;
+        borrarPantalla();
+        switch(opcion){
+          case 1:
+        cout << "En contruccion..."<<endl;
+        pausa();
+          break;
+          case 2:
+            cout << "En contruccion..."<<endl;
+        pausa();
+          break;
+          case 3:
+            cout << "En contruccion..."<<endl;
+        pausa();
+          break;
+          case 4:
+            cout << "En contruccion..."<<endl;
+        pausa();
+          break;
+          case 5:
+            cout << "En contruccion..."<<endl;
+        pausa();
+          break;
+          case 0:
+            return 0;
+          break;
+        }
+        cout << endl;
+
+      }
+}
+
+
 #endif // MENUHABITACIONES_H_INCLUDED
