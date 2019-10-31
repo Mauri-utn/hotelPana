@@ -48,6 +48,29 @@ int ingresar();
     const char Usuario[6] = "admin";
     const char contrasenia[5] = "7705";
 
+ /*vector<string>usuarios;
+    vector<string>claves;
+    /// USUARIOS ///
+    usuarios.push_back("admin");
+    usuarios.push_back("limp99");
+    usuarios.push_back("segu01");
+    usuarios.push_back("mante33");
+    usuarios.push_back("gerente29");
+    /// CONTRASEÃ‘AS ///
+    claves.push_back("7705");
+    claves.push_back("limp99");
+    claves.push_back("segu01");
+    claves.push_back("mante33");
+    claves.push_back("7732");*/
+
+/*for(int i=0;i<usuarios.size();i++){
+
+    if(usuarios[i]==user&&claves[i]==pass){
+        ingresa=true;
+        break;
+    }
+}*/
+
 void abrirArchivos(){
 
 
@@ -138,10 +161,10 @@ char cerrar[2];
     char opc;
     system("color 8F");
     cout << "\t\t1)INGRESAR                     --->"<<endl;
-    cout << "\t\t2)RECUPERAR CONTRASEÑA         --->"<<endl;
-    cout << "\t\t3)CAMBIAR CONTRASEÑA           --->"<<endl;
+    cout << "\t\t2)RECUPERAR CONTRASEÃ‘A         --->"<<endl;
+    cout << "\t\t3)CAMBIAR CONTRASEÃ‘A           --->"<<endl;
     cout << "\t\t0)SALIR                        --->"<<endl;
-    cout << "\t\tOPCIÓN: ";
+    cout << "\t\tOPCIÃ“N: ";
     cin  >> opc;
     switch(opc){
       case '1':
@@ -165,7 +188,7 @@ char cerrar[2];
           menuLogins(opc);
         break;
       case '0':
-          cout << "\t\t¿Seguro que quiere cerrar el programa?"<< endl;
+          cout << "\t\tÂ¿Seguro que quiere cerrar el programa?"<< endl;
             cout << "\t\tsi-no: ";
             cin  >>  cerrar;
             if (strcmp(cerrar,"si")==0){
@@ -197,7 +220,7 @@ cout << "\t\t\tLOGIN DE USUARIO"<<endl;
 cout << "\t\t\t-----------------"<<endl;
 cout << "\n\tUsuario: ";
 getline(cin,user);
-cout << "\tContraseña: ";
+cout << "\tContraseÃ±a: ";
 //getline(cin,pass);
 char caracter;
 caracter = getch();
