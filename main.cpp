@@ -6,6 +6,9 @@
 #include <time.h>
 #include <clocale>
 #include <conio.h>
+#include <vector>
+#include <ctype.h>
+
 using namespace std;
 #include "menuPrincipal.h"
 #include "menuClientes.h"
@@ -18,6 +21,7 @@ using namespace std;
 #include "CargarEmpleado.h"
 #include "FuncionesRamiro.h"
 #include "class.h"
+#include "reportes.h"
 
 
 
@@ -45,31 +49,12 @@ int ingresar();
     const char *FILE_GASTOS       = "gastos.dat";
 
 
-    const char Usuario[6] = "admin";
-    const char contrasenia[5] = "7705";
+    /*const char Usuario[6] = "admin";
+    const char contrasenia[5] = "7705";*/
 
- /*vector<string>usuarios;
-    vector<string>claves;
-    /// USUARIOS ///
-    usuarios.push_back("admin");
-    usuarios.push_back("limp99");
-    usuarios.push_back("segu01");
-    usuarios.push_back("mante33");
-    usuarios.push_back("gerente29");
-    /// CONTRASEÑAS ///
-    claves.push_back("7705");
-    claves.push_back("limp99");
-    claves.push_back("segu01");
-    claves.push_back("mante33");
-    claves.push_back("7732");*/
 
-/*for(int i=0;i<usuarios.size();i++){
 
-    if(usuarios[i]==user&&claves[i]==pass){
-        ingresa=true;
-        break;
-    }
-}*/
+
 
 void abrirArchivos(){
 
@@ -152,6 +137,12 @@ void cProductos(){
 
 
 int main(){
+
+
+
+
+
+
 abrirArchivos();
 setlocale (LC_ALL, "spanish");
 int login;
@@ -206,6 +197,24 @@ return 0;
 }
 
 int ingresar(){
+
+    vector<string>usuarios;
+    vector<string>claves;
+
+    /// USUARIOS ///
+    usuarios.push_back("admin");
+    usuarios.push_back("limp99");
+    usuarios.push_back("segu01");
+    usuarios.push_back("mante33");
+    usuarios.push_back("gerente29");
+    /// CONTRASEÑAS ///
+    claves.push_back("7705");
+    claves.push_back("limp99");
+    claves.push_back("segu01");
+    claves.push_back("mante33");
+    claves.push_back("7732");
+
+
 char user[20];
 char pass[20];
 int contador = 0;
@@ -242,11 +251,19 @@ while (caracter!=13){
 
 }
 
-if ((Usuario==user)&&(contrasenia==pass)||(validarContrasenia(pass))&&(validarLogin(user))){
+for(int i=0;i<usuarios.size();i++){
+
+    if(usuarios[i]==user&&claves[i]==pass){
+        ingresa=true;
+        break;
+    }
+}
+
+/*if ((Usuario==user)&&(contrasenia==pass)||(validarContrasenia(pass))&&(validarLogin(user))){
 
     ingresa = true;
-}
-else{
+}*/
+if(!ingresa){
 
     cout << "\n\tEl usuario y/o password son incorrectos "<< endl;
     pausa();
@@ -260,6 +277,7 @@ if ( ingresa==false ){
 
     cout << "\n\tUsted no pudo ingresar al sistema "<< endl;
     pausa();
+    return -1;
 
     }
 else {
@@ -283,7 +301,7 @@ while(fread(&aux,sizeof(Empleado),1,P)==1){
 
 }
 fclose(P);*/
-return true;
+return false;
 
 }
 
@@ -299,6 +317,6 @@ while(fread(&aux,sizeof(Empleado),1,P)==1){
 
 }
 fclose(P);*/
-return true;
+return false;
 
 }
