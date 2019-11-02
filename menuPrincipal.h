@@ -19,7 +19,8 @@ int menuPrincipal(int);
 int menuPrincipal(int permisos){
 
 
-
+    cout << "\t\tvalor de permisos"<< permisos<<  endl;
+    pausa();
     if(permisos==1){
     char opcion;
     while(true){
@@ -112,8 +113,8 @@ int menuPrincipal(int permisos){
 
       }
     }
-    ///if(permisos==2)menuLimpieza();
-    ///if(permisos==3)menuMantenimiento();
+    if(permisos==2)menuLimpieza();
+    if(permisos==3)menuMantenimiento();
     return permisos;
 }
 
