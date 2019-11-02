@@ -22,6 +22,7 @@ using namespace std;
 #include "FuncionesRamiro.h"
 #include "class.h"
 #include "reportes.h"
+#include "check_out.h"
 
 
 
@@ -202,21 +203,18 @@ int ingresar(){
     vector<string>claves;
 
     /// USUARIOS ///
-    usuarios.push_back("admin");
-    usuarios.push_back("limp99");
-    usuarios.push_back("segu01");
-    usuarios.push_back("mante33");
-    usuarios.push_back("gerente29");
+    usuarios.push_back("admin"); /// permiso 1
+    usuarios.push_back("limp99"); /// permiso 2
+    usuarios.push_back("mante33"); /// permiso 3
+    usuarios.push_back("gerente29"); /// permiso 1
     /// CONTRASEÑAS ///
     claves.push_back("7705");
     claves.push_back("limp99");
-    claves.push_back("segu01");
     claves.push_back("mante33");
     claves.push_back("7732");
 
 
-char user[20];
-char pass[20];
+int permiso;
 int contador = 0;
 bool ingresa=false;
 do {
@@ -255,6 +253,10 @@ for(int i=0;i<usuarios.size();i++){
 
     if(usuarios[i]==user&&claves[i]==pass){
         ingresa=true;
+        if (user==usuarios[0])permiso=1;
+        if (user==usuarios[1])permiso=2;
+        if (user==usuarios[2])permiso=3;
+        if (user==usuarios[3])permiso=1;
         break;
     }
 }
@@ -284,7 +286,14 @@ else {
 
     cout << "\n\tBienvenido al sistema "<<endl;
     pausa();
-    return 1;
+    return permiso;
+
+
+
+
+
+
+
 }
 
 }
@@ -320,3 +329,4 @@ fclose(P);*/
 return false;
 
 }
+
