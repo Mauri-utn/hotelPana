@@ -6,17 +6,21 @@
 #include<stdio.h>
 #include<time.h>
 #include"string.h"
+#include <conio.h>
 //#include"menuClientes.h"
 //#include"misFunciones.h"
 #define MENUHABITACIONES_H_INCLUDED
 
-
+const char *FILE_TIPO_HABITACION = "tipo_habitacion.dat";
 
 
 using namespace std;
 #include "misFunciones.h"
 #include "recepcion.h"
+#include "menuReservas.h"
 int menuHabitaciones();
+
+
 
 /*class Archivos
 {
@@ -166,6 +170,9 @@ private:
     char vista[50];
     char tecnologias[50];
     char camas[50];
+    bool estado;
+    bool limpio;
+
 
 
 public:
@@ -175,7 +182,68 @@ public:
     void get_nombre(int c, char v[30]);/// desp explicame que hacen ambas pana
     float get_costo(int c);
 
+   /// get nombre mauri
+   const char* getNombre(){return nombre;}
+
+    /// funciones con archivos
+        bool escribirEnDisco();
+		int leerDeDisco(int);
+		bool modificarEnDisco(int);
+
 } ; /// para cargar una habitacion
+
+int Tipo_habitacion::leerDeDisco(int pos) /// lee el disco hasta encontrar el registro
+	{
+	int x;
+	FILE *p;
+	p=fopen(FILE_TIPO_HABITACION,"rb");
+	if(p==NULL)
+		{
+		mensajes(1);
+		cout<<"Presione una tecla para continuar";
+    system("pause<null");
+		return 0;
+		}
+	fseek(p,pos*sizeof *this,0);
+	x=fread(this,sizeof *this,1,p);
+	fclose(p);
+	return x;
+	}
+
+
+
+bool Tipo_habitacion::modificarEnDisco(int pos){ /// graba una modificacion
+	FILE *p;
+	p=fopen(FILE_TIPO_HABITACION,"rb+");
+	if(p==NULL){
+        mensajes(1);
+        pausa();
+        return false;
+	}
+	fseek(p,pos*sizeof *this,0);
+	fwrite(this,sizeof *this,1,p);
+	fclose(p);
+	return true;
+	}
+
+
+
+
+
+
+bool Tipo_habitacion::escribirEnDisco(){ /// graba un registro de reservas
+FILE*P;
+P=fopen(FILE_TIPO_HABITACION,"ab");
+if(P==NULL){
+        fclose(P);
+        return false;
+}
+fwrite(this,sizeof(*this),1,P);
+fclose(P);
+return true;
+}
+
+/// moficiaciones mauri
 
 class Habitacion
 {
@@ -217,7 +285,7 @@ public:
     void consultar_general(); ///consulta todas las habitaciones en mantenimiento
     void alta();///Da de alta una habitacion y la deja desocupada
 };
-class Habitacion_reserva:public Habitacion /// para relacionar con la menu reservas
+/*class Habitacion_reserva:public Habitacion /// para relacionar con la menu reservas
 {
 private:
     int id_reserva; /// viene de la reserva
@@ -228,7 +296,7 @@ public:
     void consulta_total();///consulta todas las reservas hechas
     void cancelar(); ///Cancela una reserva
     void cargar  (); ///Carga una nueva reserva
-};
+};*/
 
 void Gasto::cargar()
 {
@@ -582,6 +650,8 @@ void Tipo_habitacion::cargar()
     cout << "Ingrese vistas desde a habitación: ";
     limpiarBuffer();
     cin.getline(vista,50);
+    estado=true;
+    limpio=true;
     fwrite(this,sizeof(*this),1,t);
     fclose(t);
 
@@ -606,12 +676,58 @@ void Tipo_habitacion::mostrar_todo()
         cout <<"\t\t*"<<camas << endl;
         cout <<"\t\t*"<<tecnologias << endl;
         cout <<"\t\t*"<<vista << endl;
+        if(limpio==true){
+                cout << "\t\tLimpio:";
+                system("color 2");
+                cout <<"\t\t*"<<endl;
+        }
+        else{
+            cout << "\t\tLimpio:";
+            system("color 1");
+            cout <<"\t\t*"<<endl;
+
+        }
+        if(estado==true){
+            cout << "\t\tEstado:";
+            system("color 2");
+            cout <<"DISPONIBLE"<<endl;
+        }
+        else{
+
+           cout << "\t\tEstado:";
+            system("color 1");
+            cout <<"OCUPADO"<<endl;
+
+        }
         cout<<"\t\t---------------------------"<<endl;
         pausa();
 
     }
     fclose(t);
 }
+
+/// cuanta las habitacion del tipo que le mandes
+int contarHabitacionesTipo(char tipo){
+Tipo_habitacion aux;
+int pos=0;
+char nombreHabitacion[30];
+if (tipo=='1')strcpy(nombreHabitacion,"Estandar");
+if (tipo=='2')strcpy(nombreHabitacion,"Suite");
+if (tipo=='3')strcpy(nombreHabitacion,"Master Suite");
+if (tipo=='4')strcpy(nombreHabitacion,"Presidencial");
+int cantidad=0;
+while(aux.leerDeDisco(pos++)==1){
+
+
+    if(strcmp(nombreHabitacion,aux.getNombre())==0) cantidad++;
+
+}
+return cantidad;
+/// cuenta y devuelve la cantidad de habitaciones de un tipo
+}
+
+
+
 float Tipo_habitacion::get_costo(int c)
 {
     FILE *t;
