@@ -113,8 +113,8 @@ int menuPrincipal(int permisos){
 
       }
     }
-    if(permisos==2)menuLimpieza();
-    if(permisos==3)menuMantenimiento();
+    if(permisos==2)menuReportes();/// les puse estos por ahora para probar que anda el redireccionamiento
+    if(permisos==3)menuProductos();/// idem comentario arriba
     return permisos;
 }
 
