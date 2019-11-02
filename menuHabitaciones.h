@@ -14,6 +14,8 @@
 
 
 using namespace std;
+#include "misFunciones.h"
+#include "recepcion.h"
 int menuHabitaciones();
 
 /*class Archivos
@@ -159,12 +161,22 @@ private:
     int cod_tipo;
     char nombre[30];
     float costo;
+    char adultos;
+    char ninios;
+    char vista[50];
+    char tecnologias[50];
+    char camas[50];
+
+
 public:
     void cargar();
-    float get_costo(int c);
-    void get_nombre(int c, char v[30]);
     void mostrar_todo();
-};
+
+    void get_nombre(int c, char v[30]);/// desp explicame que hacen ambas pana
+    float get_costo(int c);
+
+} ; /// para cargar una habitacion
+
 class Habitacion
 {
 protected:
@@ -176,6 +188,7 @@ public:
     void mostrar_habitacion_tipo(int t);
     void mostrar_habitacion_estado(char e);
 };
+
 class Habitacion_ocupada:public Habitacion
 {
 private:
@@ -204,9 +217,10 @@ public:
     void consultar_general(); ///consulta todas las habitaciones en mantenimiento
     void alta();///Da de alta una habitacion y la deja desocupada
 };
-class Habitacion_reserva:public Habitacion
+class Habitacion_reserva:public Habitacion /// para relacionar con la menu reservas
 {
 private:
+    int id_reserva; /// viene de la reserva
     float pago_adelantado;
     FechaSistema fec_ingreso,fec_salida;
 public:
@@ -489,13 +503,6 @@ void Habitacion_reserva::consulta_total()
     }
     fclose(r);
 }*/
-int menuHabitaciones()
-{
-
-    cout << "En proceso ..."<< endl;
-    //pausa();
-    return 0;
-}
 
 void Habitacion::cargar_habitacion()
 {
@@ -534,6 +541,7 @@ void Tipo_habitacion::cargar()
     while(true)
     {
     cout<<"Ingrese el nombre del tipo: ";
+    limpiarBuffer();
     cin.getline(nombre,30);
     strcpy(nom,nombre);
     nome=false;
@@ -560,6 +568,20 @@ void Tipo_habitacion::cargar()
     }
     cout<<"Ingrese el precio del tipo: $";
     cin>>costo;
+    cout << "Capacidad máxima adultos: ";
+    limpiarBuffer();
+    cin >> adultos;
+    cout << "Capacidad máxima niños: ";
+    cin >> ninios;
+    cout << "Ingrese tipo de camas: ";
+    limpiarBuffer();
+    cin.getline(camas,50);
+    cout << "Ingrese tecnologías disponibles: ";
+    limpiarBuffer();
+    cin.getline(tecnologias,50);
+    cout << "Ingrese vistas desde a habitación: ";
+    limpiarBuffer();
+    cin.getline(vista,50);
     fwrite(this,sizeof(*this),1,t);
     fclose(t);
 
@@ -576,10 +598,16 @@ void Tipo_habitacion::mostrar_todo()
     while(fread(this,sizeof(*this),1,t)==1)
     {
 
-        cout<<"Codigo de tipo: "<<cod_tipo<<endl;
-        cout<<"Nombre: "<<nombre<<endl;
-        cout<<"costo: "<<costo<<endl;
-        cout<<"-------------------------------"<<endl;
+        cout <<"\t\tCodigo de tipo: "<<cod_tipo<<endl;
+        cout <<"\t\tNombre: "<<nombre<<endl;
+        cout <<"\t\tcosto: "<<costo<<endl;
+        cout <<"\t\tCapacidad máxima: "<< adultos << " Adulto/s + "<< ninios << " niño/s"<< endl;
+        cout <<"\t\tCARACTERISTICAS: "<< endl;
+        cout <<"\t\t*"<<camas << endl;
+        cout <<"\t\t*"<<tecnologias << endl;
+        cout <<"\t\t*"<<vista << endl;
+        cout<<"\t\t---------------------------"<<endl;
+        pausa();
 
     }
     fclose(t);
@@ -692,6 +720,33 @@ void Habitacion::mostrar_habitacion_estado(char e)
     }
     fclose(h);
 }
+/// FUNCIONES
+
+void nuevaHabitacion();
+void consultarHabitaciones();
+
+void nuevaHabitacion(){
+
+Tipo_habitacion reg;
+reg.cargar();
+pausa();
+cout << "prueba finalizada "<< endl;
+pausa();
+
+
+
+}
+
+void consultarHabitaciones(){
+Tipo_habitacion reg;
+reg.mostrar_todo();
+pausa();
+cout << "prueba finalizada "<< endl;
+pausa();
+
+
+
+}
 
 
 int menuHabitaciones()
@@ -702,10 +757,11 @@ int menuHabitaciones()
         borrarPantalla();
         cout << "\t\tMENÚ HABITACIONES    " << endl;
         cout << "\t\t-------------------- " << endl;
-        cout << "\t\t1) NUEVA HABITACIÓN  " << endl; /// crea una nueva habitacion
-        cout << "\t\t2) CONSULTAR         " << endl; /// consulta habitaciones disponibles
+        cout << "\t\t1) CREAR NUEVA HABITACIÓN       " << endl; /// crea una nueva habitacion
+        cout << "\t\t2) MOSTRAR HABITACIONES CREADAS (esto desp se va)" << endl; /// consulta habitaciones disponibles
         /// si hay habitacion disponible cargar el cliente y le asigna la habitacion seleccionada
         /// sin necesidad de que haya reservado
+        cout << "\t\t2) CONSULTAR HABITACIONES"<< endl;
         cout << "\t\t3) GASTOS            " << endl;///Cargar modificar y eliminar gastos,
         cout << "\t\t4) CARGAR HABITACION PARA MANTENIMIENTO" << endl;
         cout << "\t\t5) RECEPCIÓN          "<< endl;
@@ -716,12 +772,10 @@ int menuHabitaciones()
         borrarPantalla();
         switch(opcion){
           case 1:
-        cout << "En contruccion..."<<endl;
-        pausa();
+       nuevaHabitacion();
           break;
           case 2:
-            cout << "En contruccion..."<<endl;
-        pausa();
+        consultarHabitaciones();
           break;
           case 3:
             cout << "En contruccion..."<<endl;
@@ -732,8 +786,7 @@ int menuHabitaciones()
         pausa();
           break;
           case 5:
-            cout << "En contruccion..."<<endl;
-        pausa();
+           menuRecepcion();
           break;
           case 0:
             return 0;
