@@ -9,10 +9,16 @@ void cancelarReservaId();
 void cancelarReservaDni();
 int buscarReserva(char*);
 int buscarReservaId(int);
+bool consultarDisponibilidad(Fecha,Fecha,char);
+int contarHabitacionesOcupadas(Fecha,Fecha,char);
+int contarHabitacionesTipo(char);
+
 
 
 #include "misFunciones.h"
-const char *FILE_RESERVAS     = "reservas.dat";
+#include "menuHabitaciones.h"
+#include "menuClientes.h"
+const char *FILE_RESERVAS  = "reservas.dat";
 
 class Reserva{
 
@@ -46,6 +52,9 @@ class Reserva{
     int getDiaSalida(){return salida.getDia();}
     int getMesSalida(){return salida.getMes();}
     int getAnioSalida(){return salida.getAnio();}
+    /// get entrada/salida
+    Fecha getFechaEntrada(){return entrada;}
+    Fecha getFechaSalida(){return salida;}
 
     ///SETS
     void setIdentidad(char*);
@@ -68,6 +77,8 @@ class Reserva{
         bool escribirEnDisco();
 		int leerDeDisco(int);
 		bool modificarEnDisco(int);
+    /// OPERADORES SOBRECARGADOS
+
 
 
 };
@@ -122,6 +133,14 @@ fwrite(this,sizeof(*this),1,P);
 fclose(P);
 return true;
 }
+
+bool Fecha::operator==(Fecha aux){
+ if(dia!=aux.dia)return false;
+ if(mes!=aux.mes)return false;
+ if(anio!=aux.anio)return false;
+ return true;
+ }
+
 
 void Reserva::setEstado(bool variable){ /// modifica el estado de una reserva
 estado=variable;
@@ -188,6 +207,37 @@ int buscarReservaId(int iden){ ///devuelve la posicion de la reserva en el archi
 	return -1;
 }
 
+int contarHabitacionesOcupadas(Fecha entra,Fecha sale, char _tipo){
+Reserva aux;
+char nombreHabitacion[30];
+int pos=0;
+int cantidad=0;
+while(aux.leerDeDisco(pos++)==1){
+
+if(aux.getFechaEntrada()==entra&&aux.getFechaSalida()==sale&&_tipo==aux.getTipo())
+
+        cantidad ++;
+
+
+}
+return cantidad;
+
+}
+
+
+bool consultarDisponibilidad(Fecha in,Fecha out,char tipo){
+
+int cantHabitaciones=contarHabitacionesTipo(tipo);
+int cantOcupadas=contarHabitacionesOcupadas(in,out,tipo);
+if(cantOcupadas>=cantHabitaciones)return false;
+else return true;
+/// si la cantidad de habitaciones ocupadas en esa fecha es mayor
+/// a la cantidad de habitaciones que hay
+/// ==> no hay disponibilidad
+}
+
+
+
 
 void Reserva::cargar(){
 
@@ -212,10 +262,10 @@ cin.getline(identidad,10);
     cin.getline(apellidos,50);
 
 cout << "---Habitación---    "<< endl;
-cout << "1-estandar          "<< endl;
-cout << "2-suite             "<< endl;
-cout << "3-master suite      "<< endl;
-cout << "4-precidencial      "<< endl;
+cout << "1-Estandar          "<< endl;
+cout << "2-Suite             "<< endl;
+cout << "3-Master suite      "<< endl;
+cout << "4-Presidencial      "<< endl;
 cout << "selec: ";
 cin  >> tipoHabitacion;
 cout << "---Seleccione fecha de reserva---"<<endl;
@@ -223,11 +273,35 @@ cout << "Desde: "<<endl;
 entrada.cargar();
 cout << "Hasta: "<<endl;
 salida.cargar();
+while(!consultarDisponibilidad(entrada,salida,tipoHabitacion)){
+    borrarPantalla();
+    cout << "Sin disponibilidad para ese rango de fecha"<< endl;
+    pausa();
+    borrarPantalla();
+    cout << "---Habitación---    "<< endl;
+    cout << "1-estandar          "<< endl;
+    cout << "2-suite             "<< endl;
+    cout << "3-master suite      "<< endl;
+    cout << "4-precidencial      "<< endl;
+    cout << "selec: ";
+    cin  >> tipoHabitacion;
+    cout << "---Seleccione fecha de reserva---"<<endl;
+    cout << "Desde: "<<endl;
+    entrada.cargar();
+    cout << "Hasta: "<<endl;
+    salida.cargar();
+
+
+}
+
 cout << "Pago parcial/Adelanto:$ ";
 cin  >> pagado;
 estado=true;
 
 }
+
+
+
 
 void Reserva::mostrar(){
 
