@@ -11,37 +11,38 @@
 //#include"misFunciones.h"
 #define MENUHABITACIONES_H_INCLUDED
 
-const char *FILE_TIPO_HABITACION = "tipo_habitacion.dat";
+
 
 
 using namespace std;
 #include "misFunciones.h"
 #include "recepcion.h"
 #include "menuReservas.h"
+ const char *FILE_TIPO_HABITACION = "tipo_habitacion.dat";
+ const char *FILE_HABITACIONES = "habitaciones.dat";
+ const char *FILE_ESTADIAS = "habitacion_ocupada.dat";
 int menuHabitaciones();
 
+void listaDeTipos();
+int contarTiposHabitaciones();/// devuelve la cantidad de registros que tiene el archivo tipo habitacion
+bool verificarTipoHabitacion(char*);
+int CodigoTipoHabitacion();
+int mostrarHabitaciones();
+void mostrarTodasHabitaciones();
+void mostrarHabLibres();
+void mostrarHabOcupadas();
+void mostrarHabEnLimpieza();
+void mostrarHabEnMantenimiento();
+bool verificarNumeroHabitacion(char*);
+int asignarNumEstadia();
+void cargarEstadia();
+const char* asignarHabitacion(char);
 
 
-/*class Archivos
-{
-private:
-    FILE *p;
-    string arch_usar;
-    char tipo[4];
-public:
-    abrir_archivo(string a,string b)
-    {
-     p=fopen(a,b);
-     if(p==NULL)
-        {
-            cout<<"Error al abrir el archivo";
-            return 0;
-        }
-     }
-};*/
 
-class FechaSistema
-{
+
+
+class FechaSistema{
 private:
     int anio,mes,dia,hora,minuto;
     time_t tiempo;
@@ -108,6 +109,8 @@ public:
         minuto=00;
     }
 };
+
+
 void convertir_fecha(char v[11],int vint[3])
 {
     vint[0]=(((v[0]-'0')*10)+(v[1]-'0'));
@@ -159,7 +162,7 @@ public:
     void anular(); ///anula ultimo gasto
     void modificar(); ///modifica ultimo gasto
 };
-class Tipo_habitacion
+class Tipo_habitacion /// tipo de habitacion /// son 4 y son fijas
 {
 private:
     int cod_tipo;
@@ -167,23 +170,23 @@ private:
     float costo;
     char adultos;
     char ninios;
-    char vista[50];
-    char tecnologias[50];
-    char camas[50];
-    bool estado;
-    bool limpio;
+    char vista[100];
+    char tecnologias[100];
+    char camas[100];
+
 
 
 
 public:
     void cargar();
-    void mostrar_todo();
+    void mostrar();
 
-    void get_nombre(int c, char v[30]);/// desp explicame que hacen ambas pana
+    void get_nombre(int c, char v[30]);
     float get_costo(int c);
 
-   /// get nombre mauri
+   /// get mauri
    const char* getNombre(){return nombre;}
+   float getCosto(){return costo;}
 
     /// funciones con archivos
         bool escribirEnDisco();
@@ -224,7 +227,7 @@ bool Tipo_habitacion::modificarEnDisco(int pos){ /// graba una modificacion
 	fwrite(this,sizeof *this,1,p);
 	fclose(p);
 	return true;
-	}
+}
 
 
 
@@ -245,34 +248,257 @@ return true;
 
 /// moficiaciones mauri
 
-class Habitacion
-{
+class Habitacion /// esta crea o contruye las habitaciones
+{ /// siempre consultar la cantidad de habitaciones que hay de un tipo
 protected:
-    char habitacion[4],estado;
-    int id,tipo;
+    char numero[4];
+    int id;
+    char tipo;
+    bool estado;
+    bool limpio;
+    bool mantenimiento;
+
 public:
-    void cargar_habitacion();
+    void mostrar(); /// mauri
+    bool cargar_habitacion();
     void mostrar_habitacion();
     void mostrar_habitacion_tipo(int t);
     void mostrar_habitacion_estado(char e);
+    ///gets
+    const char* getHabitacion(){return numero;}
+    int getId(){return id;}
+    char getTipo(){return tipo;}
+    bool getEstado(){return estado;}
+    bool getLimpio(){return limpio;}
+    bool getMatenimiento(){return mantenimiento;}
+
+    /// sets
+    void setHabitacion(const char*nuevoNumero){strcpy(numero,nuevoNumero);}
+    void setId(int nuevaId){id=nuevaId;}
+    void setTipo(char nuevoTipo){tipo=nuevoTipo;}
+    void setEstado(bool nuevoEstado){estado=nuevoEstado;}
+    void setLimpio(bool nuevoLimpio){limpio=nuevoLimpio;}
+    void setMantenimietno(bool nuevoMante){mantenimiento=nuevoMante;}
+
+    /// funciones con archivos
+        bool escribirEnDisco();
+		int leerDeDisco(int);
+		bool modificarEnDisco(int);
+
 };
 
-class Habitacion_ocupada:public Habitacion
+int Habitacion::leerDeDisco(int pos) /// lee el disco hasta encontrar el registro
+	{
+	int x;
+	FILE *p;
+	p=fopen(FILE_HABITACIONES,"rb");
+	if(p==NULL)
+		{
+		mensajes(1);
+		cout<<"Presione una tecla para continuar";
+    system("pause<null");
+		return 0;
+		}
+	fseek(p,pos*sizeof *this,0);
+	x=fread(this,sizeof *this,1,p);
+	fclose(p);
+	return x;
+	}
+
+
+
+bool Habitacion::modificarEnDisco(int pos){ /// graba una modificacion
+	FILE *p;
+	p=fopen(FILE_HABITACIONES,"rb+");
+	if(p==NULL){
+        mensajes(1);
+        pausa();
+        return false;
+	}
+	fseek(p,pos*sizeof *this,0);
+	fwrite(this,sizeof *this,1,p);
+	fclose(p);
+	return true;
+}
+
+
+
+bool Habitacion::escribirEnDisco(){ /// graba un registro de reservas
+FILE*P;
+P=fopen(FILE_HABITACIONES,"ab");
+if(P==NULL){
+        fclose(P);
+        return false;
+}
+fwrite(this,sizeof(*this),1,P);
+fclose(P);
+return true;
+}
+
+
+
+class Habitacion_ocupada:public Habitacion /// habitacion para ocupar / PARTE PRINCIPAL DEL PROGRAMA
 {
 private:
-    char nom_cliente[50],ape_cliente[50];
-    char tarj_cliente[17],cod_tarjeta[5],venc_tarjeta[5],dni_cliente[9],serv_contratado[6],hora_limpieza[5],medio_pago;
-    bool reserva;
-    int tel_cliente;
-    float cuenta,pago_adelantado;
-    FechaSistema fec_salida,fec_ingreso;
-    // Archivos arc;
+    int numeroDeEstadia;
+    char tipoHab;
+    char numeroHab[4];
+    Cliente datosCliente;
+    char serv_contratado[6],hora_limpieza[5];
+    ///bool reserva;
+    float cuenta;
+    float pago_adelantado;/// sale de lo que ponga mas si puso algo en la reserva
+    FechaSistema fec_salida();/// automatico cuando se carga
+    FechaSistema fec_ingreso();/// automatico cuando se cargaa
+    Fecha entra,sale; /// para ver la disponibilidad de habitaciones para esa fecha
+
+    bool activa;
+
 public:
+    ///GETS
+        bool getActiva(){return activa;}
+        char getTipo(){return tipoHab;}
+        const char* getNumero(){return numeroHab;}
+
+    ///SETS
+
+
+
     void ocupar(); ///Ocupa una habitacion y carga los datos
     void desocupar(); ///Libera una habitacion
-    void consultar(); ///Consulta los datos de la habitacion seleccionada
+    void consultar(); ///Consulta los datos de la habitacion seleccionada /// es como mostrar
     void consulta_fecha(); ///Consulta los datos de la habitacion entre 2 fechas
+
+        /// funciones con archivos
+        bool escribirEnDisco();
+		int leerDeDisco(int);
+		bool modificarEnDisco(int);
+
 };
+
+int Habitacion_ocupada::leerDeDisco(int pos) /// lee el disco hasta encontrar el registro
+	{
+	int x;                                   /// se pueden contar todos los registros si contas todos los pos
+	FILE *p;
+	p=fopen(FILE_ESTADIAS,"rb");
+	if(p==NULL)
+		{
+		mensajes(1);
+		cout<<"Presione una tecla para continuar";
+    system("pause<null");
+		return 0;
+		}
+	fseek(p,pos*sizeof *this,0);
+	x=fread(this,sizeof *this,1,p);
+	fclose(p);
+	return x;
+	}
+
+
+
+bool Habitacion_ocupada::modificarEnDisco(int pos){ /// graba una modificacion
+	FILE *p;
+	p=fopen(FILE_ESTADIAS,"rb+");
+	if(p==NULL){
+        mensajes(1);
+        pausa();
+        return false;
+	}
+	fseek(p,pos*sizeof *this,0);
+	fwrite(this,sizeof *this,1,p);
+	fclose(p);
+	return true;
+}
+
+
+bool Habitacion_ocupada::escribirEnDisco(){ /// graba un registro de reservas
+FILE*P;
+P=fopen(FILE_ESTADIAS,"ab");
+if(P==NULL){
+        fclose(P);
+        return false;
+}
+fwrite(this,sizeof(*this),1,P);
+fclose(P);
+return true;
+}
+
+
+int asignarNumEstadia(){
+
+    FILE *F;
+    F=fopen(FILE_ESTADIAS,"rb");
+    if(F==NULL){
+        mensajes(1);
+        pausa();
+        return -1;
+    }
+    int tam,tamanioreg,cantidad;
+    fseek (F,0,SEEK_END);
+    tam=ftell(F);
+    tamanioreg=sizeof(Habitacion_ocupada);
+    cantidad=tam/tamanioreg;
+    fclose(F);
+    return cantidad+1;
+
+}
+
+void Habitacion_ocupada::ocupar(){
+numeroDeEstadia=asignarNumEstadia();
+cout << "Ingrese tipo de habitacion: ";
+listaDeTipos();
+cin >> tipoHab;
+cout << "Ingrese Fecha de ingreso: ";
+entra.cargar();
+cout << "Ingrese Fecha de salida: ";
+sale.cargar();
+while(!consultarDisponibilidad(entra,sale,tipoHab)){
+    borrarPantalla();
+    cout << "Sin disponibilidad para ese rango de fecha"<< endl;
+    pausa();
+    borrarPantalla();
+    cout << "Ingrese tipo de habitacion: ";
+    listaDeTipos();
+    cin >> tipoHab;
+    cout << "Ingrese Fecha de ingreso: ";
+    entra.cargar();
+    cout << "Ingrese Fecha de salida: ";
+    sale.cargar();
+}
+
+    strcpy(numeroHab,asignarHabitacion(tipoHab));
+    datosCliente.cargar();
+    cout << "Servicio Contratado: ";
+    limpiarBuffer();
+    cin.getline(serv_contratado,6);
+    cout << "Hora limpieza: ";
+    limpiarBuffer();
+    cin.getline(hora_limpieza,5);
+    cuenta=0;
+    cout << "Pago adelantado: ";
+    cin  >> pago_adelantado;
+    activa=true;
+
+}
+
+void Habitacion_ocupada::consultar(){
+cout << "Numero de estadia: "<< numeroDeEstadia << endl;
+
+cout << "El resto esta en mantenimiento :D"<< endl;
+pausa();
+
+
+
+
+
+
+}
+
+
+
+
+
+
 class Habitacion_mantenimiento:public Habitacion
 {
 private:
@@ -298,9 +524,9 @@ public:
     void cargar  (); ///Carga una nueva reserva
 };*/
 
-void Gasto::cargar()
-{
-    FILE *g;
+void Gasto::cargar() /// cambiarle tipo de gasto por codigo de producto a vender
+{                    /// agregarle la cantidad a vender
+    FILE *g;         /// añadir pago si / pago no
     g=fopen("gastos.dat","ab");
     if(g==NULL)
     {
@@ -324,7 +550,7 @@ void Gasto::cargar()
 
 }
 
-void Gasto::consulta_habitacion()
+void Gasto::consulta_habitacion()/// consulta los gastos actuales del cliente
 {
     FILE *g;
     char cons[4];
@@ -352,7 +578,7 @@ void Gasto::consulta_habitacion()
     fclose(g);
 }
 
-void Gasto::consulta_habitacion_fecha()
+void Gasto::consulta_habitacion_fecha() /// gastos o consumos de habitacion entre dos fechas
 {
     FILE *g;
     char cons[4],fecini[11],fecfin[11];
@@ -440,7 +666,7 @@ void Gasto::consulta_total()
 }
 
 
-void Gasto::anular()
+void Gasto::anular() /// anula gasto que vos quieras
 {
     FILE *g,*aux;
     int idanul;
@@ -488,6 +714,7 @@ void Gasto::anular()
     fclose(aux);
 
 }
+
 void Gasto::modificar()
 {
     FILE *g;
@@ -571,69 +798,131 @@ void Habitacion_reserva::consulta_total()
     }
     fclose(r);
 }*/
+int contarTiposHabitaciones(){
+    FILE *F;
+    F=fopen(FILE_TIPO_HABITACION,"rb");
+    if(F==NULL){
+        mensajes(1);
+        pausa();
+        return -1;
+    }
+    int tam,tamanioreg,cantidad;
+    fseek (F,0,SEEK_END);
+    tam=ftell(F);
+    tamanioreg=sizeof(Tipo_habitacion);
+    cantidad=tam/tamanioreg;
+    fclose(F);
+    return cantidad;
 
-void Habitacion::cargar_habitacion()
+}
+
+void listaDeTipos(){
+Tipo_habitacion aux;
+int pos=0;
+/*char **matriz;
+int filas=contarTiposHabitaciones();
+int columna=strlen(aux.getNombre());
+matriz = new char *[fila_dinamica];
+for (int i=0;i<filas;i++){
+        matriz[i] = new char[columna];
+    }*/
+while(aux.leerDeDisco(pos++)==1){
+
+    cout <<pos<<")"<< aux.getNombre() << endl;
+}
+
+}
+
+bool verificarNumeroHabitacion(char *numHabitacion){
+Habitacion aux;
+int pos=0;
+while(aux.leerDeDisco(pos++)==1){
+
+    if(strcmp(numHabitacion,aux.getHabitacion())==0)
+        return false;
+
+}
+
+return true;
+
+}
+
+
+
+bool Habitacion::cargar_habitacion()
 {
   FILE *h;
     h=fopen("habitaciones.dat","ab");
     if(h==NULL)
     {
         cout<<"Fallo al abrir el archivo";
-        return;
+        return false;
     }
     fseek(h,0,2);
     id=((ftell(h)/sizeof(*this))+1);
     cout<<"Ingrese el numero de la habitacion: ";
-    cin>>habitacion;
-    cout<<"Ingrese tipo de habitacion: ";
+    limpiarBuffer();
+    cin.getline(numero,4);
+    while(!verificarNumeroHabitacion(numero)){
+        borrarPantalla();
+        cout << "Habitación con ese numero ya fue creada"<< endl;
+        pausa();
+        borrarPantalla();
+        cout<<"Ingrese el numero de la habitacion: ";
+        limpiarBuffer();
+        cin.getline(numero,4);
+
+
+    }
+    listaDeTipos();
+    cout << "Seleccione tipo de habitacion: "<< endl;
     cin>>tipo;
-    estado='0';
+    estado=true;
+    limpio=true;
+    mantenimiento=false; /// se carga en false , si va a mantenimiento se pone en true
     fwrite(this,sizeof(*this),1,h);
     fclose(h);
+    return true;
+
+
 }
-void Tipo_habitacion::cargar()
-{
-  FILE *t;
-  int c;
-  bool nome;
-  char nom[30];
-  Tipo_habitacion p;
-    t=fopen("tipo_habitacion.dat","ab+");
-    if(t==NULL)
-    {
-        cout<<"Fallo al abrir el archivo";
-        return;
-    }
-    fseek(t,0,2);
-    cod_tipo=((ftell(t)/sizeof(*this))+1);
-    while(true)
-    {
+
+int CodigoTipoHabitacion(){
+int cant=contarTiposHabitaciones();
+return cant+1;
+}
+
+bool verificarTipoHabitacion(char *nombre){
+Tipo_habitacion aux;
+int pos=0;
+while(aux.leerDeDisco(pos++)==1){
+
+
+    if(strcmp(nombre,aux.getNombre())==0)return false;
+
+}
+return true;
+
+}
+
+void Tipo_habitacion::cargar(){
+    /// PANA LA CAMBIE PARA NO ABRIR EL ARCHIVO DETRO DE LA CARGA ///
+
+    cod_tipo=CodigoTipoHabitacion();
     cout<<"Ingrese el nombre del tipo: ";
     limpiarBuffer();
     cin.getline(nombre,30);
-    strcpy(nom,nombre);
-    nome=false;
-    fseek(t,0,0);
-    c=1;
-    while(fread(this,sizeof(*this),1,t)==1)
-    {
-        c++;
+    while(!verificarTipoHabitacion(nombre)){
+            borrarPantalla();
+     cout << "ya existe ese tipo de habitación" << endl;
+        pausa();
+        borrarPantalla();
+        cout<<"Ingrese el nombre del tipo: ";
+        limpiarBuffer();
+        cin.getline(nombre,30);
 
-        if(nombre==nom)
-        {
-            cout<<"Tipo de habitacion ya ingresada"<<endl;
-            nome=true;
-            cout<<nombre<<endl;
-            cout<<nom<<endl;
-            break;
-        }
-        cout<<nome;
     }
-    if(nome==false)
-    {
-        break;
-    }
-    }
+
     cout<<"Ingrese el precio del tipo: $";
     cin>>costo;
     cout << "Capacidad máxima adultos: ";
@@ -643,30 +932,17 @@ void Tipo_habitacion::cargar()
     cin >> ninios;
     cout << "Ingrese tipo de camas: ";
     limpiarBuffer();
-    cin.getline(camas,50);
+    cin.getline(camas,100);
     cout << "Ingrese tecnologías disponibles: ";
     limpiarBuffer();
-    cin.getline(tecnologias,50);
+    cin.getline(tecnologias,100);
     cout << "Ingrese vistas desde a habitación: ";
     limpiarBuffer();
-    cin.getline(vista,50);
-    estado=true;
-    limpio=true;
-    fwrite(this,sizeof(*this),1,t);
-    fclose(t);
+    cin.getline(vista,500);
 
 }
-void Tipo_habitacion::mostrar_todo()
-{
-   FILE *t;
-    t=fopen("tipo_habitacion.dat","rb");
-    if(t==NULL)
-    {
-        cout<<"Fallo al abrir el archivo";
-        return;
-    }
-    while(fread(this,sizeof(*this),1,t)==1)
-    {
+void Tipo_habitacion::mostrar(){
+
 
         cout <<"\t\tCodigo de tipo: "<<cod_tipo<<endl;
         cout <<"\t\tNombre: "<<nombre<<endl;
@@ -676,38 +952,15 @@ void Tipo_habitacion::mostrar_todo()
         cout <<"\t\t*"<<camas << endl;
         cout <<"\t\t*"<<tecnologias << endl;
         cout <<"\t\t*"<<vista << endl;
-        if(limpio==true){
-                cout << "\t\tLimpio:";
-                system("color 2");
-                cout <<"\t\t*"<<endl;
-        }
-        else{
-            cout << "\t\tLimpio:";
-            system("color 1");
-            cout <<"\t\t*"<<endl;
-
-        }
-        if(estado==true){
-            cout << "\t\tEstado:";
-            system("color 2");
-            cout <<"DISPONIBLE"<<endl;
-        }
-        else{
-
-           cout << "\t\tEstado:";
-            system("color 1");
-            cout <<"OCUPADO"<<endl;
-
-        }
         cout<<"\t\t---------------------------"<<endl;
         pausa();
 
-    }
-    fclose(t);
+
+
 }
 
 /// cuanta las habitacion del tipo que le mandes
-int contarHabitacionesTipo(char tipo){
+int contarHabitaciones(char tipo){
 Tipo_habitacion aux;
 int pos=0;
 char nombreHabitacion[30];
@@ -773,15 +1026,58 @@ void Habitacion::mostrar_habitacion()
     while(fread(this,sizeof(*this),1,h)==1)
     {
         t.get_nombre(tipo,nom);
-        cout<<"ID: "<<id<<endl;
-        cout<<"Habitacion: "<<habitacion<<endl;
-        cout<<"Tipo: "<<nom<<endl;
-        cout<<"Costo: $"<<t.get_costo(tipo)<<endl;
-        cout<<"Estado: "<<estado<<endl;
-        cout<<"-------------------------------"<<endl;
+        cout<<"ID:         "<<id<<endl;
+        cout<<"Habitacion: "<<numero<<endl;
+        cout<<"Tipo:       "<<nom<<endl;
+        cout<<"Costo: $    "<<t.get_costo(tipo)<<endl;
+        if (estado==true){
+        cout<<"Estado: Disponible"<<endl;
+        }
+        else{
+            cout<<"Estado: Ocupada" <<endl;
+        }
+        if(limpio==false){
 
+            cout << "En limpieza "<< endl;
+        }
+
+        if(mantenimiento==true){
+            cout << "En mantenimiento "<< endl;
+        }
+
+        cout<<"-------------------------------"<<endl;
+        pausa();
     }
+
     fclose(h);
+}
+
+/// mostrar habitacion mauri
+void Habitacion::mostrar(){
+Tipo_habitacion aux;
+cout << "Id: "<< id << endl;
+cout << "Numero de habitación: "<< numero << endl;
+
+aux.leerDeDisco(tipo);
+cout << "Tipo de habitación: "<< aux.getNombre() << endl;
+cout << "Precio por noche: "<< aux.getCosto()<< endl;
+if (estado==true){
+        cout<<"Estado: Disponible"<<endl;
+        }
+        else{
+            cout<<"Estado: Ocupada" <<endl;
+        }
+        if(limpio==false){
+
+            cout << "En limpieza "<< endl;
+        }
+
+        if(mantenimiento==true){
+            cout << "En mantenimiento "<< endl;
+        }
+        cout << "----------------------"<< endl;
+        pausa();
+
 }
 
 void Habitacion::mostrar_habitacion_tipo(int ti)
@@ -800,11 +1096,11 @@ void Habitacion::mostrar_habitacion_tipo(int ti)
         if(tipo==ti)
         {
         t.get_nombre(tipo,nom);
-        cout<<"ID: "<<id<<endl;
-        cout<<"Habitacion: "<<habitacion<<endl;
-        cout<<"Tipo: "<<nom<<endl;
+        cout<<"ID:         "<<id<<endl;
+        cout<<"Habitacion: "<<numero<<endl;
+        cout<<"Tipo:       "<<nom<<endl;
         cout<<"Costo: $"<<t.get_costo(tipo)<<endl;
-        cout<<"Estado: "<<estado<<endl;
+        cout<<"Estado:     "<<estado<<endl;
         cout<<"-------------------------------"<<endl;
         }
     }
@@ -827,7 +1123,7 @@ void Habitacion::mostrar_habitacion_estado(char e)
         {
         t.get_nombre(tipo,nom);
         cout<<"ID: "<<id<<endl;
-        cout<<"Habitacion: "<<habitacion<<endl;
+        cout<<"Habitacion: "<<numero<<endl;
         cout<<"Tipo: "<<nom<<endl;
         cout<<"Costo: $"<<t.get_costo(tipo)<<endl;
         cout<<"Estado: "<<estado<<endl;
@@ -838,31 +1134,142 @@ void Habitacion::mostrar_habitacion_estado(char e)
 }
 /// FUNCIONES
 
-void nuevaHabitacion();
-void consultarHabitaciones();
+void mostrarTodasHabitaciones(){
+Habitacion aux;
+int pos=0;
+while(aux.leerDeDisco(pos++)==1){
 
-void nuevaHabitacion(){
 
-Tipo_habitacion reg;
-reg.cargar();
-pausa();
-cout << "prueba finalizada "<< endl;
-pausa();
+      aux.mostrar();
+
+  }
+
+}
+void mostrarHabLibres(){
+Habitacion aux;
+int pos=0;
+while(aux.leerDeDisco(pos++)==1){
+
+
+    if(aux.getEstado()==true){
+            aux.mostrar();
+          }
+  }
+
+}
+const char* asignarHabitacion(char tipo){
+Habitacion aux;
+int pos=0;
+while(aux.leerDeDisco(pos++)==1){
+
+    if((aux.getEstado()==true)&&(aux.getTipo()==tipo)){
+        aux.setEstado(false);
+        aux.modificarEnDisco(pos);
+        return aux.getHabitacion();
+                }
+
+        }
+
+}
+
+void mostrarHabOcupadas(){
+Habitacion_ocupada aux;
+int pos=0;
+while(aux.leerDeDisco(pos++)==1){
+
+    if(aux.getActiva()==true){
+        aux.consultar();
+    }
+}
+
+}
+
+void mostrarHabEnLimpieza(){
+Habitacion aux;
+int pos=0;
+while(aux.leerDeDisco(pos++)==1){
+
+
+    if(aux.getLimpio()==false){
+            aux.mostrar();
+          }
+  }
+
+}
+void mostrarHabEnMantenimiento(){
+Habitacion aux;
+int pos=0;
+while(aux.leerDeDisco(pos++)==1){
+
+
+    if(aux.getMatenimiento()==true){
+            aux.mostrar(); /// se deberia mostrar clase habitacion en mantenimiento
+          }
+  }
 
 
 
 }
 
-void consultarHabitaciones(){
-Tipo_habitacion reg;
-reg.mostrar_todo();
-pausa();
-cout << "prueba finalizada "<< endl;
-pausa();
+
+int mostrarHabitaciones(){
+short opcion;
+while(true){
+    borrarPantalla();
+
+    cout << "1)Habitaciones libres    " << endl;
+    cout << "2)Habitaciones ocupadas  " << endl; /// las muestra con los datos de las perosnas que estan ocupandola
+    cout << "3)Haitaciones en limpieza" << endl;
+    cout << "4)Haitaciones en mantenimiento" << endl;
+    cout << "5)MOSTRAR TODAS LAS HABITACIONES"<< endl;
+    cout << "0) Salir "<< endl;
+    cout << endl << "Opción: ";
+    cin >> opcion;
+    borrarPantalla();
+    switch(opcion){
+      case 1:
+        mostrarHabLibres();
+            break;
+      case 2:
+        mostrarHabOcupadas();
+      break;
+      case 3:
+        mostrarHabEnLimpieza();
+      break;
+      case 4:
+          mostrarHabEnMantenimiento();
+        break;
+      case 5:
+    mostrarTodasHabitaciones();
+      break;
+
+      case 0:
+        return 0;
+      break;
+      default:
+        mensajes(2);
+        break;
+    }
+    cout << endl;
+
+  }
+
+}
+
+void cargarEstadia(){
+Habitacion_ocupada reg;
+reg.ocupar();
+if(reg.escribirEnDisco()){
+
+    cout << "Estadia cargada con éxito"<< endl;
+    cout << "Se asigno habitación "<< reg.getNumero();
+    pausa();
+        }
 
 
 
 }
+
 
 
 int menuHabitaciones()
@@ -873,40 +1280,52 @@ int menuHabitaciones()
         borrarPantalla();
         cout << "\t\tMENÚ HABITACIONES    " << endl;
         cout << "\t\t-------------------- " << endl;
-        cout << "\t\t1) CREAR NUEVA HABITACIÓN       " << endl; /// crea una nueva habitacion
-        cout << "\t\t2) MOSTRAR HABITACIONES CREADAS (esto desp se va)" << endl; /// consulta habitaciones disponibles
         /// si hay habitacion disponible cargar el cliente y le asigna la habitacion seleccionada
         /// sin necesidad de que haya reservado
-        cout << "\t\t2) CONSULTAR HABITACIONES"<< endl;
-        cout << "\t\t3) GASTOS            " << endl;///Cargar modificar y eliminar gastos,
-        cout << "\t\t4) CARGAR HABITACION PARA MANTENIMIENTO" << endl;
-        cout << "\t\t5) RECEPCIÓN          "<< endl;
-        cout << "\t\t6) CHECK OUT          "<< endl;
+        cout << "\t\t1) CARGAR NUEVA ESTADIA SIN RESERVA     "<< endl;
+        cout << "\t\t2) RECEPCIÓN(misma funcion que en el menu principal)"<< endl;
+        cout << "\t\t3) CHECK OUT(misma funcion que en el menu principal)"<< endl;
+        cout << "\t\t4) VER HABITACIONES" << endl; ///LIBRES , OCUPADAS, EN LIMPIEZA, TODAS
+        cout << "\t\t5) VENTA DE PRODUCTOS(GASTO)            " << endl;///Cargar modificar y eliminar gastos,
+        cout << "\t\t6) CARGAR HABITACION PARA MANTENIMIENTO " << endl;
+        cout << "\t\t7) CARGAR HABITACION PARA LIMPIEZA      " << endl;
         cout << "\t\t0) Salir "<< endl;
         cout << endl << "\t\tOpción: ";
         cin >> opcion;
         borrarPantalla();
         switch(opcion){
           case 1:
-       nuevaHabitacion();
+        cout << "En contruccion..."<<endl;
+        pausa();
           break;
           case 2:
-        consultarHabitaciones();
+        menuRecepcion();
           break;
           case 3:
             cout << "En contruccion..."<<endl;
         pausa();
           break;
           case 4:
-            cout << "En contruccion..."<<endl;
-        pausa();
+            mostrarHabitaciones();
           break;
           case 5:
-           menuRecepcion();
+           cout << "En contruccion..."<<endl;
+        pausa();
           break;
+          case 6:
+              cout << "En contruccion..."<<endl;
+        pausa();
+            break;
+          case 7:
+              cout << "En contruccion..."<<endl;
+        pausa();
+            break;
           case 0:
             return 0;
           break;
+          default:
+              mensajes(2);
+            break;
         }
         cout << endl;
 
