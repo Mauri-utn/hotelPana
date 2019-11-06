@@ -4,6 +4,7 @@
 
 #include "misfunciones.h"
 #include "menuPrincipal.h"
+#include "menuHabitaciones.h"
 const char *FILE_PRODUCTOS = "productos.dat";
 
 int menuProductos();
@@ -11,7 +12,11 @@ void nuevoProducto();
 void bajarProducto();
 void mostrarProductos();
 void sumarStock();
-
+void procesarVenta();
+void listaProductos();
+bool verificarCodigo(const char*);
+int buscarProducto(const char*);
+void nuevaVenta();
 
 class Producto{
     private:
@@ -25,7 +30,9 @@ class Producto{
     public:
 
         void cargar();
+        void cargarVenta();
         void mostrar();
+        void mostrarVenta();
         ///GETS
         const char* getId(){return id;}
         const char* getNombre(){return nombre;}
@@ -94,13 +101,14 @@ fclose(P);
 return true;
 }
 
-int buscarProducto(char* id){ ///devuelve la posicion de la reserva en el archivo
+int buscarProducto(const char* id){ ///devuelve la posicion de la reserva en el archivo
 	int pos=0;
 	Producto reg;
 	while(reg.leerDeDisco(pos)==1)
 		{
-		if((strcmp(id,reg.getId())==0)&& reg.getEstado()==true)
+		if((strcmp(id,reg.getId())==0)&& reg.getEstado()==true){
 			return pos;
+			}
 		pos++;
 		}
 	return -1;
@@ -137,7 +145,7 @@ cin.getline(nombre,30);
 cout << "Descripcion: ";
 limpiarBuffer();
 cin.getline(descripcion,100);
-cout << "Precio unitario: ";
+cout << "Precio unitario: $";
 cin  >> precioUnidad;
 cout << "Stock inicial: ";
 cin  >> stock;
@@ -150,11 +158,25 @@ void Producto::mostrar(){
 cout << "Codigo de producto:  "<< id << endl;
 cout << "Nombre del producto: "<< nombre << endl;
 cout << "Descripción:         "<< descripcion <<endl;
-cout << "Precio unitario:    $"<< precioUnidad<<endl;
+cout << "Precio unitario:     $"<< precioUnidad<<endl;
 cout << "Stock actual:        "<< stock << endl;
 cout << "----------------------"<< endl;
 pausa();
 
+}
+
+void Producto::cargarVenta(){
+cout << "Ingrese código de producto: ";
+limpiarBuffer();
+cin.getline(id,5);
+
+}
+
+
+void Producto::mostrarVenta(){
+cout << "Codigo de producto\tNombre del producto\tDescripción\tPrecio unitario";
+cout << "\t"<<id<<"\t"<<nombre<<"\t"<< descripcion<<"\t"<< precioUnidad<<endl;
+cout << "---------------------------------------------------------------------"<< endl;
 }
 
 void nuevoProducto(){
@@ -198,8 +220,6 @@ else{
 }
 
 
-
-
 void mostrarProductos(){
 Producto aux;
 int pos=0;
@@ -212,6 +232,33 @@ while(aux.leerDeDisco(pos++)==true){
 }
 
 }
+
+void listaProductos(){
+
+Producto aux;
+int pos=0;
+int cont=0;
+cout << "Producto\tCodigo\t\tPrecio por unidad"<< endl;
+cout << "............................................"<< endl;
+while(aux.leerDeDisco(pos++)==true){
+
+    if(aux.getEstado()==true&&cont==0){
+            cout << aux.getId();cout<<"\t\t";cout<<aux.getNombre();cout<<"\t\t\t$";cout<<aux.getPrecio();
+            cout << endl;
+    }
+
+    if(aux.getEstado()==true&&cont>0){
+            cout << aux.getId();cout<<"\t\t";cout<<aux.getNombre();cout<<"\t\t$";cout<<aux.getPrecio();
+            cout << endl;
+    }
+
+    cont++;
+}
+cout << "............................................"<< endl;
+    pausa();
+
+}
+
 
 void sumarStock(){
 
@@ -248,32 +295,41 @@ else{
 
 }
 
+
+
 int menuProductos(){
 short opcion;
 while(true){
     borrarPantalla();
     cout << "\t\t-------MENÚ PRODUCTOS-------- " << endl;
     cout << "\t\t----------------------------- " << endl;
-    cout << "\t\t1) AÑADIR PRODUCTOS           " << endl;
-    cout << "\t\t2) DAR DE BAJA PRODUCTOS      " << endl;
-    cout << "\t\t3) AÑADIR STOCK A PRODUCTOS   " << endl;
-    cout << "\t\t4) MOSTRAR TODOS LOS PRODUCTOS" << endl;
-    cout << "\t\t5) PUNTO DE VENTA." << endl;
+    cout << "\t\t1) PUNTO DE VENTA.            " << endl;
+    cout << "\t\t2) AÑADIR PRODUCTOS           " << endl;
+    cout << "\t\t3) DAR DE BAJA PRODUCTOS      " << endl;
+    cout << "\t\t4) AÑADIR STOCK A PRODUCTOS   " << endl;
+    cout << "\t\t5) MOSTRAR TODOS LOS PRODUCTOS" << endl;
+    cout << "\t\t6) MODIFICAR PRODUCTOS        " << endl;
     cout << "\t\t0) Salir "<< endl;
     cin >> opcion;
     borrarPantalla();
     switch(opcion){
       case 1:
-    nuevoProducto();
+    nuevaVenta();
       break;
       case 2:
-    bajarProducto();
+    nuevoProducto();
       break;
       case 3:
-    sumarStock();
+    bajarProducto();
       break;
       case 4:
-    mostrarProductos();
+    sumarStock();
+        break;
+      case 5:
+          mostrarProductos();
+        break;
+      case 6:
+          listaProductos();
         break;
 
       case 0:
