@@ -11,7 +11,7 @@ int buscarReserva(char*);
 int buscarReservaId(int);
 bool consultarDisponibilidad(Fecha,Fecha,char);
 int contarHabitacionesOcupadas(Fecha,Fecha,char);
-int contarHabitacionesTipo(char);
+int contarHabitaciones(char);
 
 
 
@@ -99,7 +99,7 @@ int Reserva::leerDeDisco(int pos) /// lee el disco hasta encontrar el registro
 	x=fread(this,sizeof *this,1,p);
 	fclose(p);
 	return x;
-	}
+}
 
 
 
@@ -115,7 +115,7 @@ bool Reserva::modificarEnDisco(int pos){ /// graba una modificacion
 	fwrite(this,sizeof *this,1,p);
 	fclose(p);
 	return true;
-	}
+}
 
 
 
@@ -174,6 +174,7 @@ if(P==NULL){
     fclose(P);
     return -1;
 }
+
 if(contarRegistrosReservas()==0){
     fclose(P);
     return 1;
@@ -212,13 +213,13 @@ Reserva aux;
 char nombreHabitacion[30];
 int pos=0;
 int cantidad=0;
-while(aux.leerDeDisco(pos++)==1){
+while(aux.leerDeDisco(pos)==1){
 
-if(aux.getFechaEntrada()==entra&&aux.getFechaSalida()==sale&&_tipo==aux.getTipo())
-
+if((aux.getFechaEntrada()==entra)&&(aux.getFechaSalida()==sale)&&(_tipo==aux.getTipo())){
         cantidad ++;
+        }
 
-
+    pos++;
 }
 return cantidad;
 
@@ -227,8 +228,11 @@ return cantidad;
 
 bool consultarDisponibilidad(Fecha in,Fecha out,char tipo){
 
-int cantHabitaciones=contarHabitacionesTipo(tipo);
-int cantOcupadas=contarHabitacionesOcupadas(in,out,tipo);
+int cantHabitaciones=contarHabitaciones(tipo);
+int cantOcupadas=contarHabitacionesOcupadas(in,out,tipo);///  ver bien esta funcion
+cout << "cant habitaciones "<< cantHabitaciones<< endl;
+cout << "cant ocupadas "<< cantOcupadas << endl;
+pausa();
 if(cantOcupadas>=cantHabitaciones)return false;
 else return true;
 /// si la cantidad de habitaciones ocupadas en esa fecha es mayor
@@ -489,13 +493,9 @@ while(true){
 
         break;
 
-
   }
 
  cout << endl;
-
-
-
 
 }
 
