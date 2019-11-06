@@ -13,7 +13,9 @@ int menuPrincipal(int);
 #include "productos.h"
 #include "CargarEmpleado.h"
 #include "reportes.h"
-#include "checkOut.h"
+#include "check_out.h"
+#include "menuConfiguracion.h"
+#include "menuLimpieza.h"
 
 
 int menuPrincipal(int permisos){
@@ -21,6 +23,8 @@ int menuPrincipal(int permisos){
 
     cout << "\t\tvalor de permisos"<< permisos<<  endl;
     pausa();
+
+
     if(permisos==1){
     char opcion;
     while(true){
@@ -54,12 +58,11 @@ int menuPrincipal(int permisos){
       case 'b':
       case 'B':
     menuRecepcion();
-
         break;
       case '3':
       case 'c':
       case 'C':
-
+    realizarCheckOut();
         break;
       case '4':
       case 'd':
@@ -90,12 +93,12 @@ int menuPrincipal(int permisos){
       case '9':
       case 'i':
       case 'I':
-
+        menuLimpieza();
         break;
 
       case 'j':
       case 'J':
-
+        menuConfiguracion();
         break;
 
       case 'k':
@@ -113,12 +116,14 @@ int menuPrincipal(int permisos){
 
       }
     }
-    if(permisos==2)menuReportes();/// les puse estos por ahora para probar que anda el redireccionamiento
-    if(permisos==3)menuProductos();/// idem comentario arriba
+    if(permisos==2)menuLimpieza();
+    if(permisos==3)menuProductos();
     return permisos;
 }
 
 
 
 #endif // MENUPRINCIPAL_H_INCLUDED
+
+
 
