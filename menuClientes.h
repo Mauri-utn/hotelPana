@@ -206,14 +206,13 @@ switch(m){
 class Persona {
 
 protected:
-
     char apellidos[50];
     char nombres[50];
     char genero;
     char dni[10];
     char nacionalidad[50];
-    Fecha fechaNac;
 public:
+    Fecha fechaNac;
 
     void cargar();
     void mostrar();
