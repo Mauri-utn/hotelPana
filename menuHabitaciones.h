@@ -18,9 +18,12 @@ using namespace std;
 #include "misFunciones.h"
 #include "recepcion.h"
 #include "menuReservas.h"
+#include "productos.h"
+#include "menuLimpieza.h"
  const char *FILE_TIPO_HABITACION = "tipo_habitacion.dat";
  const char *FILE_HABITACIONES = "habitaciones.dat";
  const char *FILE_ESTADIAS = "habitacion_ocupada.dat";
+ const char *FILE_VENTAS = "ventas.dat";
 int menuHabitaciones();
 
 void listaDeTipos();
@@ -37,7 +40,15 @@ bool verificarNumeroHabitacion(char*);
 int asignarNumEstadia();
 void cargarEstadia();
 const char* asignarHabitacion(char);
+int letra_a_entero(char);
+void realizarCheckOut();
+int contarRegistrosHabitaciones();
+bool liberarHabitacion(const char*);
 
+int buscarHabitacionOcupada(const char*);
+int buscarVentaId(int);
+void mostrarVenta();
+bool verificarVenta(const char*);
 
 
 
@@ -162,6 +173,183 @@ public:
     void anular(); ///anula ultimo gasto
     void modificar(); ///modifica ultimo gasto
 };
+
+
+/// CLASE VENTA ///
+
+class Venta{ /// luego cuando se muestran todas las ventas se forma la factura
+
+private:
+
+
+    char habitacion[4]; /// numero de habitacion a la cual pertenece
+    int id;/// automatico , se relaciona con num de estadia /// luego al final se suman todas las ventas del num de estadia
+    FechaSistema fec;/// fecha y hora del sistema ver como poner esto
+    char codigoProducto[5];/// codigo de producto a vender
+    int cantidad; /// cantidad de unidades a vender
+    float total; /// total de la venta
+    bool pagado;
+
+    public:
+
+        void cargar();
+        void mostrar();
+        /// gets
+        int getId(){return id;}
+        const char* getHabitacion(){return habitacion;}
+       int getCantidad(){return cantidad;}
+       const char* getCodProducto(){return codigoProducto;}
+       float getTotal(){return total;}
+       bool getPago(){return pagado;}
+        /// sets
+        void setCantidad(int nuevaCant){cantidad=nuevaCant;}
+        void setCodigoProducto(const char*nuevoCod){strcpy(codigoProducto,nuevoCod);}
+        void setTotal(float nuevoTotal){total=nuevoTotal;}
+        /// funciones con archivos
+
+        bool escribirEnDisco();
+		int leerDeDisco(int);
+		bool modificarEnDisco(int);
+
+
+};
+
+int Venta::leerDeDisco(int pos) /// lee el disco hasta encontrar el registro
+	{
+	int x;
+	FILE *p;
+	p=fopen(FILE_VENTAS,"rb");
+	if(p==NULL)
+		{
+		mensajes(1);
+		cout<<"Presione una tecla para continuar";
+    system("pause<null");
+		return 0;
+		}
+	fseek(p,pos*sizeof *this,0);
+	x=fread(this,sizeof *this,1,p);
+	fclose(p);
+	return x;
+	}
+
+
+
+bool Venta::modificarEnDisco(int pos){ /// graba una modificacion
+	FILE *p;
+	p=fopen(FILE_VENTAS,"rb+");
+	if(p==NULL){
+        mensajes(1);
+        pausa();
+        return false;
+	}
+	fseek(p,pos*sizeof *this,0);
+	fwrite(this,sizeof *this,1,p);
+	fclose(p);
+	return true;
+}
+
+bool Venta::escribirEnDisco(){ /// graba un registro de reservas
+FILE*P;
+P=fopen(FILE_VENTAS,"ab");
+if(P==NULL){
+        fclose(P);
+        return false;
+}
+fwrite(this,sizeof(*this),1,P);
+fclose(P);
+return true;
+}
+
+int buscarVentaId(int cod){ ///devuelve la posicion de la venta en el archivo
+	int pos=0;
+	Venta reg;
+	while(reg.leerDeDisco(pos)==1)
+		{
+		if(cod==reg.getId())
+			return pos;
+		pos++;
+		}
+	return -1;
+}
+
+
+
+
+void Venta::cargar(){
+    Producto aux;
+    char pago[3];
+    cout << "Ingrese número de habitación: ";
+    limpiarBuffer();
+    cin.getline(habitacion,4);
+    /// falta ver si la habitacion esta ocupada ///
+    id=buscarHabitacionOcupada(habitacion);
+    while(id==-1){
+        borrarPantalla();
+        cout << "Ingrese una habitación valida"<< endl;
+        pausa();
+        borrarPantalla();
+        cout << "Ingrese número de habitación: ";
+        limpiarBuffer();
+        cin.getline(habitacion,4);
+        id=buscarHabitacionOcupada(habitacion);
+
+    }
+    id++;
+
+
+    listaProductos();
+    cout << "Ingrese código de producto: ";
+    limpiarBuffer();
+    cin.getline(codigoProducto,5);
+    if(buscarProducto(codigoProducto)==-1){
+        borrarPantalla();
+        cout << "Codigo invalido"<<endl;
+        pausa();
+        borrarPantalla();
+        cout << "Ingrese código de producto: ";
+        limpiarBuffer();
+        cin.getline(codigoProducto,5);
+    }
+    cout << "Ingrese cantidad: ";
+    cin  >> cantidad;
+    int pos=buscarProducto(codigoProducto);
+    aux.leerDeDisco(pos);
+    float precio=aux.getPrecio();
+    total=precio*cantidad;
+    cout << "Total $"<< total << endl;
+    cout << "Pagar ahora(si/no): ";
+    limpiarBuffer();
+    cin.getline(pago,3);
+    if(strcmp(pago,"si")==0){pagado=true;return;}
+    if(strcmp(pago,"SI")==0){pagado=true;return;}
+    pagado=false;
+    FechaSistema fec();
+
+
+}
+
+
+void Venta::mostrar(){
+
+Producto aux;
+
+cout << "Número de habitación: "<< habitacion << endl;
+cout << "Fecha de venta:       "<<fec.mostar_dia();cout<<"/"<<fec.mostar_mes();cout<<"/"<<fec.mostar_anio();cout<< endl;
+cout << "Hora de venta:        "<< fec.mostar_hora();cout <<":"<<fec.mostar_minuto();cout << endl;
+cout << "Código de producto:   "<< codigoProducto << endl;
+int pos=buscarProducto(codigoProducto);
+aux.leerDeDisco(pos);
+cout << "Producto: ";cout << aux.getNombre();cout << endl;
+cout << "Cantidad: "<< cantidad << endl;
+cout << "Total: $" << total << endl;
+ /// ver de ordenar como lista productos ///
+}
+
+/// FIN CLASE VENTA ///
+
+
+
+/// CLASE TIPO DE HABITACION ///
 class Tipo_habitacion /// tipo de habitacion /// son 4 y son fijas
 {
 private:
@@ -187,6 +375,7 @@ public:
    /// get mauri
    const char* getNombre(){return nombre;}
    float getCosto(){return costo;}
+   int getCodigoTipo(){return cod_tipo;}
 
     /// funciones con archivos
         bool escribirEnDisco();
@@ -246,27 +435,28 @@ fclose(P);
 return true;
 }
 
-/// moficiaciones mauri
+/// moficiaciones mauri ///CLASE HABITACION
 
 class Habitacion /// esta crea o contruye las habitaciones
 { /// siempre consultar la cantidad de habitaciones que hay de un tipo
 protected:
     char numero[4];
-    int id;
+    ///int id; /// nos sirve para desocupar una habitacion
     char tipo;
     bool estado;
     bool limpio;
     bool mantenimiento;
 
 public:
+    void cargar(); /// mauri
     void mostrar(); /// mauri
     bool cargar_habitacion();
     void mostrar_habitacion();
     void mostrar_habitacion_tipo(int t);
     void mostrar_habitacion_estado(char e);
     ///gets
-    const char* getHabitacion(){return numero;}
-    int getId(){return id;}
+    const char* getNumero(){return numero;}
+///    int getId(){return id;}
     char getTipo(){return tipo;}
     bool getEstado(){return estado;}
     bool getLimpio(){return limpio;}
@@ -274,7 +464,7 @@ public:
 
     /// sets
     void setHabitacion(const char*nuevoNumero){strcpy(numero,nuevoNumero);}
-    void setId(int nuevaId){id=nuevaId;}
+///    void setId(int nuevaId){id=nuevaId;}
     void setTipo(char nuevoTipo){tipo=nuevoTipo;}
     void setEstado(bool nuevoEstado){estado=nuevoEstado;}
     void setLimpio(bool nuevoLimpio){limpio=nuevoLimpio;}
@@ -335,7 +525,21 @@ fclose(P);
 return true;
 }
 
+int buscarHabitacion(const char* num){ ///devuelve la posicion de la habitacion en el archivo
+	int pos=0;
+	Habitacion reg;
+	while(reg.leerDeDisco(pos)==1)
+		{
+		if(strcmp(num,reg.getNumero())==0)
+			return pos;
+		pos++;
+		}
+	return -1;
+}
 
+/// FIN CLASE HABITACION ///
+
+/// CLASE HABITACION OCUPADA ///
 
 class Habitacion_ocupada:public Habitacion /// habitacion para ocupar / PARTE PRINCIPAL DEL PROGRAMA
 {
@@ -365,7 +569,7 @@ public:
 
 
     void ocupar(); ///Ocupa una habitacion y carga los datos
-    void desocupar(); ///Libera una habitacion
+    bool desocupar(); ///Libera una habitacion
     void consultar(); ///Consulta los datos de la habitacion seleccionada /// es como mostrar
     void consulta_fecha(); ///Consulta los datos de la habitacion entre 2 fechas
 
@@ -423,6 +627,19 @@ fclose(P);
 return true;
 }
 
+int buscarHabitacionOcupada(const char* num){ ///devuelve la posicion de la habitacion en el archivo
+	int pos=0;
+	Habitacion_ocupada reg;
+	while(reg.leerDeDisco(pos)==1)
+		{
+		if((strcmp(num,reg.getNumero())==0)&&(reg.getActiva()==true)){
+			return pos;
+			}
+            pos++;
+		}
+
+	return -1;
+}
 
 int asignarNumEstadia(){
 
@@ -445,7 +662,7 @@ int asignarNumEstadia(){
 
 void Habitacion_ocupada::ocupar(){
 numeroDeEstadia=asignarNumEstadia();
-cout << "Ingrese tipo de habitacion: ";
+cout << "Ingrese tipo de habitacion: "<< endl;
 listaDeTipos();
 cin >> tipoHab;
 cout << "Ingrese Fecha de ingreso: ";
@@ -457,7 +674,7 @@ while(!consultarDisponibilidad(entra,sale,tipoHab)){
     cout << "Sin disponibilidad para ese rango de fecha"<< endl;
     pausa();
     borrarPantalla();
-    cout << "Ingrese tipo de habitacion: ";
+    cout << "Ingrese tipo de habitacion: "<< endl;
     listaDeTipos();
     cin >> tipoHab;
     cout << "Ingrese Fecha de ingreso: ";
@@ -468,6 +685,9 @@ while(!consultarDisponibilidad(entra,sale,tipoHab)){
 
     strcpy(numeroHab,asignarHabitacion(tipoHab));
     datosCliente.cargar();
+
+    datosCliente.escribirEnDisco();
+
     cout << "Servicio Contratado: ";
     limpiarBuffer();
     cin.getline(serv_contratado,6);
@@ -480,24 +700,97 @@ while(!consultarDisponibilidad(entra,sale,tipoHab)){
     activa=true;
 
 }
+bool liberarHabitacion(const char *numHab){
+
+Habitacion aux;
+int pos=0;
+while(aux.leerDeDisco(pos)==1){
+
+
+    if(strcmp(numHab,aux.getNumero())==0){
+
+        aux.setEstado(true);
+        aux.setLimpio(false);
+        aux.modificarEnDisco(pos);
+        return true;
+    }
+    pos++;
+}
+return false;
+
+}
+
+bool Habitacion_ocupada::desocupar(){
+
+Tipo_habitacion aux;
+char pago[3];
+
+cout << "Numero de estadia: "<< numeroDeEstadia << endl;
+cout << "Numero de Habitación: "<< numeroHab << endl;
+int pos=tipoHab-'0';
+/// se le resta una unidad para que concuerde con la pos del archivo
+aux.leerDeDisco(pos-1);
+cout << "Tipo de habitación: "<< aux.getNombre();
+cout << endl;
+float precioEstadia=aux.getCosto();
+cout << "Precio por noche           --->$"<< precioEstadia << endl;
+cout << "Precio por estadia completa--->$"<< precioEstadia << endl;
+cout << "Pago adelantado            --->$"<< pago_adelantado << endl;
+cout << "Cuenta final              ---> $"<< (cuenta+precioEstadia-pago_adelantado) << endl;
+/// EN ESTE PUNTO SE LE MUESTRAN TODAS LAS COMPRAS QUE HIZO LA HABITACION ///
+/// TANTO LAS PAGADAS COMO LAS NO PAGADAS ///
+/// Y OBVIO SE LE COBRAN LAS QUE NO PAGO ///
+cout << "Pagar (si/no): ";
+limpiarBuffer();
+cin.getline(pago,3);
+
+if (strcmp(pago,"si")==0){
+        if(liberarHabitacion(numeroHab)){
+            cout << "Habitación "<< numeroHab << " liberada y en limpieza..."<< endl;
+            pausa();
+        }
+        activa=false;
+        return true;
+}
+if (strcmp(pago,"SI")==0){
+        if(liberarHabitacion(numeroHab)){
+            cout << "Habitación "<< numeroHab << " liberada y en limpieza..."<< endl;
+            pausa();
+        }
+        activa=false;
+        return true;
+}
+
+return false;
+
+}
 
 void Habitacion_ocupada::consultar(){
+    Tipo_habitacion aux;
 cout << "Numero de estadia: "<< numeroDeEstadia << endl;
+cout << "Numero de habitación: "<< numeroHab << endl;
+datosCliente.mostrar();
+int pos=tipoHab-'0';
+/// se le resta una unidad para que concuerde con la pos del archivo
+aux.leerDeDisco(pos-1);
+cout << "Tipo de habitación: "<< aux.getNombre();
+cout << endl;
+cout << "Servicio contratado: "<< serv_contratado << endl;
+cout << "Hora limpieza: "<< hora_limpieza << endl;
+cout << "Cuenta actual  ---> $"<< cuenta << endl;
+cout << "Pago adelantado---> $"<< pago_adelantado << endl;
+cout << "Fecha de entrada: "; entra.mostrarConBarra();
+cout << "Fecha de salida:  "; sale.mostrarConBarra();
 
 cout << "El resto esta en mantenimiento :D"<< endl;
 pausa();
 
-
-
-
-
-
 }
 
+/// FIN HABITACION OCUPADA ///
 
 
-
-
+/// CLASE HABITACION MANTENIMIENTO ///
 
 class Habitacion_mantenimiento:public Habitacion
 {
@@ -524,6 +817,9 @@ public:
     void cargar  (); ///Carga una nueva reserva
 };*/
 
+/// FIN CLASE HABITACION MANTENIMIENTO ///
+
+/// CLASE GASTO ///
 void Gasto::cargar() /// cambiarle tipo de gasto por codigo de producto a vender
 {                    /// agregarle la cantidad a vender
     FILE *g;         /// añadir pago si / pago no
@@ -740,6 +1036,10 @@ void Gasto::modificar()
 
     fclose(g);
 }
+
+
+/// FIN CLASE GASTO ///
+
 /*void Habitacion_reserva::cargar()
 {
     char fi[11],fs[11];
@@ -798,6 +1098,8 @@ void Habitacion_reserva::consulta_total()
     }
     fclose(r);
 }*/
+
+
 int contarTiposHabitaciones(){
     FILE *F;
     F=fopen(FILE_TIPO_HABITACION,"rb");
@@ -838,7 +1140,7 @@ Habitacion aux;
 int pos=0;
 while(aux.leerDeDisco(pos++)==1){
 
-    if(strcmp(numHabitacion,aux.getHabitacion())==0)
+    if(strcmp(numHabitacion,aux.getNumero())==0)
         return false;
 
 }
@@ -849,7 +1151,7 @@ return true;
 
 
 
-bool Habitacion::cargar_habitacion()
+bool Habitacion::cargar_habitacion() /// no esta en uso actualmente
 {
   FILE *h;
     h=fopen("habitaciones.dat","ab");
@@ -859,7 +1161,7 @@ bool Habitacion::cargar_habitacion()
         return false;
     }
     fseek(h,0,2);
-    id=((ftell(h)/sizeof(*this))+1);
+///    id=((ftell(h)/sizeof(*this))+1);
     cout<<"Ingrese el numero de la habitacion: ";
     limpiarBuffer();
     cin.getline(numero,4);
@@ -876,7 +1178,7 @@ bool Habitacion::cargar_habitacion()
     }
     listaDeTipos();
     cout << "Seleccione tipo de habitacion: "<< endl;
-    cin>>tipo;
+    cin  >>tipo;
     estado=true;
     limpio=true;
     mantenimiento=false; /// se carga en false , si va a mantenimiento se pone en true
@@ -941,6 +1243,7 @@ void Tipo_habitacion::cargar(){
     cin.getline(vista,500);
 
 }
+
 void Tipo_habitacion::mostrar(){
 
 
@@ -961,19 +1264,19 @@ void Tipo_habitacion::mostrar(){
 
 /// cuanta las habitacion del tipo que le mandes
 int contarHabitaciones(char tipo){
-Tipo_habitacion aux;
+Habitacion aux;
 int pos=0;
-char nombreHabitacion[30];
-if (tipo=='1')strcpy(nombreHabitacion,"Estandar");
-if (tipo=='2')strcpy(nombreHabitacion,"Suite");
-if (tipo=='3')strcpy(nombreHabitacion,"Master Suite");
-if (tipo=='4')strcpy(nombreHabitacion,"Presidencial");
+/*int codigo=tipo-'0';
+codigo--;*/
 int cantidad=0;
-while(aux.leerDeDisco(pos++)==1){
+while(aux.leerDeDisco(pos)==1){
 
 
-    if(strcmp(nombreHabitacion,aux.getNombre())==0) cantidad++;
+    if(tipo==aux.getTipo()){
 
+            cantidad++;
+    }
+    pos++;
 }
 return cantidad;
 /// cuenta y devuelve la cantidad de habitaciones de un tipo
@@ -1026,7 +1329,7 @@ void Habitacion::mostrar_habitacion()
     while(fread(this,sizeof(*this),1,h)==1)
     {
         t.get_nombre(tipo,nom);
-        cout<<"ID:         "<<id<<endl;
+///        cout<<"ID:         "<<id<<endl;
         cout<<"Habitacion: "<<numero<<endl;
         cout<<"Tipo:       "<<nom<<endl;
         cout<<"Costo: $    "<<t.get_costo(tipo)<<endl;
@@ -1052,15 +1355,61 @@ void Habitacion::mostrar_habitacion()
     fclose(h);
 }
 
+int contarRegistrosHabitaciones(){
+
+Habitacion aux;
+int pos=0;
+while(aux.leerDeDisco(pos)==1){
+
+    pos++;
+
+}
+
+return pos;
+}
+
+
+void Habitacion::cargar(){
+
+    ///int cant=contarRegistrosHabitaciones();
+    ///id=cant+1;
+    cout<<"Ingrese el numero de la habitacion: ";
+    limpiarBuffer();
+    cin.getline(numero,4);
+    while(!verificarNumeroHabitacion(numero)){
+        borrarPantalla();
+        cout << "Habitación con ese numero ya fue creada"<< endl;
+        pausa();
+        borrarPantalla();
+        cout<<"Ingrese el numero de la habitacion: ";
+        limpiarBuffer();
+        cin.getline(numero,4);
+
+
+    }
+    listaDeTipos();
+    cout << "Seleccione tipo de habitacion: "<< endl;
+    cin  >>tipo;
+    estado=true;
+    limpio=true; /// se inicializan limpias /// por eso el estado true
+    mantenimiento=false; /// se carga en false , si va a mantenimiento se pone en true
+
+
+}
+
+
 /// mostrar habitacion mauri
 void Habitacion::mostrar(){
 Tipo_habitacion aux;
-cout << "Id: "<< id << endl;
+///cout << "Id: "<< id << endl;
 cout << "Numero de habitación: "<< numero << endl;
-
-aux.leerDeDisco(tipo);
-cout << "Tipo de habitación: "<< aux.getNombre() << endl;
-cout << "Precio por noche: "<< aux.getCosto()<< endl;
+int pos=tipo-'0';
+/// se le resta una unidad para que concuerde con la pos del archivo
+aux.leerDeDisco(pos-1);
+cout << "Tipo de habitación: "<< aux.getNombre();
+cout << endl;
+cout << "Precio por noche: $ "<< aux.getCosto();
+cout << endl;
 if (estado==true){
         cout<<"Estado: Disponible"<<endl;
         }
@@ -1096,7 +1445,7 @@ void Habitacion::mostrar_habitacion_tipo(int ti)
         if(tipo==ti)
         {
         t.get_nombre(tipo,nom);
-        cout<<"ID:         "<<id<<endl;
+///        cout<<"ID:         "<<id<<endl;
         cout<<"Habitacion: "<<numero<<endl;
         cout<<"Tipo:       "<<nom<<endl;
         cout<<"Costo: $"<<t.get_costo(tipo)<<endl;
@@ -1122,7 +1471,7 @@ void Habitacion::mostrar_habitacion_estado(char e)
         if(estado==e)
         {
         t.get_nombre(tipo,nom);
-        cout<<"ID: "<<id<<endl;
+///        cout<<"ID: "<<id<<endl;
         cout<<"Habitacion: "<<numero<<endl;
         cout<<"Tipo: "<<nom<<endl;
         cout<<"Costo: $"<<t.get_costo(tipo)<<endl;
@@ -1132,54 +1481,64 @@ void Habitacion::mostrar_habitacion_estado(char e)
     }
     fclose(h);
 }
-/// FUNCIONES
+
 
 void mostrarTodasHabitaciones(){
 Habitacion aux;
 int pos=0;
-while(aux.leerDeDisco(pos++)==1){
+while(aux.leerDeDisco(pos)==1){
 
 
       aux.mostrar();
-
+        pos++;
   }
 
 }
 void mostrarHabLibres(){
 Habitacion aux;
 int pos=0;
-while(aux.leerDeDisco(pos++)==1){
+while(aux.leerDeDisco(pos)==1){
 
 
     if(aux.getEstado()==true){
             aux.mostrar();
           }
+          pos++;
   }
 
 }
 const char* asignarHabitacion(char tipo){
 Habitacion aux;
 int pos=0;
-while(aux.leerDeDisco(pos++)==1){
+while(aux.leerDeDisco(pos)==1){
 
     if((aux.getEstado()==true)&&(aux.getTipo()==tipo)){
         aux.setEstado(false);
         aux.modificarEnDisco(pos);
-        return aux.getHabitacion();
+        return aux.getNumero();
                 }
-
+        pos++;
         }
+
 
 }
 
 void mostrarHabOcupadas(){
 Habitacion_ocupada aux;
 int pos=0;
-while(aux.leerDeDisco(pos++)==1){
+bool vacio=true;
+while(aux.leerDeDisco(pos)==1){
 
     if(aux.getActiva()==true){
+            vacio=false;
         aux.consultar();
     }
+    pos++;
+}
+if(vacio==true){
+
+    cout << "En este momento no hay habitaciones ocupadas."<< endl;
+    pausa();
 }
 
 }
@@ -1187,27 +1546,27 @@ while(aux.leerDeDisco(pos++)==1){
 void mostrarHabEnLimpieza(){
 Habitacion aux;
 int pos=0;
-while(aux.leerDeDisco(pos++)==1){
+while(aux.leerDeDisco(pos)==1){
 
 
     if(aux.getLimpio()==false){
             aux.mostrar();
           }
+          pos++;
   }
 
 }
 void mostrarHabEnMantenimiento(){
 Habitacion aux;
 int pos=0;
-while(aux.leerDeDisco(pos++)==1){
+while(aux.leerDeDisco(pos)==1){
 
 
     if(aux.getMatenimiento()==true){
             aux.mostrar(); /// se deberia mostrar clase habitacion en mantenimiento
           }
+          pos++;
   }
-
-
 
 }
 
@@ -1265,12 +1624,61 @@ if(reg.escribirEnDisco()){
     cout << "Se asigno habitación "<< reg.getNumero();
     pausa();
         }
+}
 
+
+
+void realizarCheckOut(){
+
+Habitacion_ocupada aux;
+char num[4];
+cout << "Ingrese habitación: ";
+limpiarBuffer();
+cin.getline(num,4);
+int pos=buscarHabitacionOcupada(num);
+aux.leerDeDisco(pos);
+if(aux.desocupar()){
+    aux.modificarEnDisco(pos);
+
+    cout << "Check out realizado con éxito"<< endl;
+    pausa();
+}
+ else{
+        cout << "No se realizo check out"<< endl;
+        pausa();
+    }
+}
+
+
+void nuevaVenta(){
+
+Venta reg;
+reg.cargar();
+if(reg.escribirEnDisco()){
+
+    cout << "Venta cargada con éxito"<< endl;
+    pausa();
+}
+if (reg.getPago()==true){
+
+    cout << "Cagar pago a caja del hotel"<< endl;
+}
 
 
 }
 
+void mostrarVenta(){
 
+Venta aux;
+int pos=0;
+while(aux.leerDeDisco(pos++)==1){
+
+
+    aux.mostrar();
+    pausa();
+}
+
+}
 
 int menuHabitaciones()
 {
@@ -1285,40 +1693,38 @@ int menuHabitaciones()
         cout << "\t\t1) CARGAR NUEVA ESTADIA SIN RESERVA     "<< endl;
         cout << "\t\t2) RECEPCIÓN(misma funcion que en el menu principal)"<< endl;
         cout << "\t\t3) CHECK OUT(misma funcion que en el menu principal)"<< endl;
-        cout << "\t\t4) VER HABITACIONES" << endl; ///LIBRES , OCUPADAS, EN LIMPIEZA, TODAS
-        cout << "\t\t5) VENTA DE PRODUCTOS(GASTO)            " << endl;///Cargar modificar y eliminar gastos,
-        cout << "\t\t6) CARGAR HABITACION PARA MANTENIMIENTO " << endl;
-        cout << "\t\t7) CARGAR HABITACION PARA LIMPIEZA      " << endl;
+        cout << "\t\t4) VER HABITACIONES "<< endl; ///LIBRES , OCUPADAS, EN LIMPIEZA, TODAS
+        cout << "\t\t5) VENTA DE PRODUCTOS            " << endl;///Cargar modificar y eliminar gastos,
+        cout << "\t\t6) MANTENIMIENTO HABITACIÓN (por ahora lo usamos para mostrar las ventas) " << endl; /// PONE Y SACA UNA HABITACION DE MANTENIMIENTO
+        cout << "\t\t7) LIMPIEZA HABITACIÓN      " << endl; /// PONE Y SACA UNA HABITACION DE LIMPIEZA
         cout << "\t\t0) Salir "<< endl;
         cout << endl << "\t\tOpción: ";
         cin >> opcion;
         borrarPantalla();
         switch(opcion){
           case 1:
-        cout << "En contruccion..."<<endl;
-        pausa();
+        cargarEstadia();
           break;
           case 2:
         menuRecepcion();
           break;
           case 3:
-            cout << "En contruccion..."<<endl;
-        pausa();
+       realizarCheckOut();
           break;
           case 4:
             mostrarHabitaciones();
           break;
           case 5:
-           cout << "En contruccion..."<<endl;
-        pausa();
+         nuevaVenta();
+
           break;
           case 6:
+              mostrarVenta(); /// desp esto va en la factura dentro del check out
               cout << "En contruccion..."<<endl;
-        pausa();
+                pausa();
             break;
           case 7:
-              cout << "En contruccion..."<<endl;
-        pausa();
+           menuLimpieza();
             break;
           case 0:
             return 0;
