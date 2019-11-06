@@ -9,6 +9,9 @@
 #include <vector>
 #include <ctype.h>
 
+
+
+
 using namespace std;
 #include "menuPrincipal.h"
 #include "menuClientes.h"
@@ -23,6 +26,7 @@ using namespace std;
 #include "class.h"
 #include "reportes.h"
 #include "check_out.h"
+#include "menuConfiguracion.h"
 
 
 
@@ -38,22 +42,22 @@ void cReservas();
 void cProductos();
 bool validarLogin(string);
 bool validarContrasenia(string);
+void cTipoHabitacion();
+void cEstadias();
+void cVentas();
 
-int ingresar();
+    int ingresar();
     /// ARCHIVOS
     ///const char *FILE_LOGIN = "usuarios.dat"; LOS LOGIN Y CONTRA SE AGREGARAN A LA CLASE EMPLEADOS PARA DIFERENCIARLOS
 
 
-
     const char *FILE_CONSUMOS     = "consumos.dat";
-    const char *FILE_HABITACIONES = "habitaciones.dat";
     const char *FILE_GASTOS       = "gastos.dat";
+
 
 
     /*const char Usuario[6] = "admin";
     const char contrasenia[5] = "7705";*/
-
-
 
 
 
@@ -68,8 +72,40 @@ void abrirArchivos(){
  cGastos();
  cReservas();
  cProductos();
+ cTipoHabitacion();
+ cEstadias();
+ cVentas();
+}
+
+
+void cVentas(){
+FILE*P;
+P=fopen(FILE_VENTAS,"ab");
+if(P==NULL){fclose(P);return;}
+fclose(P);
+return;
 
 }
+
+
+void cEstadias(){
+
+FILE*P;
+P=fopen(FILE_ESTADIAS,"ab");
+if(P==NULL){fclose(P);return;}
+fclose(P);
+return;
+
+}
+
+void cTipoHabitacion(){
+FILE*P;
+P=fopen(FILE_TIPO_HABITACION,"ab");
+if(P==NULL){fclose(P);return;}
+fclose(P);
+return;
+}
+
 void cClientes(){
     FILE*C;
     C=fopen(FILE_CLIENTES,"ab");
@@ -129,20 +165,12 @@ void cProductos(){
     fclose(P);
     return;
 
-
-
-
 }
 
 
 
 
 int main(){
-
-
-
-
-
 
 abrirArchivos();
 setlocale (LC_ALL, "spanish");
@@ -288,12 +316,6 @@ else {
     pausa();
     return permiso;
 
-
-
-
-
-
-
 }
 
 }
@@ -329,4 +351,5 @@ fclose(P);*/
 return false;
 
 }
+
 
