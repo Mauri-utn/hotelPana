@@ -19,7 +19,7 @@ const char *FILE_CLIENTES     = "clientes.dat";
 //const char *FILE_MENORES      = "menores.dat";
 
     /// ////// ///
-    /// CLASES ///
+    ///CLASES///
     /// ///// ///
 
     class Direccion{
@@ -269,7 +269,6 @@ if(P==NULL){
 fwrite(this,sizeof(Persona),1,P);
 fclose(P);
 return true;
-
 } */ /// graba una persona
 
 
@@ -315,7 +314,6 @@ void Persona::cargar(){
     cout << "O)Otro     "<<endl;
     cout << "OPCIÓN---> ";
     cin  >> genero;
-
     }*/ /// FALTA VALIDAR BIEN GENERO PARA QUE NO SEA UN CAMPO VACIO
 
     cout << "DNI: ";
@@ -701,7 +699,6 @@ int contarRegistrosClientes(){
 }
 
 /*bool grabarCliente(Cliente aux){
-
 FILE*P;
 P=fopen(FILE_CLIENTES,"ab");
 if(P==NULL){
@@ -811,13 +808,11 @@ void listarClientes(){
 
 
 /*void heapsortClientes(Cliente *v, long cant){
-
     int A[max],j,item,temp,i,k,n;
 	cout<<"Ingresa la cantidad de elementos del arreglo: ";
 	cin>>n;
 	for(i=1;i<=n;i++)
 	cin >> A[i];
-
 	for(k=n;k>0;k--)
 	{
 		for(i=1;i<=k;i++)
@@ -840,8 +835,6 @@ void listarClientes(){
 	for(i=1;i<=n;i++)
 	cout<<A[i] << endl;
 	return 0;
-
-
 }*/
 
 /// FUNCIONES PARA COMBINAR CON HABITACIONES
@@ -875,16 +868,13 @@ return false;
 FILE*P;
 P=fopen(FILE_CLIENTES,"rb");
 if(P==NULL){
-
     mensajes(1);
     pausa();
     return;
 }
 Cliente aux;
-
 while(fread(&aux,sizeof(Cliente),1,P)==1){
     if (strcmp(doc,aux.getDni())==0){
-
     /// lo que quieras
         fclose(P);
         return;
@@ -892,15 +882,12 @@ while(fread(&aux,sizeof(Cliente),1,P)==1){
      }
 fclose(P);
 return;
-
 }*/
 /// FIN FUNCIONES PARA COMBINAR CON HABITACIONES
 
 
 /*/// FUNCIONES GLOBALES MENORES ///
-
 bool grabarPersona(Persona aux){
-
 FILE*P;
 P=fopen(FILE_MENORES,"ab");
 if(P==NULL){
@@ -912,13 +899,10 @@ fwrite(&aux,sizeof(Persona),1,P);
 fclose(P);
 return true;
 }
-
 void listadoAlfabeticoMenores(){
-
   long cant;
   cant=contarRegistrosMenores();
   if(cant==0){
-
         mensajes(2);
         pausa();
         return ;
@@ -926,14 +910,12 @@ void listadoAlfabeticoMenores(){
   Persona *vec;
   vec=(Persona*) malloc(cant*sizeof(Persona));
   if(vec==NULL) return;
-
   copiarArchivoMemoria(vec,cant);
   ordenarVectorPersona(vec,cant);
   mostrarVectorPersona(vec,cant);// se muestra el vector ordenado
   pausa();
   borrarPantalla();
   free(vec);
-
 }
 void copiarArchivoMemoria(Persona *v,long cant){
   FILE *P;
@@ -945,27 +927,20 @@ void copiarArchivoMemoria(Persona *v,long cant){
     fread(v, sizeof(Persona),cant,P);
   fclose(P);
   }
-
   void ordenarVectorPersona(Persona *v, long cant){
   int i, j, posmin;
   Persona aux;
   for(i=0;i<cant-1;i++){
-
-
       posmin=i;
       for(j=i+1;j<cant;j++){
        if(strcmp(v[posmin].getNombre(),v[j].getNombre())>0)
                 posmin=j;
-
       }
       aux=v[i];
       v[i]=v[posmin];
       v[posmin]=aux;
-
-
     }
 }
-
 void mostrarVectorPersona(Persona *v, long cant){
     int i;
     for(i=0; i<cant; i++){
@@ -975,7 +950,6 @@ void mostrarVectorPersona(Persona *v, long cant){
         ///}
       }
 }
-
 int contarRegistrosMenores(){
     FILE *F;
     F=fopen(FILE_MENORES,"rb");
@@ -991,14 +965,11 @@ int contarRegistrosMenores(){
     cantidad=tam/tamanioreg;
     fclose(F);
     return cantidad;
-
 }
-
 bool existeMenor(const char*docu){
     FILE*P;
     P=fopen(FILE_CLIENTES,"rb");
     if(P==NULL){
-
     mensajes(1);
     pausa();
     return false;
@@ -1007,18 +978,15 @@ bool existeMenor(const char*docu){
         fclose(P);
         return false;
     }
-
     Cliente aux;
     while(fread(&aux,sizeof(Cliente),1,P)==1){
     if (strcmp(docu,aux.getDni())==0){
-
         fclose(P);
         return true;
         }
      }
     fclose(P);
     return false;
-
 }*/ /// FIN FUNCIONES GLOBALES MENORES ///
 
 int listarTodos(){
@@ -1415,4 +1383,5 @@ while(true){
 
 
 #endif // MENUCLIENTES_H_INCLUDED
+
 
