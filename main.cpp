@@ -17,16 +17,17 @@ using namespace std;
 #include "menuClientes.h"
 #include "misFunciones.h"
 #include "menuHabitaciones.h"
-#include "login_pass.h"
+///#include "login_pass.h"
 #include "menuReservas.h"
-#include "recepcion.h"
+///#include "recepcion.h"
 #include "productos.h"
-#include "CargarEmpleado.h"
-#include "FuncionesRamiro.h"
-#include "class.h"
-#include "reportes.h"
-#include "check_out.h"
+///#include "CargarEmpleado.h"
+///#include "FuncionesRamiro.h"
+///#include "class.h"
+///#include "reportes.h"
+///#include "check_out.h"
 #include "menuConfiguracion.h"
+
 
 
 
@@ -122,7 +123,7 @@ void cHabitaciones(){
 }
 void cEmpleados(){
     FILE*E;
-    E=fopen(FILE_EMPLEADOS,"ab");
+///    E=fopen(FILE_EMPLEADOS,"ab");
     if(E==NULL){fclose(E);return;}
     fclose(E);
     return;
@@ -199,13 +200,13 @@ char cerrar[2];
       case '2':
       case 'b':
       case 'B':
-            menuLogins(opc);
+///            menuLogins(opc);
         break;
 
       case '3':
       case 'c':
       case 'C':
-          menuLogins(opc);
+///          menuLogins(opc);
         break;
       case '0':
           cout << "\t\t¿Seguro que quiere cerrar el programa?"<< endl;
@@ -290,7 +291,6 @@ for(int i=0;i<usuarios.size();i++){
 }
 
 /*if ((Usuario==user)&&(contrasenia==pass)||(validarContrasenia(pass))&&(validarLogin(user))){
-
     ingresa = true;
 }*/
 if(!ingresa){
@@ -329,7 +329,6 @@ while(fread(&aux,sizeof(Empleado),1,P)==1){
     if(pasw==aux.getContra())
         fclose(P);
     return true;
-
 }
 fclose(P);*/
 return false;
@@ -345,7 +344,6 @@ while(fread(&aux,sizeof(Empleado),1,P)==1){
     if(log==aux.getLegajo())
         fclose(P);
     return true;
-
 }
 fclose(P);*/
 return false;
