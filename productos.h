@@ -17,6 +17,7 @@ void listaProductos();
 bool verificarCodigo(const char*);
 int buscarProducto(const char*);
 void nuevaVenta();
+bool descontarStock(int,const char*);
 
 class Producto{
     private:
@@ -292,6 +293,17 @@ else{
     }
 
 }
+
+}
+
+bool descontarStock(int cant,const char *cod){ /// descuenta stock en la venta ///
+Producto aux;
+int pos=buscarProducto(cod);
+aux.leerDeDisco(pos);
+int nStock=aux.getStock()-cant;
+aux.setStock(nStock);
+if(aux.modificarEnDisco(pos))return true;
+return false;
 
 }
 
