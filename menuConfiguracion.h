@@ -10,12 +10,17 @@ void nuevaHabitacionTipo();
 void consultarHabitaciones();
 void crearHabitacion();
 
+void realizarBackUp();
+void restaurarBackUp();
+
+
+/// HABITACIONES ///
 void nuevaHabitacionTipo(){
 
 Tipo_habitacion reg;
 reg.cargar();
 if(reg.escribirEnDisco()){
-cout << "Nuevo tipo de habitación cargada "<< endl;
+cout << "Nuevo tipo de habitaciÃ³n cargada "<< endl;
 pausa();
 }
 
@@ -35,22 +40,239 @@ pausa();
 
 void crearHabitacion(){
 Habitacion reg;
-if(reg.cargar_habitacion()){
-   cout << "Habitación creada con éxito" << endl;
+reg.cargar();
+
+if(reg.escribirEnDisco()){
+   cout << "HabitaciÃ³n creada con Ã©xito" << endl;
    pausa();
    }
 }
+
+/// FIN HABITACIONES ///
+/// BACK UPS ///
+
+
+//void backUpConsumos(){
+//    FILE *p;
+//    p = fopen("consumos.dat","rb");
+//    FILE *b;
+//    b = fopen("consumos.bkp","wb");
+//    if(p == NULL){
+//        cout << "ERROR: no se encontro el archivo " << endl;
+//        return ;
+//    }
+//    if(b == NULL){
+//        cout << "ERROR: no se encontro el archivo " << endl;
+//        return ;
+//    }
+//    Consumo reg;
+//    while(fread(&reg,sizeof reg,1,p)==1){
+//        fwrite(&reg,sizeof reg,1,b);
+//    }
+//    fclose(p);
+//    fclose(b);
+//    cout << "BackUp de Consumos realizado con exito" << endl;
+//    cout << endl;
+//    system("pause");
+//}
+
+void backUpHabitaciones(){
+    FILE *p;
+    p = fopen("habitaciones.dat","rb");
+    FILE *b;
+    b = fopen("habitaciones.bkp","wb");
+    if(p == NULL){
+        cout << "ERROR: no se encontro el archivo " << endl;
+        return ;
+    }
+    if(b == NULL){
+        cout << "ERROR: no se encontro el archivo " << endl;
+        return ;
+    }
+    Habitacion reg;
+    while(fread(&reg,sizeof reg,1,p)==1){
+        fwrite(&reg,sizeof reg,1,b);
+    }
+    fclose(p);
+    fclose(b);
+    cout << "BackUp de Habitaciones realizado con exito" << endl;
+    cout << endl;
+    system("pause");
+}
+
+void backUpGastos(){
+    FILE *p;
+    p = fopen("gastos.dat","rb");
+    FILE *b;
+    b = fopen("gastos.bkp","wb");
+    if(p == NULL){
+        cout << "ERROR: no se encontro el archivo " << endl;
+        return ;
+    }
+    if(b == NULL){
+        cout << "ERROR: no se encontro el archivo " << endl;
+        return ;
+    }
+    Gasto reg;
+    while(fread(&reg,sizeof reg,1,p)==1){
+        fwrite(&reg,sizeof reg,1,b);
+    }
+    fclose(p);
+    fclose(b);
+    cout << "BackUp de Gastos realizado con exito" << endl;
+    cout << endl;
+    system("pause");
+}
+
+void backUpEmpleados(){
+    FILE *p;
+    p = fopen("empleados.dat","rb");
+    FILE *b;
+    b = fopen("empleados.bkp","wb");
+    if(p == NULL){
+        cout << "ERROR: no se encontro el archivo " << endl;
+        return ;
+    }
+    if(b == NULL){
+        cout << "ERROR: no se encontro el archivo " << endl;
+        return ;
+    }
+    Empleados reg;
+    while(fread(&reg,sizeof reg,1,p)==1){
+        fwrite(&reg,sizeof reg,1,b);
+    }
+    fclose(p);
+    fclose(b);
+    cout << "BackUp de Empleados realizado con exito" << endl;
+    cout << endl;
+    system("pause");
+}
+
+//void restaurarBackUpConsumos(){
+//    FILE *p;
+//    p = fopen("consumos.bkp","rb");
+//    FILE *b;
+//    b = fopen("consumos.dat","wb");
+//    if(p == NULL){
+//        cout << "ERROR: no se encontro el archivo " << endl;
+//        return ;
+//    }
+//    if(b == NULL){
+//        cout << "ERROR: no se encontro el archivo " << endl;
+//        return ;
+//    }
+//    Consumo reg;
+//    while(fread(&reg,sizeof reg,1,p)==1){
+//        fwrite(&reg,sizeof reg,1,b);
+//    }
+//    fclose(p);
+//    fclose(b);
+//    cout << "Restauracion de Consumos realizado con exito" << endl;
+//    cout << endl;
+//    system("pause");
+//}
+
+void restaurarBackUpHabitaciones(){
+    FILE *p;
+    p = fopen("habitaciones.bkp","rb");
+    FILE *b;
+    b = fopen("habitaciones.dat","wb");
+    if(p == NULL){
+        cout << "ERROR: no se encontro el archivo " << endl;
+        return ;
+    }
+    if(b == NULL){
+        cout << "ERROR: no se encontro el archivo " << endl;
+        return ;
+    }
+    Habitacion reg;
+    while(fread(&reg,sizeof reg,1,p)==1){
+        fwrite(&reg,sizeof reg,1,b);
+    }
+    fclose(p);
+    fclose(b);
+    cout << "Restauracion de Habitaciones realizado con exito" << endl;
+    cout << endl;
+    system("pause");
+}
+
+void restaurarBackUpGastos(){
+    FILE *p;
+    p = fopen("gastos.bkp","rb");
+    FILE *b;
+    b = fopen("gastos.dat","wb");
+    if(p == NULL){
+        cout << "ERROR: no se encontro el archivo " << endl;
+        return ;
+    }
+    if(b == NULL){
+        cout << "ERROR: no se encontro el archivo " << endl;
+        return ;
+    }
+    Gasto reg;
+    while(fread(&reg,sizeof reg,1,p)==1){
+        fwrite(&reg,sizeof reg,1,b);
+    }
+    fclose(p);
+    fclose(b);
+    cout << "restauracion de Gastos realizado con exito" << endl;
+    cout << endl;
+    system("pause");
+}
+
+void restaurarBackUpEmpleados(){
+    FILE *p;
+    p = fopen("empleados.bkp","rb");
+    FILE *b;
+    b = fopen("empleados.dat","wb");
+    if(p == NULL){
+        cout << "ERROR: no se encontro el archivo " << endl;
+        return ;
+    }
+    if(b == NULL){
+        cout << "ERROR: no se encontro el archivo " << endl;
+        return ;
+    }
+    Empleados reg;
+    while(fread(&reg,sizeof reg,1,p)==1){
+        fwrite(&reg,sizeof reg,1,b);
+    }
+    fclose(p);
+    fclose(b);
+    cout << "restauracion de Empleados realizado con exito" << endl;
+    cout << endl;
+    system("pause");
+}
+
+
+void realizarBackUp(){
+///    backUpConsumos();
+    backUpHabitaciones();
+    backUpGastos();
+    backUpEmpleados();
+}
+void restaurarBackUp(){
+///    RestaurarBackUpConsumos();
+    restaurarBackUpHabitaciones();
+    restaurarBackUpGastos();
+    restaurarBackUpEmpleados();
+}
+
+
+
 int menuConfiguracion(){
 short opcion;
 while(true){
     borrarPantalla();
-    cout << "MENU CONFIGURACIÓN" << endl;
+    cout << "MENU CONFIGURACIÃ“N" << endl;
     cout << "------------------" << endl;
-    cout << "\t\t1) CREAR NUEVA HABITACIÓN               "<< endl;
-    cout << "\t\t2) CREAR NUEVA TIPO DE HABITACIÓN       " << endl; /// crea una nueva habitacion
+    cout << "\t\t1) CREAR NUEVA HABITACIÃ“N               "<< endl;
+    cout << "\t\t2) CREAR NUEVA TIPO DE HABITACIÃ“N       " << endl; /// crea una nueva habitacion
     cout << "\t\t3) MOSTRAR TIPO DE HABITACIONES CREADAS (esto desp se va)" << endl; /// consulta habitaciones disponibles
+    cout << "\t\t4) REALIZAR BACKUP" <<endl;
+    cout << "\t\t5) RESTAURAR BACKUP" <<endl;
     cout << "\t\t0) Salir "<< endl;
-    cout << endl << "Opción: ";
+    cout << endl << "OpciÃ³n: ";
     cin >> opcion;
     borrarPantalla();
     switch(opcion){
