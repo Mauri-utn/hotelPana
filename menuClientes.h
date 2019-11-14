@@ -16,7 +16,7 @@ int buscarClienteTarjeta(char *);
 int buscarClienteTelefono(char *);
 
 const char *FILE_CLIENTES     = "clientes.dat";
-//const char *FILE_MENORES      = "menores.dat";
+
 
     /// ////// ///
     ///CLASES///
@@ -132,6 +132,17 @@ public:
     /// sobrecarga de operadores
     bool operator==(Fecha);
 };
+
+/*bool Fecha::operator==(Fecha &obj)
+{
+
+  if((dia==obj.dia) && (mes==obj.mes) && (anio==obj.anio))return true;
+  return false;
+}*/ /// operatos == por referencia /// probar
+
+
+
+
 
 void Fecha::cargar(){
 
