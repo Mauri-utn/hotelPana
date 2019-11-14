@@ -9,13 +9,13 @@ int menuPrincipal(int);
 #include "menuClientes.h"
 #include "menuHabitaciones.h"
 #include "menuReservas.h"
-///#include "recepcion.h"
+#include "recepcion.h"
 #include "productos.h"
-///#include "CargarEmpleado.h"
-///#include "reportes.h"
-///#include "check_out.h"
+#include "CargarEmpleado.h"
+#include "reportes.h"
+#include "check_out.h"
 #include "menuConfiguracion.h"
-///#include "menuLimpieza.h"
+#include "menuLimpieza.h"
 
 
 int menuPrincipal(int permisos){
@@ -29,7 +29,9 @@ int menuPrincipal(int permisos){
     char opcion;
     while(true){
         borrarPantalla();
-        fechaHora();
+        fecha();
+        cout << endl;
+        hora();
         system("color 1F");
         cout << "\t\t---------PRINCIPAL---------" << endl;
         cout << "\t\t---------------------------" << endl;
@@ -57,7 +59,7 @@ int menuPrincipal(int permisos){
       case '2':
       case 'b':
       case 'B':
-///    menuRecepcion();
+    menuRecepcion();
         break;
       case '3':
       case 'c':
@@ -83,17 +85,17 @@ int menuPrincipal(int permisos){
       case '7':
       case 'g':
       case 'G':
-///            MenuEmpleados();
+            MenuEmpleados();
         break;
       case '8':
       case 'h':
       case 'H':
-
+        sectorMantenimiento();
         break;
       case '9':
       case 'i':
       case 'I':
-///        menuLimpieza();
+       menuLimpieza();
         break;
 
       case 'j':
@@ -103,7 +105,7 @@ int menuPrincipal(int permisos){
 
       case 'k':
       case 'K':
-///            menuReportes();
+                      menuReportes();
         break;
         case '0':
       return 0;
