@@ -4,7 +4,13 @@
 void abrirCaja();
 void cerrarCaja();
 
-class Caja{
+///relacionar con reporte diarion mensual y anual
+/// para facturar siempre tiene que haber una caja abierta
+/// agregar "menu" agresos para realizar y se resten de lo que tiene la caja abierta al momento del egreso
+
+
+
+class Caja{ /// relacionar con venta sumandole las que van pagando, el pago anticipado , y el check out
     private:
         bool estadoCaja;
         float aperturaCaja;
@@ -32,7 +38,7 @@ int menuCaja(){
 short opcion;
 while(true){
     borrarPantalla();
-    cout << "\t\t-------MENÚ REPORTES--------  " << endl;
+    cout << "\t\t-------MENÃš REPORTES--------  " << endl;
     cout << "\t\t----------------------------- " << endl;
     cout << "\t\t1) ABRIR CAJA             " << endl;
     cout << "\t\t2) CERRAR CAJA            " << endl;
@@ -136,3 +142,4 @@ void cerrarCaja(){
 }
 
 #endif // CAJA_H_INCLUDED
+
