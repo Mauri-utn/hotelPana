@@ -17,15 +17,15 @@ using namespace std;
 #include "menuClientes.h"
 #include "misFunciones.h"
 #include "menuHabitaciones.h"
-///#include "login_pass.h"
+#include "login_pass.h"
 #include "menuReservas.h"
-///#include "recepcion.h"
+#include "recepcion.h"
 #include "productos.h"
-///#include "CargarEmpleado.h"
-///#include "FuncionesRamiro.h"
-///#include "class.h"
-///#include "reportes.h"
-///#include "check_out.h"
+#include "CargarEmpleado.h"
+#include "FuncionesRamiro.h"
+#include "class.h"
+#include "reportes.h"
+#include "check_out.h"
 #include "menuConfiguracion.h"
 
 
@@ -46,6 +46,8 @@ bool validarContrasenia(string);
 void cTipoHabitacion();
 void cEstadias();
 void cVentas();
+void cHabitacionMantenimiento();
+
 
     int ingresar();
     /// ARCHIVOS
@@ -76,7 +78,19 @@ void abrirArchivos(){
  cTipoHabitacion();
  cEstadias();
  cVentas();
+ cHabitacionMantenimiento();
 }
+
+
+void cHabitacionMantenimiento(){
+FILE*P;
+P=fopen(FILE_MANTENIMIENTO,"ab");
+if(P==NULL){fclose(P);return;}
+fclose(P);
+return;
+
+}
+
 
 
 void cVentas(){
@@ -349,5 +363,3 @@ fclose(P);*/
 return false;
 
 }
-
-
