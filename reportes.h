@@ -1,11 +1,10 @@
 
-
 #ifndef REPORTES_H_INCLUDED
 #define REPORTES_H_INCLUDED
-
+#include "caja.h"
 
 int menuReportes();
-
+void reporteDiario();
 
 int menuReportes(){
 
@@ -23,7 +22,7 @@ while(true){
     borrarPantalla();
     switch(opcion){
       case 1:
-          cout << "En contruccion..."<<endl;
+          reporteDiario();
         pausa();
       break;
       case 2:
@@ -50,7 +49,27 @@ while(true){
     }
 }
 
+void reporteDiario(){
+    Caja reg;
+    int i=0;
+    while(reg.LeerDeDisco(i++)){
+        cout << "dia: " << i << endl;
+        cout << "Cantidad vendida:  ---> " << reg.getCierreCaja() << endl;
 
+    }
+    system("pause");
+}
+
+void reporteMensual(){
+    Caja reg;
+    int i=0;
+    while(reg.LeerDeDisco(i++)){
+        cout << "mes " << i << endl;
+        cout << "Cantidad vendida:  ---> " << reg.getCierreCaja() << endl;
+
+    }
+    system("pause");
+}
 #endif // REPORTES_H_INCLUDED
 
 
