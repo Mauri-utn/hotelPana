@@ -11,13 +11,18 @@ int buscarReserva(char*);
 int buscarReservaId(int);
 bool consultarDisponibilidad(Fecha,Fecha,char);
 int contarHabitacionesOcupadas(Fecha,Fecha,char);
-int contarHabitaciones(char);
+const char* nombreTipoHabitacion(char);
+void mostrarTipo(char);
+
+void listaDeTipos();
+
 
 
 
 #include "misFunciones.h"
 #include "menuHabitaciones.h"
 #include "menuClientes.h"
+
 const char *FILE_RESERVAS  = "reservas.dat";
 
 class Reserva{
@@ -82,6 +87,12 @@ class Reserva{
 
 
 };
+
+bool comprobarFecha1(Reserva,Fecha,Fecha); /// comprueba si dentro de la fecha ingresada ya hay una reserva hecha
+bool comprobarFecha2(Reserva,Fecha,Fecha); /// comprueba si se quiere reservar dentro de una fecha de reserva ya registrada
+bool comprobarFecha3(Reserva,Fecha,Fecha); /// comprueba si la salida de la reserva que se quiere hacer esta dentro de una reserva ya hecha
+bool comprobarFecha4(Reserva,Fecha,Fecha); /// comprueba si la entrada de la reserva que se quiere hacer esta dentro de una reserva ya hecha
+///bool comprobarFecha5(Reserva,Fecha,Fecha);
 
 int Reserva::leerDeDisco(int pos) /// lee el disco hasta encontrar el registro
 	{
@@ -208,37 +219,156 @@ int buscarReservaId(int iden){ ///devuelve la posicion de la reserva en el archi
 	return -1;
 }
 
-int contarHabitacionesOcupadas(Fecha entra,Fecha sale, char _tipo){
-Reserva aux;
-char nombreHabitacion[30];
-int pos=0;
-int cantidad=0;
-while(aux.leerDeDisco(pos)==1){
 
-if((aux.getFechaEntrada()==entra)&&(aux.getFechaSalida()==sale)&&(_tipo==aux.getTipo())){
-        cantidad ++;
+/// comprueba si dentro de la fecha ingresada ya hay una reserva hecha ///
+bool comprobarFecha1(Reserva aux,Fecha entrada,Fecha salida){
+
+int valid=0;
+if (entrada.getAnio()<=aux.getAnioEntrada()){
+        valid++;
+    if(entrada.getMes()<=aux.getMesEntrada()){
+        valid++;
+        if(entrada.getDia()<=aux.getDiaEntrada()){
+            valid++;
         }
-
-    pos++;
-}
-return cantidad;
-
+    }
 }
 
-
-bool consultarDisponibilidad(Fecha in,Fecha out,char tipo){
-
-int cantHabitaciones=contarHabitaciones(tipo);
-int cantOcupadas=contarHabitacionesOcupadas(in,out,tipo);///  ver bien esta funcion
-cout << "cant habitaciones "<< cantHabitaciones<< endl;
-cout << "cant ocupadas "<< cantOcupadas << endl;
-pausa();
-if(cantOcupadas>=cantHabitaciones)return false;
+if (salida.getAnio()>=aux.getAnioSalida()){
+        valid++;
+    if(salida.getMes()>=aux.getMesSalida()){
+        valid++;
+        if(salida.getDia()>=aux.getDiaSalida()){
+            valid++;
+        }
+    }
+}
+if(valid==6)return false;
 else return true;
-/// si la cantidad de habitaciones ocupadas en esa fecha es mayor
-/// a la cantidad de habitaciones que hay
-/// ==> no hay disponibilidad
+
+
 }
+
+
+/// comprueba si se quiere reservar dentro de una fecha de reserva ya registrada ///
+bool comprobarFecha2(Reserva aux,Fecha entrada,Fecha salida){
+
+int valid=0;
+if (aux.getAnioEntrada()<=entrada.getAnio()){
+        valid++;
+    if(aux.getMesEntrada()<=entrada.getMes()){
+        valid++;
+        if(aux.getDiaEntrada()<=entrada.getDia()){
+            valid++;
+        }
+    }
+}
+
+if (aux.getAnioSalida()>=salida.getAnio()){
+        valid++;
+    if(aux.getMesSalida()>=salida.getMes()){
+        valid++;
+        if(aux.getDiaSalida()>=salida.getDia()){
+            valid++;
+        }
+    }
+}
+if(valid==6)return false;
+else return true;
+
+
+}
+
+
+/// comprueba si la salida de la reserva que se quiere hacer esta dentro de una reserva ya hecha ///
+bool comprobarFecha3(Reserva aux,Fecha entrada,Fecha salida){
+
+int valid=0;
+if (entrada.getAnio()<=aux.getAnioEntrada()){
+        valid++;
+    if(entrada.getMes()<=aux.getMesEntrada()){
+        valid++;
+        if(entrada.getDia()<=aux.getDiaEntrada()){
+            valid++;
+        }
+    }
+}
+
+if ((salida.getAnio()<=aux.getAnioSalida())&&(salida.getAnio()>=aux.getAnioSalida())){
+        valid++;
+    if(salida.getMes()<=aux.getMesSalida()&&(salida.getMes()>=aux.getMesSalida())){
+        valid++;
+        if(salida.getDia()<=aux.getDiaSalida()&&(salida.getDia()>=aux.getDiaSalida())){
+            valid++;
+        }
+    }
+}
+if(valid==6)return false;
+else return true;
+
+
+}
+
+/// comprueba si la entrada de la reserva que se quiere hacer esta dentro de una reserva ya hecha ///
+
+bool comprobarFecha4(Reserva aux,Fecha entrada,Fecha salida){
+
+int valid=0;
+if (entrada.getAnio()>=aux.getAnioEntrada()&&entrada.getAnio()<=aux.getAnioEntrada()){
+        valid++;
+    if(entrada.getMes()>=aux.getMesEntrada()&&(entrada.getMes()<=aux.getMesEntrada())){
+        valid++;
+        if(entrada.getDia()>=aux.getDiaEntrada()&&entrada.getDia()<=aux.getDiaEntrada()){
+            valid++;
+        }
+    }
+}
+
+if (salida.getAnio()>=aux.getAnioSalida()){
+        valid++;
+    if(salida.getMes()>=aux.getMesSalida()){
+        valid++;
+        if(salida.getDia()>=aux.getDiaSalida()){
+            valid++;
+        }
+    }
+}
+if(valid==6)return false;
+else return true;
+
+
+}
+
+
+/*bool comprobarFecha5(Reserva aux,Fecha entrada,Fecha salida){
+
+int valid=0;
+if (entrada.getAnio()==aux.getAnioEntrada()){
+        valid++;
+    if(entrada.getMes()==aux.getMesEntrada()){
+        valid++;
+        if(entrada.getDia()==aux.getDiaEntrada()){
+            valid++;
+        }
+    }
+}
+
+if (salida.getAnio()==aux.getAnioSalida()){
+        valid++;
+    if(salida.getMes()==aux.getMesSalida()){
+        valid++;
+        if(salida.getDia()==aux.getDiaSalida()){
+            valid++;
+        }
+    }
+}
+if(valid==6)return false;
+else return true;
+
+
+}*/
+
+
 
 
 
@@ -266,10 +396,7 @@ cin.getline(identidad,10);
     cin.getline(apellidos,50);
 
 cout << "---Habitación---    "<< endl;
-cout << "1-Estandar          "<< endl;
-cout << "2-Suite             "<< endl;
-cout << "3-Master suite      "<< endl;
-cout << "4-Presidencial      "<< endl;
+listaDeTipos();
 cout << "selec: ";
 cin  >> tipoHabitacion;
 cout << "---Seleccione fecha de reserva---"<<endl;
@@ -277,16 +404,13 @@ cout << "Desde: "<<endl;
 entrada.cargar();
 cout << "Hasta: "<<endl;
 salida.cargar();
-while(!consultarDisponibilidad(entrada,salida,tipoHabitacion)){
+while(consultarDisponibilidad(entrada,salida,tipoHabitacion)==false){
     borrarPantalla();
     cout << "Sin disponibilidad para ese rango de fecha"<< endl;
     pausa();
     borrarPantalla();
     cout << "---Habitación---    "<< endl;
-    cout << "1-estandar          "<< endl;
-    cout << "2-suite             "<< endl;
-    cout << "3-master suite      "<< endl;
-    cout << "4-precidencial      "<< endl;
+    listaDeTipos();
     cout << "selec: ";
     cin  >> tipoHabitacion;
     cout << "---Seleccione fecha de reserva---"<<endl;
@@ -294,7 +418,7 @@ while(!consultarDisponibilidad(entrada,salida,tipoHabitacion)){
     entrada.cargar();
     cout << "Hasta: "<<endl;
     salida.cargar();
-
+    /// ponerle una funcion para salir ///
 
 }
 
@@ -313,22 +437,10 @@ cout << "ID Reserva :  "<< idReserva <<endl;
 cout << "Dni cliente:  "<< identidad << endl;
 cout << "Nombre:       "<< nombres   << endl;
 cout << "Apellidos:    "<< apellidos << endl;
-char tipo[20];
-switch(tipoHabitacion){
-case '1':
-strcpy(tipo,"Estandar");
-break;
-case '2':
-    strcpy(tipo,"Suite");
-    break;
-case '3':
-    strcpy(tipo,"Master Suite");
-    break;
-case '4':
-    strcpy(tipo,"Presidencial");
-    break;
-}
-cout << "Habitación:   "<< tipo << endl;
+/*char nombre[30];
+strcpy(nombre,nombreTipoHabitacion(tipoHabitacion));
+cout << "Habitación: "<< nombre << endl;*/
+mostrarTipo(tipoHabitacion);
 cout << "Fecha de entrada: "; entrada.mostrarConBarra();
 cout << "Fecha de salida:  "; salida.mostrarConBarra();
 /// falta validar ambas fechas
@@ -501,4 +613,4 @@ while(true){
 
 }
 
-#endif // MENURESERVAS_H_INCLUDED 
+#endif // MENURESERVAS_H_INCLUDED
