@@ -81,15 +81,15 @@ int MenuEmpleados(){
     int opcion;
     while(true){
     system("cls");
-    cout << "ELIJA UNA CATEGORIA" <<endl;
-    cout << "--------------" <<endl;
-    cout << "1)Cargar Empleado " <<endl;
-    cout << "2)Mostrar Empleados " <<endl;
-    cout << "3)Modificar Empleado " <<endl;
-    cout << "4)Dar de Baja un empleado" <<endl;
-    cout << "0)Volver " << endl;
-    cout << "--------------" <<endl;
-    cout << "Ingrese opcion:" << endl;
+    cout << "\t\tELIJA UNA CATEGORIA" <<endl;
+    cout << "\t\t--------------" <<endl;
+    cout << "\t\t1)Cargar Empleado " <<endl;
+    cout << "\t\t2)Mostrar Empleados " <<endl;
+    cout << "\t\t3)Modificar Empleado " <<endl;
+    cout << "\t\t4)Dar de Baja un empleado" <<endl;
+    cout << "\t\t0)Volver " << endl;
+    cout << "\t\t--------------" <<endl;
+    cout << "\t\tIngrese opcion:" << endl;
     cin >> opcion;
     system ("cls");
     switch(opcion){
@@ -122,16 +122,16 @@ void cargarEmpleado(){
     class Empleados reg;
     int opcion;
     system("cls");
-    cout << "ELIJA UNA CATEGORIA" <<endl;
-    cout << "--------------" <<endl;
-    cout << "1) LIMPIEZA" <<endl;
-    cout << "2) ADMINISTRACION" <<endl;
-    cout << "3) SEGURIDAD" <<endl;
-    cout << "4) MANTENIMIENTO" <<endl;
-    cout << "5) OTROS" <<endl;
-    cout << "0) Volver " << endl;
-    cout << "--------------" <<endl;
-    cout << "Ingrese opcion:" << endl;
+    cout << "\t\tELIJA UNA CATEGORIA" <<endl;
+    cout << "\t\t--------------" <<endl;
+    cout << "\t\t1) LIMPIEZA" <<endl;
+    cout << "\t\t2) ADMINISTRACION" <<endl;
+    cout << "\t\t3) SEGURIDAD" <<endl;
+    cout << "\t\t4) MANTENIMIENTO" <<endl;
+    cout << "\t\t5) OTROS" <<endl;
+    cout << "\t\t0) Volver " << endl;
+    cout << "\t\t--------------" <<endl;
+    cout << "\t\tIngrese opcion:" << endl;
     cin >> opcion;
     system ("cls");
     switch(opcion){
@@ -217,16 +217,16 @@ void Personaa::Cargar()
 	}
 void Personaa::Mostrar()
 	{
-	cout<<"Nombre: ";
+	cout<<"\t\tNombre: ";
 	cout<<nombres<<endl;
-	cout<<"Apellido: ";
+	cout<<"\t\tApellido: ";
 	cout<<apellidos<<endl;
-	cout << "FECHA DE NACIMIENTO ---> " ; fecha_nac.mostrarConBarra();
-	cout<<"Domicilio: "<< endl;
+	cout << "\t\tFECHA DE NACIMIENTO ---> " ; fecha_nac.mostrarConBarra();
+	cout<<"\t\tDomicilio: "<< endl;
 	domicilio.mostrar();
-	cout<<"Documento: ";
+	cout<<"\t\tDocumento: ";
 	cout<<dni<<endl;
-	cout<<"Telefono: ";
+	cout<<"\t\tTelefono: ";
 	cout<<telefono<<endl;
 	}
 void Empleados::Cargar(){
@@ -254,15 +254,15 @@ void Empleados::Cargar(){
 
 void Empleados::Mostrar(){
     Personaa::Mostrar();
-    cout << "Id: " << Id << endl;
-    cout << "Genero: " << Genero << endl;
-    cout << "Area: " << Area << endl;
-    cout << "Turno: " << Turno << endl;
-    cout << "Sueldo: $" << Sueldo << endl;
-    cout << "Cuil: " << Cuil << endl;
-    cout << "Estado " << ActivoInactivo << endl;
+    cout << "\t\tId: " << Id << endl;
+    cout << "\t\tGenero: " << Genero << endl;
+    cout << "\t\tArea: " << Area << endl;
+    cout << "\t\tTurno: " << Turno << endl;
+    cout << "\t\tSueldo: $" << Sueldo << endl;
+    cout << "\t\tCuil: " << Cuil << endl;
+    cout << "\t\tEstado " << ActivoInactivo << endl;
     cout << endl;
-    cout << "-------------------------------------" << endl;
+    cout << "\t\t-------------------------------------" << endl;
     cout << endl;
 }
 
@@ -299,10 +299,10 @@ bool buscarId(int id){
 }
 void modificarEmpleado(){
     int id;
-    cout << "Ingrese Id del Empleado" << endl;
+    cout << "\t\tIngrese Id del Empleado" << endl;
     cin >> id;
     int aux = buscarId(id);
-    if(aux==-1){ cout << "No se encontro el Id" << endl; system("pause"); return ;}
+    if(aux==-1){ cout << "\t\tNo se encontro el Id" << endl; system("pause"); return ;}
     cout << "VALOR DE AUX " << aux << endl;
     Empleados reg;
     aux=aux-1;
@@ -317,13 +317,13 @@ void EmpleadosActivosInactivos(){
     class Empleados reg;
     int opcion;
     system("cls");
-    cout << "ELIJA UNA CATEGORIA" <<endl;
-    cout << "--------------" <<endl;
-    cout << "1) Cambiar estado de empleado a Activo" <<endl;
-    cout << "2) Cambiar estado de empleado a Inactivo" <<endl;
-    cout << "0) Volver " << endl;
-    cout << "--------------" <<endl;
-    cout << "Ingrese opcion:" << endl;
+    cout << "\t\tELIJA UNA CATEGORIA" <<endl;
+    cout << "\t\t--------------" <<endl;
+    cout << "\t\t1) Cambiar estado de empleado a Activo" <<endl;
+    cout << "\t\t2) Cambiar estado de empleado a Inactivo" <<endl;
+    cout << "\t\t0) Volver " << endl;
+    cout << "\t\t--------------" <<endl;
+    cout << "\t\tIngrese opcion:" << endl;
     cin >> opcion;
     system ("cls");
     switch(opcion){
@@ -343,10 +343,10 @@ void EmpleadoActivo(){
     char documento[20];
     int pos;
     fflush(stdin);
-    cout << "ingrese el DNI del empleado que quiere dar de alta" << endl;
+    cout << "\t\tingrese el DNI del empleado que quiere dar de alta" << endl;
     cin.getline(documento,20);
     pos = buscarDNI(documento);
-    if(pos==-1){cout << "No se encontro el dni" << endl; return;}
+    if(pos==-1){cout << "\t\tNo se encontro el dni" << endl; return;}
     Empleados reg;
     pos = pos-1;
     reg.LeerDeDisco(pos);
@@ -359,10 +359,10 @@ void EmpleadoInactivo(){
     char documento[20];
     int pos;
     fflush(stdin);
-    cout << "ingrese el DNI del empleado que quiere dar de Baja" << endl;
+    cout << "\t\tingrese el DNI del empleado que quiere dar de Baja" << endl;
     cin.getline(documento,20);
     pos = buscarDNI(documento);
-    if(pos==-1){cout << "No se encontro el dni" << endl; return;}
+    if(pos==-1){cout << "\t\tNo se encontro el dni" << endl; return;}
     Empleados reg;
     pos = pos-1;
     reg.LeerDeDisco(pos);
@@ -412,7 +412,7 @@ void Empleados::EscribirPosicionEnDisco(int pos){
 int comprobarCadNumericas(char *cadena){
     int i=0,tam;
     tam=strlen(cadena);
-    if(tam==0){cout << "no aprete enter señor" << endl; system("pause"); return -1;}
+    if(tam==0){cout << "no aprete enter seÃ±or" << endl; system("pause"); return -1;}
     while(i<tam){
         if(isdigit(cadena[i])==0){
             cout << "esta cadena contiene algun caracter no numerico" << endl;
@@ -425,7 +425,7 @@ int comprobarCadNumericas(char *cadena){
 int comprobarNombresApellidos(char *cadena){
     int i=0,tam,onlySpace=0;
     tam=strlen(cadena);
-    if(tam==0){ cout << "No aprete enter señor" << endl; system("pause"); return -1;}
+    if(tam==0){ cout << "No aprete enter seÃ±or" << endl; system("pause"); return -1;}
     while(i<tam){
         if(isdigit(cadena[i])!=0){
             cout << "La cadena contiene un Numero" << endl;
@@ -461,7 +461,7 @@ int comprobarGenero(char *Genero){
     }
 }
 int comprobarTurno(char *Turno){
-    if(strcmpi(Turno,"mañana")!=0 && strcmpi(Turno,"tarde")!=0 && strcmpi(Turno,"noche")!=0){
+    if(strcmpi(Turno,"maÃ±ana")!=0 && strcmpi(Turno,"tarde")!=0 && strcmpi(Turno,"noche")!=0){
         cout << "Turno incorrecto" << endl;
         system("pause");
         cout << endl;
