@@ -50,7 +50,7 @@ public:
 
 };
 
-/*Direccion::Direccion(char street[30]="CASA S/NÃšMERO",char num="0000",char codP="0000",char ciud[30]="aaaa"){
+/*Direccion::Direccion(char street[30]="CASA S/NÚMERO",char num="0000",char codP="0000",char ciud[30]="aaaa"){
     strcpy(calle,street);
     strcpy(numero,num);
     strcpy(cp,codP);
@@ -88,27 +88,27 @@ void Direccion::cargar(){
         cin.getline(calle,30);
     }
 
-    cout << "\t\tNÃºmero: ";
+    cout << "\t\tNúmero: ";
     limpiarBuffer();
     cin.getline(numero,10);
     while(cadenaVacia(numero)==true){
         borrarPantalla();
         mensajes(3);
         borrarPantalla();
-        cout << "\t\tNÃºmero: ";
+        cout << "\t\tNúmero: ";
         cin.ignore();
         cin.getline(numero,10);
     }
 
 
-    cout << "\t\tCÃ³digo postal: ";
+    cout << "\t\tCódigo postal: ";
     limpiarBuffer();
     cin.getline(cp,10);
     while(cadenaVacia(cp)==true){
         borrarPantalla();
         mensajes(3);
         borrarPantalla();
-        cout << "\t\tCÃ³digo postal: ";
+        cout << "\t\tCódigo postal: ";
         cin.ignore();
         cin.getline(cp,10);
     }
@@ -127,14 +127,14 @@ void Direccion::cargar(){
     }
 
 
-    cout << "\t\tPaÃ­s: ";
+    cout << "\t\tPaís: ";
     cin.ignore();
     cin.getline(pais,30);
     while(cadenaVacia(pais)==true){
         borrarPantalla();
         mensajes(3);
         borrarPantalla();
-        cout << "\t\tpaÃ­s: ";
+        cout << "\t\tpaís: ";
         cin.ignore();
         cin.getline(pais,30);
     }
@@ -143,9 +143,9 @@ void Direccion::cargar(){
 }
 void Direccion::mostrar(){
 
-cout << "\t\tCalle: "<< calle;cout << "\tNÃºmero: "<< numero << endl;
-cout << "\t\tCÃ³digo postal: "<< cp;cout <<"\tCiudad: "<< ciudad << endl;
-cout << "\t\tPaÃ­s: "<< pais << endl;
+cout << "\t\tCalle: "<< calle;cout << "\tNúmero: "<< numero << endl;
+cout << "\t\tCódigo postal: "<< cp;cout <<"\tCiudad: "<< ciudad << endl;
+cout << "\t\tPaís: "<< pais << endl;
 
 
 }
@@ -199,11 +199,11 @@ bool Fecha::operator==(Fecha &obj)
 
 void Fecha::cargar(){
 
-    cout << "\t\tDÃ­a: ";
+    cout << "\t\tDía: ";
     cin  >> dia;
     cout << "\t\tMes: ";
     cin  >> mes;
-    cout << "\t\tAÃ±o: ";
+    cout << "\t\tAño: ";
     cin >> anio;
 
 }
@@ -217,7 +217,7 @@ bool validarVencimientoTarjeta(int mes, int anio){
     ///cout << tmPtr->tm_hour<<":"<<tmPtr->tm_min<<":"<<tmPtr->tm_sec<<endl;///HORA
 
     if(anio<1900+tmPtr->tm_year)return false;
-    /// si el aÃ±o es menor retorna falso
+    /// si el año es menor retorna falso
     if((anio==1900+tmPtr->tm_year)&&(mes<tmPtr->tm_mon+1))return false;
     return true;
 
@@ -227,7 +227,7 @@ bool validarVencimientoTarjeta(int mes, int anio){
 bool Fecha::cargarVenc(){
     cout << "\t\tMes: ";
     cin  >> mes;
-    cout << "\t\tAÃ±o: ";
+    cout << "\t\tAño: ";
     cin  >> anio ;
     if(validarVencimientoTarjeta(mes,anio)==false){
         borrarPantalla();
@@ -245,9 +245,9 @@ void Fecha::mostrarVenc(){
     cout << mes << "/" << anio <<endl;
 }
 void Fecha::mostrar(){
-    cout << "\t\tDÃ­a: "<< dia << endl;
+    cout << "\t\tDía: "<< dia << endl;
     cout << "\t\tMes: "<< mes << endl;
-    cout << "\t\tAÃ±o: "<< anio << endl;
+    cout << "\t\tAño: "<< anio << endl;
 }
 
 
@@ -445,22 +445,22 @@ void Persona::cargar(){
         cin.getline(nombres,50);
     }
     /*
-    cout << "GÃ‰NERO---> "<<endl;
+    cout << "GÉNERO---> "<<endl;
     cout << "M)Mujer    "<<endl;
     cout << "H)Hombre   "<<endl;
     cout << "O)Otro     "<<endl;
-    cout << "OPCIÃ“N---> ";
+    cout << "OPCIÓN---> ";
     cin  >> genero;
     while(genero==""){
         borrarPantalla();
         mensajes(3);
         pausa();
         borrarPantalla();
-        cout << "GÃ‰NERO---> "<<endl;
+        cout << "GÉNERO---> "<<endl;
     cout << "M)Mujer    "<<endl;
     cout << "H)Hombre   "<<endl;
     cout << "O)Otro     "<<endl;
-    cout << "OPCIÃ“N---> ";
+    cout << "OPCIÓN---> ";
     cin  >> genero;
     }*/ /// SACAMOS GENERO NO NOS PARECIA RELEVANTE PARA QUE LA CARGA NO SEA TAN LARGA ///
 
@@ -519,7 +519,7 @@ default:
 void Persona::mostrar(){
 
     cout << "\t\tApellido: "<< apellidos;cout << "\t\tNombre: "<< nombres   << endl;
-    ///cout << "GÃ‰NERO: "<< traerGenero(genero) << endl;
+    ///cout << "GÉNERO: "<< traerGenero(genero) << endl;
     cout << "\t\tDni: "<< dni;cout << "\t\tNacionalidad: "<< nacionalidad << endl;
     cout << "\t\tFecha de nacimiento: " ; fechaNac.mostrarConBarra();
 
@@ -697,7 +697,7 @@ void Cliente::cargar(){
     cin.getline(mail,50);
 }
     /// telefono
-    cout << "\t\tTÃ©lefono: ";
+    cout << "\t\tTélefono: ";
     cin.ignore();
     cin.getline(telefono,30);
     while(cadenaVacia(telefono)){
@@ -705,7 +705,7 @@ void Cliente::cargar(){
     mensajes(3);
     pausa();
     borrarPantalla();
-    cout << "\t\tTÃ©lefono: ";
+    cout << "\t\tTélefono: ";
     cin.ignore();
     cin.getline(telefono,30);
     }
@@ -717,14 +717,14 @@ void Cliente::cargar(){
     /// tarjeta de credito ///
     bool cargada=false;
     char opc[10];
-    cout << "\t\tCargar tarjeta de crÃ©dito(si/no)?: ";
+    cout << "\t\tCargar tarjeta de crédito(si/no)?: ";
     limpiarBuffer();
     cin.getline(opc,10);
     while(cadenaVacia(opc)==true){
         borrarPantalla();
         mensajes(3);
         borrarPantalla();
-        cout << "\t\tCargar tarjeta de crÃ©dito(si/no)?: ";
+        cout << "\t\tCargar tarjeta de crédito(si/no)?: ";
         limpiarBuffer();
         cin.getline(opc,10);
 
@@ -794,13 +794,13 @@ default:
     /// campos si indica tarjeta ///
 
     if(tarjeta==true){
-    cout << "\t\tCÃ³digo de seguridad: ";
+    cout << "\t\tCódigo de seguridad: ";
     cin.getline(codSeguridad,5);
     while(cadenaVacia(codSeguridad)){
         borrarPantalla();
         mensajes(3);
         pausa();
-    cout << "\t\tCÃ³digo de seguridad: ";
+    cout << "\t\tCódigo de seguridad: ";
     cin.getline(codSeguridad,5);
     }
 
@@ -842,7 +842,7 @@ void Cliente::mostrar(){
 
     Persona::mostrar();
     cout << "\t\tMail: "<< mail << endl;
-    cout << "\t\tTÃ©lefono: "<< telefono << endl;
+    cout << "\t\tTélefono: "<< telefono << endl;
     cout << "\t\tDomicilio: "<<endl;
     domicilio.mostrar();
     if(strcmp(NroTarjeta,"no indica")==0){
@@ -851,7 +851,7 @@ void Cliente::mostrar(){
     }
     else{
     cout << "\t\tNro.Tarjeta: "<< NroTarjeta << endl;
-    cout << "\t\tCÃ³digo de seguridad: "<< codSeguridad << endl;
+    cout << "\t\tCódigo de seguridad: "<< codSeguridad << endl;
     cout << "\t\tVencimiento tarjeta: "; vencimientoTarjeta.mostrarVenc();
     }
     cout << "\t\t-------------------------------"<< endl;
@@ -896,7 +896,7 @@ void nuevoCliente(){
 Cliente reg;
 reg.cargar();
 if(reg.escribirEnDisco()){
-        cout << "\t\tCLIENTE GRABADO CON Ã‰XITO"<< endl;
+        cout << "\t\tCLIENTE GRABADO CON ÉXITO"<< endl;
         pausa();
         return;
      }
@@ -1226,8 +1226,8 @@ while(true){
     ///cout << "4) Listado Heapsort." << endl;
     ///cout << "5) Listado por nacionalidad ." << endl;
     ///cout << "6) PUNTO D." << endl;
-    cout << "\t\t0) volver al menÃº clientes"<< endl;
-    cout << endl << "\t\t OpciÃ³n: ";
+    cout << "\t\t0) volver al menú clientes"<< endl;
+    cout << endl << "\t\t Opción: ";
     cin >> opcion;
     borrarPantalla();
     switch(opcion){
@@ -1388,10 +1388,69 @@ return true;
 ///void modificarDni();
 ///void modificarNacionalidad();
 ///void modificarFechaDeNac();
-void modificarMail();
-void modificarTelefono();
+void modificarMail()
+{
+    Cliente c;
+    char dni_mod[10],mail_mod[50];
+    Cout<<"Ingrese el DNI del cliente";
+    cin>>dni_mod;
+    c.leerDeDisco(buscarCliente(dni_mod));
+    cout<<"Ingrese el nuevo mail";
+    cin>>mail_mod;
+    c.setMail(mail_mod);
+    if(c.modificarEnDisco(buscarCliente(dni_mod))==true)
+    {
+        cout<<"Se modifico con exito";
+    }else{
+        cout<<"No se puedo modificar";
+    }
+
+}
+void modificarTelefono()
+{
+    Cliente c;
+    char dni_mod[10],tel_mod[30];
+    Cout<<"Ingrese el DNI del cliente";
+    cin>>dni_mod;
+    c.leerDeDisco(buscarCliente(dni_mod));
+    cout<<"Ingrese el nuevo telefono";
+    cin>>tel_mod;
+    c.setTelefono(tel_mod);
+    if(c.modificarEnDisco(buscarCliente(dni_mod))==true)
+    {
+        cout<<"Se modifico con exito";
+    }else{
+        cout<<"No se puedo modificar";
+    }
+}
 ///void modificarDomicilio();
-void modificarTarjetaCredito();
+void modificarTarjetaCredito()
+{
+    Cliente c;
+    char dni_mod[10],num_mod[21],cod_mod[5];
+    int mes,anio;
+    Cout<<"Ingrese el DNI del cliente";
+    cin>>dni_mod;
+    c.leerDeDisco(buscarCliente(dni_mod));
+    cout<<"Ingrese el nuevo numero de tarjeta";
+    cin>>num_mod;
+    c.setNroTarjeta(num_mod);
+    cout<<"Ingrese el nuevo codigo de seguridad";
+    cin>>cod_mod;
+    c.setCodigoSeguridad(cod_mod);
+    cout<<"Ingrese el nuevo mes de vencimiento";
+    cin>>mes;
+    c.vencimientoTarjeta.setMes();
+    cout<<"Ingrese el nuevo anio de vencimiento";
+    cin>>anio;
+    c.vencimientoTarjeta.setAnio();
+    if(c.modificarEnDisco(buscarCliente(dni_mod))==true)
+    {
+        cout<<"Se modifico con exito";
+    }else{
+        cout<<"No se puedo modificar";
+    }
+}
 
 
 int modificarCliente(){
@@ -1405,22 +1464,22 @@ while(true){
     cout << "\t\t2) Telefono" << endl;
     cout << "\t\t3) Tarjeta de credito" << endl; /// incluye todos los campos de tarjeta
     cout << "\t\t0) Salir  "<< endl;
-    cout << "\t\t   OpciÃ³n: ";
+    cout << "\t\t   Opción: ";
     cin >> opcion;
     system("cls");
     switch(opcion){
       case '1':
-        cout << "\t\tmenu en contruccion..."<< endl;
+modificarMail();
 pausa();
 return 0;
           break;
       case '2':
-cout << "\t\tmenu en contruccion..."<< endl;
+modificarTelefono();
 pausa();
 return 0;
       break;
       case '3':
-cout << "\t\tmenu en contruccion..."<< endl;
+modificarTarjetaCredito();
 pausa();
 return 0;
       break;
@@ -1447,9 +1506,9 @@ while(true){
     cout << "\t\t---------------" << endl;
     cout << "\t\t1) Dni" << endl;
     cout << "\t\t2) Nro de Tarjeta." << endl;
-    cout << "\t\t3) TÃ©lefono" << endl;
+    cout << "\t\t3) Télefono" << endl;
     cout << "\t\t0) volver "<< endl;
-    cout << "\t\t   OpciÃ³n: ";
+    cout << "\t\t   Opción: ";
     cin >> opcion;
     borrarPantalla();
     switch(opcion){
@@ -1542,7 +1601,7 @@ while(true){
     cout << "\t\t3) Buscar cliente            " << endl; /// busca y muestra un cliente segun lo que se ingrese por teclado
     cout << "\t\t4) Mostrar todos los clientes" << endl; /// muestra todos ordenados alfabeticamente o segun se indique por teclado
     cout << "\t\t0) Salir "<< endl;
-    cout << "\t\t  OpciÃ³n: ";
+    cout << "\t\t  Opción: ";
     cin >> op;
     borrarPantalla();
     switch(op){
