@@ -14,6 +14,7 @@ int listarUnCliente();
 int buscarCliente (char*);
 int buscarClienteTarjeta(char *);
 int buscarClienteTelefono(char *);
+bool validarVencimientoTarjeta(int,int);
 
 const char *FILE_CLIENTES     = "clientes.dat";
 
@@ -26,75 +27,127 @@ const char *FILE_CLIENTES     = "clientes.dat";
 
 private:
     char calle[30];
-    int numero;
-    int cp;
-    char localidad[30];
-    short piso;
+    char numero[10];
+    char ciudad[30];
+    char cp[10];
+    char pais[30];
+
 public:
-    Direccion(char*,int,int,char*,short);
+    ///Direccion(char*,char*,char*,char*);
     void mostrar();
     void cargar();
     ///GETS()
     const char* getCalle(){return calle;}
-    int getNumero(){return numero;}
-    int getCP(){return cp;}
-    char* getLocalidad(){return localidad;}
-    short getPiso(){return piso;}
+    const char* getNumero(){return numero;}
+    const char* getCP(){return cp;}
+    const char* getCiudad(){return ciudad;}
+
     ///SETS()
-    void setCalle(char*);
-    void setNumero(int);
-    void setCP(int);
-    void setLocalidad(char*);
-    void setPiso(short);
+    void setCalle(const char*);
+    void setNumero(const char*);
+    void setCP(const char*);
+    void setCiudad(const char*);
+
 };
 
-Direccion::Direccion(char street[30]="CASA S/NÚMERO",int num=0000,int codP=0000, char local[30]="aaaa",short p=0){
+/*Direccion::Direccion(char street[30]="CASA S/NÚMERO",char num="0000",char codP="0000",char ciud[30]="aaaa"){
     strcpy(calle,street);
-    numero=num;
-    cp=codP;
-    strcpy(localidad,local);
-    piso=p;
-}
+    strcpy(numero,num);
+    strcpy(cp,codP);
+    strcpy(ciudad,ciud);
+
+}*/
 
 
-void Direccion::setCalle(char*nuevaCalle){
+void Direccion::setCalle(const char*nuevaCalle){
 strcpy(calle,nuevaCalle);
 }
-void Direccion::setNumero(int nuevoNumero){
-numero=nuevoNumero;
+void Direccion::setNumero(const char *nuevoNumero){
+strcpy(numero,nuevoNumero);
 }
-void Direccion::setCP(int nuevoCp){
-cp=nuevoCp;
+void Direccion::setCP(const char *nuevoCp){
+strcpy(cp,nuevoCp);
 }
-void Direccion::setLocalidad(char* nuevaLocalidad){
-strcpy(localidad,nuevaLocalidad);
+void Direccion::setCiudad(const char* nuevaCiudad){
+strcpy(ciudad,nuevaCiudad);
 }
-void Direccion::setPiso(short nuevoPiso){
-piso=nuevoPiso;
-}
+
+
 
 void Direccion::cargar(){
 
-    cout << "CALLE: ";
+    cout << "\t\tCalle: ";
     cin.ignore();
     cin.getline(calle,30);
-    cout << "NÚMERO: ";
-    cin  >> numero;
-    cout << "CODIGO POSTAL: ";
-    cin  >> cp;
-    cout << "LOCALIDAD: ";
+    while(cadenaVacia(calle)==true){
+        borrarPantalla();
+        mensajes(3);
+        borrarPantalla();
+        cout << "\t\tCalle: ";
+        cin.ignore();
+        cin.getline(calle,30);
+    }
+
+    cout << "\t\tNúmero: ";
+    limpiarBuffer();
+    cin.getline(numero,10);
+    while(cadenaVacia(numero)==true){
+        borrarPantalla();
+        mensajes(3);
+        borrarPantalla();
+        cout << "\t\tNúmero: ";
+        cin.ignore();
+        cin.getline(numero,10);
+    }
+
+
+    cout << "\t\tCódigo postal: ";
+    limpiarBuffer();
+    cin.getline(cp,10);
+    while(cadenaVacia(cp)==true){
+        borrarPantalla();
+        mensajes(3);
+        borrarPantalla();
+        cout << "\t\tCódigo postal: ";
+        cin.ignore();
+        cin.getline(cp,10);
+    }
+
+
+    cout << "\t\tCiudad: ";
     cin.ignore();
-    cin.getline(localidad,30);
-    cout << "PISO: ";
-    cin  >> piso;
+    cin.getline(ciudad,30);
+    while(cadenaVacia(ciudad)==true){
+        borrarPantalla();
+        mensajes(3);
+        borrarPantalla();
+        cout << "\t\tCiudad: ";
+        cin.ignore();
+        cin.getline(ciudad,30);
+    }
+
+
+    cout << "\t\tPaís: ";
+    cin.ignore();
+    cin.getline(pais,30);
+    while(cadenaVacia(pais)==true){
+        borrarPantalla();
+        mensajes(3);
+        borrarPantalla();
+        cout << "\t\tpaís: ";
+        cin.ignore();
+        cin.getline(pais,30);
+    }
+
+
 }
 void Direccion::mostrar(){
 
-cout << "CALLE        --->"<< calle << endl;
-cout << "NÚMERO       --->"<< numero << endl;
-cout << "CODIGO POSTAL--->"<< cp << endl;
-cout << "LOCALIDAD    --->"<< localidad << endl;
-cout << "PISO         --->"<< piso << endl;
+cout << "\t\tCalle: "<< calle;cout << "\tNúmero: "<< numero << endl;
+cout << "\t\tCódigo postal: "<< cp;cout <<"\tCiudad: "<< ciudad << endl;
+cout << "\t\tPaís: "<< pais << endl;
+
+
 }
 
     /// CLASES FECHA ///
@@ -112,7 +165,7 @@ public:
     void mostrarConBarra();
     void mostrarConPalabra();
     void cargar();
-    void cargarVenc();
+    bool cargarVenc();
     void mostrarVenc();
     ///GETS()
     int getDia(){return dia;}
@@ -130,15 +183,15 @@ public:
     }
 
     /// sobrecarga de operadores
-    bool operator==(Fecha);
+    bool operator==(Fecha &);
 };
 
-/*bool Fecha::operator==(Fecha &obj)
+bool Fecha::operator==(Fecha &obj)
 {
 
   if((dia==obj.dia) && (mes==obj.mes) && (anio==obj.anio))return true;
   return false;
-}*/ /// operatos == por referencia /// probar
+} /// operatos == por referencia
 
 
 
@@ -146,28 +199,55 @@ public:
 
 void Fecha::cargar(){
 
-    cout << "DIA: ";
+    cout << "\t\tDía: ";
     cin  >> dia;
-    cout << "MES: ";
+    cout << "\t\tMes: ";
     cin  >> mes;
-    cout << "AÑO: ";
+    cout << "\t\tAño: ";
     cin >> anio;
 
 }
-void Fecha::cargarVenc(){
-    cout << "Mes: ";
+bool validarVencimientoTarjeta(int mes, int anio){
+    time_t tiempo;
+    struct tm *tmPtr;
+    tiempo = time(NULL);
+    tmPtr = localtime(&tiempo);
+    ///FECHA ACTUAL tmPtr->tm_mday, tmPtr->tm_mon+1, 1900+tmPtr->tm_year
+    ///cout << tmPtr->tm_mday <<"/"<<tmPtr->tm_mon+1<<"/"<<1900+tmPtr->tm_year<<endl;
+    ///cout << tmPtr->tm_hour<<":"<<tmPtr->tm_min<<":"<<tmPtr->tm_sec<<endl;///HORA
+
+    if(anio<1900+tmPtr->tm_year)return false;
+    /// si el año es menor retorna falso
+    if((anio==1900+tmPtr->tm_year)&&(mes<tmPtr->tm_mon+1))return false;
+    return true;
+
+
+}
+
+bool Fecha::cargarVenc(){
+    cout << "\t\tMes: ";
     cin  >> mes;
-    cout << "Año: ";
+    cout << "\t\tAño: ";
     cin  >> anio ;
+    if(validarVencimientoTarjeta(mes,anio)==false){
+        borrarPantalla();
+        cout << "\t\tTarjeta vencida"<< endl;
+        pausa();
+        borrarPantalla();
+        return false;
+    }
+
+    return true;
+
 }
 void Fecha::mostrarVenc(){
 
     cout << mes << "/" << anio <<endl;
 }
 void Fecha::mostrar(){
-    cout << "DIA ---> "<< dia << endl;
-    cout << "MES ---> "<< mes << endl;
-    cout << "ANIO---> "<< anio << endl;
+    cout << "\t\tDía: "<< dia << endl;
+    cout << "\t\tMes: "<< mes << endl;
+    cout << "\t\tAño: "<< anio << endl;
 }
 
 
@@ -213,6 +293,62 @@ switch(m){
 }
 
 }
+
+///contar dias fechas ///
+int cd(Fecha fi,Fecha ff)
+{
+    int dias=0, dm;
+    int da=fi.getDia(), ma=fi.getMes(), aa=fi.getAnio();
+    while(true)
+    {
+        switch(ma)
+        {
+        case 4:
+        case 6:
+        case 9:
+        case 11:
+            dias+=(31-da);
+            dm=31;
+            break;
+        case 1:
+        case 3:
+        case 5:
+        case 7:
+        case 8:
+        case 10:
+        case 12:
+            dias+=(32-da);
+            dm=32;
+            break;
+        case 2:
+            if(aa%400==0||(aa%4==0 && aa%100!=0))
+            {
+                dias+=(30-da);
+                dm=30;
+            }
+            else
+            {
+                dias+=(29-da);
+                dm=29;
+            }
+            break;
+        }
+        if(ma==ff.getMes() && ff.getAnio()==aa)
+        {
+            return(dias-(dm-ff.getDia()));
+        }
+        if(ma==12)
+        {
+            ma=1;
+            aa++;
+        }else{ma++;}
+        da=1;
+    }
+}
+
+/// fin contar dias fecha ///
+
+
 /// CLASE PERSONA /// SE USA PARA CARGAR UN MENOR DE EDAD Y PARTE DE UN CLIENTE
 class Persona {
 
@@ -285,7 +421,7 @@ return true;
 
 void Persona::cargar(){
 
-    cout << "APELLIDO: ";
+    cout << "\t\tApellido: ";
     cin.ignore();
     cin.getline(apellidos,50);
     while(strlen(apellidos)==0)
@@ -294,10 +430,10 @@ void Persona::cargar(){
         mensajes(3);
         pausa();
         borrarPantalla();
-        cout << "APELLIDO: ";
+        cout << "\t\tApellido: ";
         cin.getline(apellidos,50);
     }
-    cout << "NOMBRE: ";
+    cout << "\t\tNombre: ";
     cin.getline(nombres,50);
     while(strlen(nombres)==0)
     {
@@ -305,16 +441,17 @@ void Persona::cargar(){
         mensajes(3);
         pausa();
         borrarPantalla();
-        cout << "NOMBRE: ";
+        cout << "\t\tNombre: ";
         cin.getline(nombres,50);
     }
+    /*
     cout << "GÉNERO---> "<<endl;
     cout << "M)Mujer    "<<endl;
     cout << "H)Hombre   "<<endl;
     cout << "O)Otro     "<<endl;
     cout << "OPCIÓN---> ";
     cin  >> genero;
-   /* while(genero==""){
+    while(genero==""){
         borrarPantalla();
         mensajes(3);
         pausa();
@@ -325,9 +462,9 @@ void Persona::cargar(){
     cout << "O)Otro     "<<endl;
     cout << "OPCIÓN---> ";
     cin  >> genero;
-    }*/ /// FALTA VALIDAR BIEN GENERO PARA QUE NO SEA UN CAMPO VACIO
+    }*/ /// SACAMOS GENERO NO NOS PARECIA RELEVANTE PARA QUE LA CARGA NO SEA TAN LARGA ///
 
-    cout << "DNI: ";
+    cout << "\t\tDni: ";
     cin.ignore();
     cin.getline(dni,10);
     while(strlen(dni)==0){
@@ -335,15 +472,15 @@ void Persona::cargar(){
     mensajes(3);
     pausa();
     borrarPantalla();
-    cout << "DNI: ";
+    cout << "\t\tDni: ";
     cin.ignore();
     cin.getline(dni,10);
     }
     while(!validarDni(dni)){
     borrarPantalla();
     char sel;
-    cout << "EL DNI YA ESTA REGISTRADO"<<endl;
-    cout << "salir(s)/cargar otro(c)"<< endl;
+    cout << "\t\tEL DNI YA ESTA REGISTRADO"<<endl;
+    cout << "\t\tsalir(s)/cargar otro(c)";
     cin  >> sel;
     switch (sel){
     case 's':
@@ -352,7 +489,7 @@ void Persona::cargar(){
     break;
     case 'c':
     case 'C':
-    cout << "DNI: ";
+    cout << "\t\tDni: ";
     cin.ignore();
     cin.getline(dni,10);
 
@@ -362,17 +499,17 @@ default:
     break;
         }
 }
-    cout << "NACIONALIDAD: ";
+    cout << "\t\tNacionalidad: ";
     cin.getline(nacionalidad,50);
-    cout << "FECHA DE NACIMIENTO--->"<<endl;
+    cout << "\t\tFecha de nacimiento: "<<endl;
     fechaNac.cargar();
     bool vof=validarFechadeNac(getDiaNac(),getMesNac(),getAnioNac());
     while (vof==false){
         borrarPantalla();
-        cout <<"FECHA DE NACIMIENTO INVALIDA POR FAVOR VOLVER A INGRESAR!"<<endl;
+        cout <<"\t\tFECHA DE NACIMIENTO INVALIDA POR FAVOR VOLVER A INGRESAR!"<<endl;
         pausa();
         borrarPantalla();
-        cout << "FECHA DE NACIMIENTO--->"<<endl;
+        cout << "\t\tFecha de nacimiento: "<<endl;
         fechaNac.cargar();
         vof=validarFechadeNac(getDiaNac(),getMesNac(),getAnioNac());
     }
@@ -381,12 +518,10 @@ default:
 
 void Persona::mostrar(){
 
-    cout << "APELLIDO            ---> "<< apellidos << endl;
-    cout << "NOMBRE              ---> "<< nombres   << endl;
-    cout << "GÉNERO              ---> "<< traerGenero(genero) << endl;
-    cout << "DNI                 ---> "<< dni          << endl;
-    cout << "NACIONALIDAD        ---> "<< nacionalidad << endl;
-    cout << "FECHA DE NACIMIENTO ---> " ; fechaNac.mostrarConBarra();
+    cout << "\t\tApellido: "<< apellidos;cout << "\t\tNombre: "<< nombres   << endl;
+    ///cout << "GÉNERO: "<< traerGenero(genero) << endl;
+    cout << "\t\tDni: "<< dni;cout << "\t\tNacionalidad: "<< nacionalidad << endl;
+    cout << "\t\tFecha de nacimiento: " ; fechaNac.mostrarConBarra();
 
 }
 const char* traerGenero(char g){
@@ -423,23 +558,23 @@ class Cliente: public Persona  {
     void mostrar();
     ///GETS()
     const char* getMail(){return mail;}
-    char* getTelefono(){return telefono;}
+    const char* getTelefono(){return telefono;}
     const char* getTarjeta(){return NroTarjeta;}
     const char* getCodSeguridad(){return codSeguridad;}
     int getMesVenc(){return vencimientoTarjeta.getMes();}
     int getAnioVenc(){return vencimientoTarjeta.getAnio();}
     /// SETS()
-    void setMail(char*);
-    void setTelefono(char*);
-    void setNroTarjeta(char*);
-    void setCodigoSeguridad(char*);
+    void setMail(const char*);
+    void setTelefono(const char*);
+    void setNroTarjeta(const char*);
+    void setCodigoSeguridad(const char*);
     void setMesVenc(int nMes){vencimientoTarjeta.setMes(nMes);}
     void setAnioVenc(int nAnio){vencimientoTarjeta.setAnio(nAnio);}
-    void setCalle(char*nCalle){domicilio.setCalle(nCalle);}
-    void setNum(int num){domicilio.setNumero(num);}
-    void setCp(int nCp){domicilio.setCP(nCp);}
-    void setLocalidad(char*nLoc){domicilio.setLocalidad(nLoc);}
-    void setP(short nPiso){domicilio.setPiso(nPiso);}
+    void setCalle(const char*nCalle){domicilio.setCalle(nCalle);}
+    void setNum(const char* num){domicilio.setNumero(num);}
+    void setCp(const char* nCp){domicilio.setCP(nCp);}
+    void setCiudad(const char *nCiu){domicilio.setCiudad(nCiu);}
+
 
     /// FUNCIONES CON ARCHIVOS
         bool escribirEnDisco();
@@ -466,7 +601,7 @@ int Cliente::leerDeDisco(int pos){/// lee el disco hasta encontrar el registro
 	p=fopen(FILE_CLIENTES,"rb");
 	if(p==NULL){
 		mensajes(1);
-		cout<<"Presione una tecla para continuar";
+		cout<<"\t\tPresione una tecla para continuar";
     system("pause<null");
 		return 0;
 		}
@@ -531,23 +666,25 @@ int buscarClienteTelefono(char *numTelefono){ ///devuelve la posicion del client
 }
 
 
-void  Cliente::setMail(char *nuevoMail){
+void  Cliente::setMail(const char *nuevoMail){
 strcpy(mail,nuevoMail);
 }
-void  Cliente::setTelefono(char* nuevoTelefono){
+void  Cliente::setTelefono(const char* nuevoTelefono){
     strcpy(telefono,nuevoTelefono);
 }
-void  Cliente::setNroTarjeta(char *nuevaTarjeta){
+void  Cliente::setNroTarjeta(const char *nuevaTarjeta){
 strcpy(NroTarjeta,nuevaTarjeta);
 }
-void  Cliente::setCodigoSeguridad(char *nuevoCS){
+void  Cliente::setCodigoSeguridad(const char *nuevoCS){
 strcpy(codSeguridad,nuevoCS);
 }
 
 
 void Cliente::cargar(){
     Persona::cargar();
-    cout << "MAIL: "; /// FALTA HACERLE VALIDACION
+    bool tarjeta=true;
+    ///mail
+    cout << "\t\tMail: ";
     fflush(stdin);
     cin.getline(mail,50);
     while(cadenaVacia(mail)){
@@ -555,12 +692,12 @@ void Cliente::cargar(){
     mensajes(3);
     pausa();
     borrarPantalla();
-    cout << "MAIL: "; /// FALTA HACERLE VALIDACION
+    cout << "\t\tMail: ";
     fflush(stdin);
     cin.getline(mail,50);
 }
-
-    cout << "TELEFONO: ";/// FALTA HACERLE VALIDACION
+    /// telefono
+    cout << "\t\tTélefono: ";
     cin.ignore();
     cin.getline(telefono,30);
     while(cadenaVacia(telefono)){
@@ -568,80 +705,156 @@ void Cliente::cargar(){
     mensajes(3);
     pausa();
     borrarPantalla();
-    cout << "TELEFONO: ";/// FALTA HACERLE VALIDACION
+    cout << "\t\tTélefono: ";
     cin.ignore();
     cin.getline(telefono,30);
     }
-    cout <<"DOMICILIO--->"<<endl; /// FALTA HACERLE VALIDACION
+
+    /// domicilio
+    cout <<"\t\tDomicilio--->"<<endl;
     domicilio.cargar();
-    cout << "NRO.TARJETA: ";
+
+    /// tarjeta de credito ///
+    bool cargada=false;
+    char opc[10];
+    cout << "\t\tCargar tarjeta de crédito(si/no)?: ";
+    limpiarBuffer();
+    cin.getline(opc,10);
+    while(cadenaVacia(opc)==true){
+        borrarPantalla();
+        mensajes(3);
+        borrarPantalla();
+        cout << "\t\tCargar tarjeta de crédito(si/no)?: ";
+        limpiarBuffer();
+        cin.getline(opc,10);
+
+    }
+
+    if(strcmp(opc,"no")==0||strcmp(opc,"NO")==0||strcmp(opc,"No")==0){
+            strcpy(NroTarjeta,"no indica");
+            strcpy(codSeguridad,"no indica");
+            tarjeta=false;
+            cargada=true;
+    }
+
+
+
+    while(cargada==false){
+    if(tarjeta==true){
+    cout << "\t\tNro.tarjeta: ";
     cin.ignore();
     cin.getline(NroTarjeta,21);
     while(cadenaVacia(NroTarjeta)){
         borrarPantalla();
         mensajes(3);
-        cout << "NRO.TARJETA: ";
-        cin.ignore();
+        cout << "\t\tNro.Tarjeta: ";
+        limpiarBuffer();
         cin.getline(NroTarjeta,21);
 
     }
-    while(!validarTarjeta(NroTarjeta)){
+    while(!validarTarjeta(NroTarjeta)&&tarjeta==true){
     borrarPantalla();
     char sel;
-    cout << "LA TARJETA YA ESTA REGISTRADA"<<endl;
-    cout << "salir(s)/cargar otra(c)      "<< endl;
+    cout << "\t\tLA TARJETA YA ESTA REGISTRADA"<<endl;
+    cout << "\t\tsalir(s)/cargar otra(c)      "<< endl;
     cin  >> sel;
     switch (sel){
     case 's':
     case 'S':
-    return;
+        strcpy(NroTarjeta,"no indica");
+        strcpy(codSeguridad,"no indica");
+        tarjeta=false;
+        cargada=true;
     break;
+
     case 'c':
     case 'C':
-    cout << "NRO.TARJETA: ";
+    cout << "\t\tNro.Tarjeta: ";
     cin.ignore();
     cin.getline(NroTarjeta,30);
     while(cadenaVacia(NroTarjeta)){
         borrarPantalla();
         mensajes(3);
-        cout << "NRO.TARJETA: ";
+        cout << "\t\tNro.tarjeta: ";
         cin.ignore();
         cin.getline(NroTarjeta,30);
-
-    } /// falta validar tarjeta de credito para que no sea igual a otra en el sistema
+    }
     break;
 default:
     mensajes(2);
     break;
 
     }
-}
-    cout << "CODIGO DE SEGURIDAD: ";
+
+        } /// fin while que valida la tarjeta
+
+} /// fin if tarjeta == true
+
+
+    /// campos si indica tarjeta ///
+
+    if(tarjeta==true){
+    cout << "\t\tCódigo de seguridad: ";
     cin.getline(codSeguridad,5);
     while(cadenaVacia(codSeguridad)){
         borrarPantalla();
         mensajes(3);
         pausa();
-    cout << "CODIGO DE SEGURIDAD: ";
+    cout << "\t\tCódigo de seguridad: ";
     cin.getline(codSeguridad,5);
     }
-    cout << "VENCIMIENTO TARJETA: "<<endl;
-    vencimientoTarjeta.cargarVenc();
 
+    cout << "\t\tVencimiento tarjeta: "<<endl;
+    if(vencimientoTarjeta.cargarVenc()==false){
+        char pago[10];
+        cout << "\t\tPaga en efectivo(si/no)?: ";
+        limpiarBuffer();
+        cin.getline(pago,10);
+        if(cadenaVacia(pago)==true){
+            borrarPantalla();
+            mensajes(3);
+            borrarPantalla();
+            cout << "\t\tPaga en efectivo(si/no): ";
+            limpiarBuffer();
+            cin.getline(pago,10);
+        }
+        if(strcmp(pago,"si")==0||strcmp(pago,"SI")==0||strcmp(pago,"Si")==0){
+        strcpy(NroTarjeta,"no indica");
+        strcpy(codSeguridad,"no indica");
+        tarjeta=false;
+        cargada=true;
+
+        }
+        else{
+             tarjeta=true;
+            cargada=false;/// vuelve a cargar una tarjeta de cero ///
+        }
+
+        }/// verificar que no este vencida ///
+    }
+
+    } /// FIN WHILE CARGA DE TARJETA ///
 }
 
 
 
 void Cliente::mostrar(){
+
     Persona::mostrar();
-    cout << "MAIL                --->"<< mail << endl;
-    cout << "TELEFONO            --->"<< telefono << endl;
-    cout << "DOMICILIO           --->"<<endl;
+    cout << "\t\tMail: "<< mail << endl;
+    cout << "\t\tTélefono: "<< telefono << endl;
+    cout << "\t\tDomicilio: "<<endl;
     domicilio.mostrar();
-    cout << "NRO.TARJETA         --->"<< NroTarjeta << endl;
-    cout << "CÓDIGO DE SEGURIDAD --->"<< codSeguridad << endl;
-    cout << "VENCIMIENTO TARJETA --->"; vencimientoTarjeta.mostrarVenc();
-    cout << "###################################"<< endl;
+    if(strcmp(NroTarjeta,"no indica")==0){
+
+        cout << "\t\tNro.Tarjeta: "<< NroTarjeta << endl;
+    }
+    else{
+    cout << "\t\tNro.Tarjeta: "<< NroTarjeta << endl;
+    cout << "\t\tCódigo de seguridad: "<< codSeguridad << endl;
+    cout << "\t\tVencimiento tarjeta: "; vencimientoTarjeta.mostrarVenc();
+    }
+    cout << "\t\t-------------------------------"<< endl;
     pausa();
 
 
@@ -678,12 +891,12 @@ void cargarDias(int *, int );
 /// FUNCIONES GLOBALES CLIENTES
 
 void nuevoCliente(){
- cout << "CARGAR NUEVO CLIENTE "<< endl;
- cout << "-------------------- "<< endl;
+ cout << "\t\tCARGAR NUEVO CLIENTE "<< endl;
+ cout << "\t\t-------------------- "<< endl;
 Cliente reg;
 reg.cargar();
 if(reg.escribirEnDisco()){
-        cout << "CLIENTE GRABADO CON ÉXITO"<< endl;
+        cout << "\t\tCLIENTE GRABADO CON ÉXITO"<< endl;
         pausa();
         return;
      }
@@ -728,8 +941,8 @@ void listadoAlfabeticoCliente(){
   cant=contarRegistrosClientes();
   if(cant==0){
     char letra;
-    cout << "Para visualizar clientes debe cargar uno primero"<<endl;
-    cout << "Desea cargar un cliente ahora?(s/n)";
+    cout << "\t\tPara visualizar clientes debe cargar uno primero"<<endl;
+    cout << "\t\tDesea cargar un cliente ahora?(s/n)";
     cin  >> letra;
     if (letra=='s'||letra=='S'){
             nuevoCliente();
@@ -795,8 +1008,8 @@ void listarClientes(){
   cant=contarRegistrosClientes();
   if(cant==0){
     char letra;
-    cout << "Para visualizar clientes debe cargar uno primero"<<endl;
-    cout << "Desea cargar un cliente ahora?(s/n)";
+    cout << "\t\tPara visualizar clientes debe cargar uno primero"<<endl;
+    cout << "\t\tDesea cargar un cliente ahora?(s/n)";
     cin  >> letra;
     if (letra=='s'||letra=='S'){
             nuevoCliente();
@@ -1005,16 +1218,16 @@ int listarTodos(){
 char opcion;
 while(true){
     borrarPantalla();
-    cout << "LISTADO DE CLIENTES" << endl;
-    cout << "-------------------" << endl;
-    cout << "1) Listado alfabetico clientes(por nombre)" << endl;
-    cout << "2) Listado alfabetico clientes(por apellido)" << endl;
-    cout << "3) Listado por antiguedad clientes " << endl;
+    cout << "\t\tLISTADO DE CLIENTES" << endl;
+    cout << "\t\t-------------------" << endl;
+    cout << "\t\t1) Listado alfabetico clientes por nombre  " << endl;
+    cout << "\t\t2) Listado alfabetico clientes por apellido" << endl;
+    cout << "\t\t3) Listado por antiguedad clientes " << endl;
     ///cout << "4) Listado Heapsort." << endl;
     ///cout << "5) Listado por nacionalidad ." << endl;
     ///cout << "6) PUNTO D." << endl;
-    cout << "0) volver al menú clientes"<< endl;
-    cout << endl << "Opción: ";
+    cout << "\t\t0) volver al menú clientes"<< endl;
+    cout << endl << "\t\t Opción: ";
     cin >> opcion;
     borrarPantalla();
     switch(opcion){
@@ -1026,7 +1239,7 @@ while(true){
       case '2':
       case 'b':
       case 'B':
-        cout << "en contruccion..."<< endl;
+        cout << "\t\ten contruccion..."<< endl;
         pausa();
       break;
       case '3':
@@ -1182,55 +1395,82 @@ void modificarTarjetaCredito();
 
 
 int modificarCliente(){
-cout << "menu en contruccion..."<< endl;
-pausa();
-return 0;
-short opcion;
+
+char opcion;
 while(true){
     borrarPantalla();
-    cout << "Indique campo a modificar" << endl;
-    cout << "-------------------------" << endl;
-    cout << "1) Nombre" << endl;
-    cout << "2) Apellido" << endl;
-    cout << "3) Genero" << endl;
-    cout << "4) Dni" << endl;
-    cout << "5) Nacionalidad" << endl;
-    cout << "6) Fecha de nacimiento "<< endl; /// incluye dia mes año
-    cout << "7) Mail" << endl;
-    cout << "8) Telefono" << endl;
-    cout << "9) Domicilio" << endl;/// incluye todos los campos de domicilio
-    cout << "10)Tarjeta de credito" << endl; /// incluye todos los campos de tarjeta
-    cout << "0) Salir  "<< endl;
-    cout << endl << "Opción: ";
+    cout << "\t\t Indique campo a modificar" << endl;
+    cout << "\t\t -------------------------" << endl;
+    cout << "\t\t1) Nombre" << endl;
+    cout << "\t\t2) Apellido" << endl;
+    cout << "\t\t3) Genero" << endl;
+    cout << "\t\t4) Dni" << endl;
+    cout << "\t\t5) Nacionalidad" << endl;
+    cout << "\t\t6) Fecha de nacimiento "<< endl; /// incluye dia mes año
+    cout << "\t\t7) Mail" << endl;
+    cout << "\t\t8) Telefono" << endl;
+    cout << "\t\t9) Domicilio" << endl;/// incluye todos los campos de domicilio
+    cout << "\t\tT) Tarjeta de credito" << endl; /// incluye todos los campos de tarjeta
+    cout << "\t\t0) Salir  "<< endl;
+    cout << "\t\t   Opción: ";
     cin >> opcion;
     system("cls");
     switch(opcion){
-      case 1:
+      case '1':
+        cout << "\t\tmenu en contruccion..."<< endl;
+pausa();
+return 0;
           break;
-      case 2:
-
+      case '2':
+cout << "\t\tmenu en contruccion..."<< endl;
+pausa();
+return 0;
       break;
-      case 3:
-
+      case '3':
+cout << "\t\tmenu en contruccion..."<< endl;
+pausa();
+return 0;
       break;
-      case 4:
-
+      case '4':
+cout << "\t\tmenu en contruccion..."<< endl;
+pausa();
+return 0;
       break;
-      case 5:
-
+      case '5':
+cout << "\t\tmenu en contruccion..."<< endl;
+pausa();
+return 0;
       break;
-      case 6:
+      case '6':
+          cout << "\t\tmenu en contruccion..."<< endl;
+pausa();
+return 0;
         break;
-      case 7:
+      case '7':
+          cout << "\t\tmenu en contruccion..."<< endl;
+pausa();
+return 0;
+
         break;
-      case 8:
+      case '8':
+          cout << "\t\tmenu en contruccion..."<< endl;
+pausa();
+return 0;
+
         break;
-      case 9:
+      case '9':
+cout << "\t\tmenu en contruccion..."<< endl;
+pausa();
+return 0;
         break;
-      case 10:
+          case 't':
+          case'T':
+      cout << "\t\tmenu en contruccion..."<< endl;
+pausa();
+return 0;
         break;
-      case 0:
-        return 0;
+      case '0':
+          return 0;
       break;
     }
     cout << endl;
@@ -1245,30 +1485,30 @@ void busquedaPorTelefono();
 
 
 int listarUnCliente(){
-short opcion;
+char opcion;
 while(true){
     borrarPantalla();
-    cout << "BUSCAR POR ---> " << endl;
-    cout << "---------------" << endl;
-    cout << "1) Dni" << endl;
-    cout << "2) Nro de Tarjeta." << endl;
-    cout << "3) Telefono" << endl;
-    cout << "0) volver "<< endl;
-    cout << endl << "Opción: ";
+    cout << "\t\tBUSCAR POR ---> " << endl;
+    cout << "\t\t---------------" << endl;
+    cout << "\t\t1) Dni" << endl;
+    cout << "\t\t2) Nro de Tarjeta." << endl;
+    cout << "\t\t3) Télefono" << endl;
+    cout << "\t\t0) volver "<< endl;
+    cout << "\t\t   Opción: ";
     cin >> opcion;
     borrarPantalla();
     switch(opcion){
-      case 1:
+      case '1':
     busquedaPorDni();
       break;
-      case 2:
+      case '2':
     busquedaPorTarjeta();
       break;
-      case 3:
+      case '3':
     busquedaPorTelefono();
 
       break;
-      case 0:
+      case '0':
         return 0;
       break;
     }
@@ -1280,12 +1520,12 @@ while(true){
 void busquedaPorDni(){
 Cliente reg;
 char dni[10];
-cout << "Ingrese Dni de cliente: ";
+cout << "\t\tIngrese Dni de cliente: ";
 fflush(stdin);
 cin.getline(dni,10);
 int pos=buscarCliente(dni);
 if(pos==-1){
-    cout << "El cliente no encuentra registrado"<< endl;
+    cout << "\t\tEl cliente no encuentra registrado"<< endl;
     pausa();
     return;
 }
@@ -1300,11 +1540,11 @@ void busquedaPorTarjeta(){
 Cliente reg;
 char nroTarjeta[21];
 fflush(stdin);
-cout << "Ingrese Nro de Tarjeta del cliente: "<< endl;
+cout << "\t\tIngrese Nro de Tarjeta del cliente: "<< endl;
 cin.getline(nroTarjeta,21);
 int pos=buscarClienteTarjeta(nroTarjeta);
 if(pos==-1){
-    cout << "El cliente no encuentra registrado"<< endl;
+    cout << "\t\tEl cliente no encuentra registrado"<< endl;
     pausa();
     return;
 }
@@ -1319,12 +1559,12 @@ else{
 void busquedaPorTelefono(){
 Cliente reg;
 char tel[30];
-cout << "Ingrese Telefono del cliente: "<< endl;
+cout << "\t\tIngrese Telefono del cliente: "<< endl;
 fflush(stdin);
 cin.getline(tel,30);
 int pos=buscarClienteTelefono(tel);
 if(pos==-1){
-    cout << "El cliente no encuentra registrado"<< endl;
+    cout << "\t\tEl cliente no encuentra registrado"<< endl;
     pausa();
     return;
 }
@@ -1340,14 +1580,14 @@ int menuClientes(){
 char op;
 while(true){
     borrarPantalla();
-    cout << "-----------CLIENTES----------" << endl;
-    cout << "-----------------------------" << endl;
-    cout << "1) NUEVO CLIENTE             --->" << endl; /// se carga nuevo cliente y menores de edad
-    cout << "2) MODIFICAR CLIENTE.        " << endl;/// modifica el campo que le indiquemos
-    cout << "3) BUSCAR CLIENTE            --->" << endl; /// busca y muestra un cliente segun lo que se ingrese por teclado
-    cout << "4) MOSTRAR TODOS LOS CLIENTES--->" << endl; /// muestra todos ordenados alfabeticamente o segun se indique por teclado
-    cout << "0) Salir "<< endl;
-    cout << endl << "Opción: ";
+    cout << "\t\t-----------CLIENTES----------" << endl;
+    cout << "\t\t-----------------------------" << endl;
+    cout << "\t\t1) Nuevo cliente             " << endl; /// se carga nuevo cliente y menores de edad
+    cout << "\t\t2) Modificar cliente         " << endl;/// modifica el campo que le indiquemos
+    cout << "\t\t3) Buscar cliente            " << endl; /// busca y muestra un cliente segun lo que se ingrese por teclado
+    cout << "\t\t4) Mostrar todos los clientes" << endl; /// muestra todos ordenados alfabeticamente o segun se indique por teclado
+    cout << "\t\t0) Salir "<< endl;
+    cout << "\t\t  Opción: ";
     cin >> op;
     borrarPantalla();
     switch(op){
@@ -1385,14 +1625,7 @@ while(true){
 
 
 
-
-
-
-
-
-
-
-
 #endif // MENUCLIENTES_H_INCLUDED
+
 
 
