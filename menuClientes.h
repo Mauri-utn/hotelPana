@@ -1382,15 +1382,15 @@ return true;
 
 
 }
-void modificarNombre();
-void modificarApellido();
-void modificarGenero();
-void modificarDni();
-void modificarNacionalidad();
-void modificarFechaDeNac();
+///void modificarNombre();
+///void modificarApellido();
+///void modificarGenero();
+///void modificarDni();
+///void modificarNacionalidad();
+///void modificarFechaDeNac();
 void modificarMail();
 void modificarTelefono();
-void modificarDomicilio();
+///void modificarDomicilio();
 void modificarTarjetaCredito();
 
 
@@ -1399,18 +1399,11 @@ int modificarCliente(){
 char opcion;
 while(true){
     borrarPantalla();
-    cout << "\t\t Indique campo a modificar" << endl;
-    cout << "\t\t -------------------------" << endl;
-    cout << "\t\t1) Nombre" << endl;
-    cout << "\t\t2) Apellido" << endl;
-    cout << "\t\t3) Genero" << endl;
-    cout << "\t\t4) Dni" << endl;
-    cout << "\t\t5) Nacionalidad" << endl;
-    cout << "\t\t6) Fecha de nacimiento "<< endl; /// incluye dia mes año
-    cout << "\t\t7) Mail" << endl;
-    cout << "\t\t8) Telefono" << endl;
-    cout << "\t\t9) Domicilio" << endl;/// incluye todos los campos de domicilio
-    cout << "\t\tT) Tarjeta de credito" << endl; /// incluye todos los campos de tarjeta
+    cout << "\t\t  Indique campo a modificar" << endl;
+    cout << "\t\t  -------------------------" << endl;
+    cout << "\t\t1) Mail    " << endl;
+    cout << "\t\t2) Telefono" << endl;
+    cout << "\t\t3) Tarjeta de credito" << endl; /// incluye todos los campos de tarjeta
     cout << "\t\t0) Salir  "<< endl;
     cout << "\t\t   Opción: ";
     cin >> opcion;
@@ -1431,44 +1424,6 @@ cout << "\t\tmenu en contruccion..."<< endl;
 pausa();
 return 0;
       break;
-      case '4':
-cout << "\t\tmenu en contruccion..."<< endl;
-pausa();
-return 0;
-      break;
-      case '5':
-cout << "\t\tmenu en contruccion..."<< endl;
-pausa();
-return 0;
-      break;
-      case '6':
-          cout << "\t\tmenu en contruccion..."<< endl;
-pausa();
-return 0;
-        break;
-      case '7':
-          cout << "\t\tmenu en contruccion..."<< endl;
-pausa();
-return 0;
-
-        break;
-      case '8':
-          cout << "\t\tmenu en contruccion..."<< endl;
-pausa();
-return 0;
-
-        break;
-      case '9':
-cout << "\t\tmenu en contruccion..."<< endl;
-pausa();
-return 0;
-        break;
-          case 't':
-          case'T':
-      cout << "\t\tmenu en contruccion..."<< endl;
-pausa();
-return 0;
-        break;
       case '0':
           return 0;
       break;
